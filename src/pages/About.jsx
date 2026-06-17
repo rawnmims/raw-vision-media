@@ -8,11 +8,11 @@ import { userService } from '../services/formService'
 // Sample team data
 const SAMPLE_TEAM = {
   faculty: [
-    { id: 'f1', name: 'Prof. Rajesh Kumar', role: 'Faculty In-Charge', department: 'Media & Communication', photo: null },
-    { id: 'f2', name: 'Prof. Meena Sharma', role: 'Co Faculty In-Charge', department: 'Visual Arts', photo: null },
+    { id: 'f1', name: 'Dr. Bhushan Inje', role: 'Faculty In-Charge', department: 'Engineering', photo: null },
+    { id: 'f2', name: 'Dr. Piyush Ghode', role: 'Faculty In-Charge', department: 'Pharmacy', photo: null },
   ],
   student_incharge: [
-    { id: 's1', name: 'Arjun Patel', role: 'Student Incharge', department: 'Photography', photo: null },
+    { id: 's1', name: 'Shreya Desai', role: 'Student Incharge', department: 'Photography', photo: null },
   ],
   school_heads: [
     { id: 'sh1', name: 'Priya Verma', role: 'School Head', department: 'School of Technology', photo: null },
