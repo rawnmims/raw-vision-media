@@ -20,7 +20,7 @@ export const COVERAGE_TYPES = ['Photography', 'Videography', 'Both']
 export const CURRENT_YEAR = new Date().getFullYear()
 
 export const NAV_LINKS = [
-  { label: 'Home', path: '/' },
+  { label: 'Home', path: '/home' },
   { label: 'Events', path: '/events' },
   { label: 'Archive', path: '/archive' },
   { label: 'Scrapbook', path: '/scrapbook' },

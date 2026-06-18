@@ -20,6 +20,7 @@ const NAV = [
   { label: 'Coverage Requests', path: '/admin/coverage', icon: Inbox },
   { label: 'Users', path: '/admin/users', icon: Users },
   { label: 'Analytics', path: '/admin/analytics', icon: BarChart2 },
+  { label: 'About', path: '/admin/about', icon: Users },
   { label: 'Settings', path: '/admin/settings', icon: Settings },
 ]
 

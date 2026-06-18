@@ -29,7 +29,7 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     await signOut()
-    navigate('/')
+    navigate('/login')
   }
 
   const isActive = (path) => location.pathname === path
@@ -60,7 +60,7 @@ export default function Navbar() {
           <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link to="/home" className="flex items-center gap-2 group">
               <div className="flex items-center">
                 <span
                   className="font-condensed text-3xl text-white leading-none"

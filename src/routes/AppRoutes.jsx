@@ -26,24 +26,13 @@ import CoverageAdmin from '../pages/admin/CoverageAdmin'
 import UsersAdmin from '../pages/admin/UsersAdmin'
 import AnalyticsAdmin from '../pages/admin/AnalyticsAdmin'
 import SettingsAdmin from '../pages/admin/SettingsAdmin'
+import AboutAdmin from '../pages/admin/AboutAdmin'
 
 export default function AppRoutes() {
-  const { user } = useAuth()
   return (
     <Routes>
-      {/* Root Route */}
-      <Route
-        path="/"
-        element={
-          user
-            ? <Navigate to="/home" replace />
-            : <Navigate to="/login" replace />
-        }
-      />
-
-      {/* Auth */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      {/* Root → login */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
       {/* Public */}
       <Route path="/home" element={<Home />} />
@@ -53,6 +42,10 @@ export default function AppRoutes() {
       <Route path="/scrapbook" element={<Scrapbook />} />
       <Route path="/videos" element={<Videos />} />
       <Route path="/about" element={<About />} />
+
+      {/* Auth */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
       {/* Admin — protected + admin-only */}
       <Route path="/admin" element={<ProtectedRoute adminOnly><Dashboard /></ProtectedRoute>} />
@@ -65,9 +58,10 @@ export default function AppRoutes() {
       <Route path="/admin/users" element={<ProtectedRoute adminOnly><UsersAdmin /></ProtectedRoute>} />
       <Route path="/admin/analytics" element={<ProtectedRoute adminOnly><AnalyticsAdmin /></ProtectedRoute>} />
       <Route path="/admin/settings" element={<ProtectedRoute adminOnly><SettingsAdmin /></ProtectedRoute>} />
+      <Route path="/admin/about" element={<ProtectedRoute adminOnly><AboutAdmin /></ProtectedRoute>} />
 
       {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   )
 }

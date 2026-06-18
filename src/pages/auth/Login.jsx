@@ -23,7 +23,7 @@ export default function Login() {
     setError('')
     try {
       await signIn(form)
-      navigate('/')
+      navigate('/home')
     } catch (err) {
       setError(err.message || 'Invalid email or password.')
     } finally {
