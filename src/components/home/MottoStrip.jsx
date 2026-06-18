@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
 import { useTheme } from '../../context/ThemeContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import JoinRawModal from '../forms/JoinRawModal'
 import CoverageModal from '../forms/CoverageModal'
+import Swal from 'sweetalert2'
+import { formService } from '../../services/formService'
 
 export function MottoStrip() {
   const { isDark } = useTheme()
@@ -24,9 +26,18 @@ export function MottoStrip() {
 }
 
 export function DynamicFormsBanner() {
+  useEffect(() => {
+    formService.getSettings()
+      .then(d => {
+        if (d) setSettings(d)
+      })
+      .catch(() => { })
+  }, [])
+
   const { isDark } = useTheme()
   const [joinOpen, setJoinOpen] = useState(false)
   const [coverageOpen, setCoverageOpen] = useState(false)
+  const [forms, setForms] = useState([])
 
   return (
     <>
@@ -44,7 +55,19 @@ export function DynamicFormsBanner() {
               <p className="font-serif text-gray-400 text-sm leading-relaxed mb-6">
                 We're looking for passionate photographers, videographers, designers, and storytellers to join our media family.
               </p>
-              <button onClick={() => setJoinOpen(true)} className="font-oswald text-xs tracking-widest uppercase text-white border border-white px-6 py-3 hover:bg-white hover:text-raw-black transition-all">
+              <button onClick={() => {
+                if (!settings?.join_raw_open) {
+                  Swal.fire({
+                    icon: 'info',
+                    title: 'Applications Closed',
+                    text: 'RAW Vision Media Club recruitment is currently closed.',
+                    confirmButtonText: 'OK'
+                  })
+                  return
+                }
+
+                setJoinOpen(true)
+              }} className="font-oswald text-xs tracking-widest uppercase text-white border border-white px-6 py-3 hover:bg-white hover:text-raw-black transition-all">
                 Apply Now →
               </button>
             </motion.div>
@@ -60,7 +83,19 @@ export function DynamicFormsBanner() {
               <p className="font-serif text-gray-400 text-sm leading-relaxed mb-6">
                 Need professional photography or videography for your event? Submit a request and our team will capture every moment.
               </p>
-              <button onClick={() => setCoverageOpen(true)} className="font-oswald text-xs tracking-widest uppercase text-white border border-white px-6 py-3 hover:bg-white hover:text-raw-black transition-all">
+              <button onClick={() => {
+                if (!settings?.coverage_open) {
+                  Swal.fire({
+                    icon: 'info',
+                    title: 'Coverage Closed',
+                    text: 'Coverage requests are currently not being accepted.',
+                    confirmButtonText: 'OK'
+                  })
+                  return
+                }
+
+                setCoverageOpen(true)
+              }} className="font-oswald text-xs tracking-widest uppercase text-white border border-white px-6 py-3 hover:bg-white hover:text-raw-black transition-all">
                 Submit Request →
               </button>
             </motion.div>

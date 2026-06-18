@@ -103,7 +103,7 @@ export default function CoverageModal({ isOpen, onClose }) {
                     </div>
                     <div>
                       <label className={labelClass}>Expected Crowd Size</label>
-                      <input name="expected_crowd" value={form.expected_crowd} onChange={handleChange} placeholder="e.g. 200-500" className={inputClass} />
+                      <input name="expected_crowd" value={form.expected_crowd} onChange={handleChange} required placeholder="e.g. 200-500" className={inputClass} />
                     </div>
                   </div>
                 </div>
@@ -153,7 +153,7 @@ export default function CoverageModal({ isOpen, onClose }) {
                     <div>
                       <label className={`${labelClass} block mb-2`}>Special Requirements</label>
                       <textarea
-                        name="special_requirements" value={form.special_requirements} onChange={handleChange}
+                        name="special_requirements" value={form.special_requirements} onChange={handleChange} required
                         rows={2} placeholder="Any specific equipment or requirements..."
                         className={`w-full p-3 border text-sm font-sans bg-transparent outline-none resize-none transition-colors ${isDark ? 'border-gray-600 text-white placeholder-gray-500 focus:border-raw-accent' : 'border-gray-300 text-raw-ink placeholder-gray-400 focus:border-raw-accent'}`}
                       />

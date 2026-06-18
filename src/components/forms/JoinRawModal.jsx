@@ -160,18 +160,18 @@ export default function JoinRawModal({ isOpen, onClose }) {
                       />
                     </div>
                     <div>
-                      <label className={`${labelClass} block mb-2`}>Previous Experience</label>
+                      <label className={`${labelClass} block mb-2`}>Previous Experience *</label>
                       <textarea
-                        name="experience" value={form.experience} onChange={handleChange}
+                        name="experience" value={form.experience} onChange={handleChange} required
                         rows={3} placeholder="Any prior experience in photography, videography, design, etc."
                         className={`w-full p-3 border text-sm font-sans bg-transparent outline-none resize-none transition-colors ${isDark ? 'border-gray-600 text-white placeholder-gray-500 focus:border-raw-accent' : 'border-gray-300 text-raw-ink placeholder-gray-400 focus:border-raw-accent'}`}
                       />
                     </div>
                     <div>
-                      <label className={labelClass}>Creative Work (Google Drive Link)</label>
+                      <label className={labelClass}>Creative Work (Google Drive Link) *</label>
                       <div className="flex items-center gap-2">
                         <input
-                          name="creative_drive_link" value={form.creative_drive_link} onChange={handleChange}
+                          name="creative_drive_link" value={form.creative_drive_link} onChange={handleChange} required
                           placeholder="https://drive.google.com/..."
                           className={inputClass}
                         />

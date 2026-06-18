@@ -7,6 +7,8 @@ import {
 import AdminLayout from '../../layouts/AdminLayout'
 import { useTheme } from '../../context/ThemeContext'
 import { formService } from '../../services/formService'
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver'
 
 // ── Field types available in the builder ──────────────────────
 const FIELD_TYPES = [
@@ -54,6 +56,7 @@ function ResponsesModal({ form, onClose, isDark }) {
   const [responses, setResponses] = useState([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     formService.getFormResponses(form.id)
@@ -62,24 +65,63 @@ function ResponsesModal({ form, onClose, isDark }) {
       .finally(() => setLoading(false))
   }, [form.id])
 
-  const exportCSV = () => {
-    if (!responses.length) return
-    const fields = form.fields.map(f => f.label)
-    const header = ['Submitted At', ...fields].join(',')
-    const rows = responses.map(r => {
-      const vals = form.fields.map(f => {
-        const v = r.response?.[f.id] || ''
-        return `"${String(v).replace(/"/g, '""')}"`
-      })
-      return [new Date(r.created_at).toLocaleString(), ...vals].join(',')
+  const filteredResponses = responses.filter(r =>
+  JSON.stringify(r.response)
+    .toLowerCase()
+    .includes(searchTerm.toLowerCase())
+)
+
+  const exportExcel = () => {
+  if (!responses.length) return
+
+  const excelData = responses.map(r => {
+    const row = {}
+
+    form.fields.forEach(field => {
+      row[field.label] =
+        r.response?.[field.id] ||
+        r.response?.[field.label] ||
+        ''
     })
-    const csv = [header, ...rows].join('\n')
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    a.download = `${form.slug}-responses.csv`
-    a.click()
-  }
+
+    row['Submitted At'] = new Date(
+      r.created_at
+    ).toLocaleString('en-IN')
+
+    return row
+  })
+
+  const worksheet =
+    XLSX.utils.json_to_sheet(excelData)
+
+  const workbook =
+    XLSX.utils.book_new()
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    'Responses'
+  )
+
+  const excelBuffer =
+    XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array'
+    })
+
+  const blob = new Blob(
+    [excelBuffer],
+    {
+      type:
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    }
+  )
+
+  saveAs(
+    blob,
+    `${form.slug}-responses.xlsx`
+  )
+}
 
   const bg = isDark ? 'bg-[#111] text-white border-gray-800' : 'bg-white text-raw-ink border-gray-200'
 
@@ -100,9 +142,9 @@ function ResponsesModal({ form, onClose, isDark }) {
           </div>
           <div className="flex items-center gap-3">
             {responses.length > 0 && (
-              <button onClick={exportCSV} className={`flex items-center gap-2 font-oswald text-xs tracking-widest uppercase px-3 py-2 border transition-all
+              <button onClick={exportExcel} className={`flex items-center gap-2 font-oswald text-xs tracking-widest uppercase px-3 py-2 border transition-all
                 ${isDark ? 'border-gray-700 text-gray-300 hover:border-white' : 'border-gray-300 text-gray-600 hover:border-raw-ink'}`}>
-                <Download size={13} /> Export CSV
+                <Download size={13} /> Export Excel
               </button>
             )}
             <button onClick={onClose}><X size={18} className="text-gray-400" /></button>
@@ -110,40 +152,91 @@ function ResponsesModal({ form, onClose, isDark }) {
         </div>
 
         <div className="px-7 py-6">
+          <div className="mb-4">
+  <input
+    type="text"
+    placeholder="Search responses..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className={`
+      w-full px-4 py-3 border rounded-md
+      ${isDark
+        ? 'bg-black border-gray-700 text-white'
+        : 'bg-white border-gray-300 text-black'}
+    `}
+  />
+</div>
           {loading ? (
             <p className={`font-condensed text-xl animate-pulse ${isDark ? 'text-gray-600' : 'text-gray-300'}`}>Loading...</p>
           ) : responses.length === 0 ? (
             <p className={`font-display text-lg italic ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>No responses yet.</p>
           ) : (
-            <div className="space-y-3">
-              {responses.map((r, i) => (
-                <div key={r.id} className={`border ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
-                  <button
-                    onClick={() => setExpanded(expanded === r.id ? null : r.id)}
-                    className={`w-full flex items-center justify-between px-5 py-3 text-left ${isDark ? 'hover:bg-gray-900/50' : 'hover:bg-gray-50'}`}
-                  >
-                    <span className={`font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                      Response #{responses.length - i} — {new Date(r.created_at).toLocaleString('en-IN')}
-                    </span>
-                    {expanded === r.id ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
-                  </button>
-                  <AnimatePresence>
-                    {expanded === r.id && (
-                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                        className={`overflow-hidden border-t ${isDark ? 'border-gray-800' : 'border-gray-100'}`}>
-                        <div className="px-5 py-4 space-y-3">
-                          {form.fields.map(f => (
-                            <div key={f.id} className={`flex gap-4 py-2 border-b last:border-0 ${isDark ? 'border-gray-800' : 'border-gray-100'}`}>
-                              <span className={`font-oswald text-[10px] tracking-widest uppercase w-36 flex-shrink-0 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{f.label}</span>
-                              <span className={`font-sans text-sm ${isDark ? 'text-white' : 'text-raw-ink'}`}>{r.response?.[f.id] || '—'}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ))}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className={isDark ? 'border-gray-800' : 'border-gray-200'}>
+                    {form.fields.map(field => (
+                      <th
+                        key={field.id}
+                        className="
+              text-left
+              px-4
+              py-3
+              font-oswald
+              text-xs
+              tracking-widest
+              uppercase
+              border-b
+            "
+                      >
+                        {field.label}
+                      </th>
+                    ))}
+
+                    <th
+                      className="
+            text-left
+            px-4
+            py-3
+            font-oswald
+            text-xs
+            tracking-widest
+            uppercase
+            border-b
+          "
+                    >
+                      Submitted
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredResponses.map(response => (
+                    <tr
+                      key={response.id}
+                      className={`
+            border-b
+            ${isDark ? 'border-gray-800 hover:bg-gray-900' : 'border-gray-100 hover:bg-gray-50'}
+          `}
+                    >
+                      {form.fields.map(field => (
+                        <td
+                          key={field.id}
+                          className="px-4 py-3 text-sm"
+                        >
+                          {response.response?.[field.id] ||
+                            response.response?.[field.label] ||
+                            '—'}
+                        </td>
+                      ))}
+
+                      <td className="px-4 py-3 text-sm whitespace-nowrap">
+                        {new Date(response.created_at).toLocaleString('en-IN')}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
@@ -362,14 +455,31 @@ export default function FormsAdmin() {
   const [builderForm, setBuilderForm] = useState(null) // null = closed, {} = new, {...} = edit
   const [viewResponses, setViewResponses] = useState(null)
   const [deleteId, setDeleteId]   = useState(null)
+  const [responseCounts, setResponseCounts] = useState({})
 
   const load = () => {
-    setLoading(true)
-    formService.getForms()
-      .then(setForms)
-      .catch(() => {})
-      .finally(() => setLoading(false))
+  setLoading(true)
+
+  formService.getForms()
+    .then(data => {
+      setForms(data)
+      loadResponseCounts(data)
+    })
+    .catch(() => {})
+    .finally(() => setLoading(false))
+}
+  async function loadResponseCounts(formsData) {
+  const counts = {}
+
+  for (const form of formsData) {
+    const responses =
+      await formService.getFormResponses(form.id)
+
+    counts[form.id] = responses.length
   }
+
+  setResponseCounts(counts)
+}
   useEffect(() => { load() }, [])
 
   const handleSave = async (formData) => {
@@ -432,32 +542,41 @@ export default function FormsAdmin() {
             <div className={`py-12 text-center border border-dashed ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
               <p className={`font-display text-lg italic mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>No custom forms yet.</p>
               <button onClick={() => setBuilderForm({})} className="btn-primary">
-                <Plus size={14} /> Create Your First Form
-              </button>
-            </div>
-          ) : (
-            <div className={`border ${cardBg}`}>
-              {/* Column headers */}
-              <div className={`grid grid-cols-12 gap-3 px-5 py-3 border-b font-oswald text-[10px] tracking-widest uppercase
-                ${isDark ? 'border-gray-800 text-gray-500' : 'border-gray-200 text-gray-400'}`}>
-                <span className="col-span-4">Form</span>
-                <span className="col-span-2 hidden sm:block">Fields</span>
-                <span className="col-span-2 hidden md:block">Status</span>
-                <span className="col-span-2 hidden md:block">Homepage</span>
-                <span className="col-span-2 text-right">Actions</span>
+                  <Plus size={14} /> Create Your First Form
+                </button>
               </div>
+            ) : (
+              <div className={`border ${cardBg}`}>
+                {/* Column headers */}
+                <div className={`grid grid-cols-12 gap-3 px-5 py-3 border-b font-oswald text-[10px] tracking-widest uppercase
+                ${isDark ? 'border-gray-800 text-gray-500' : 'border-gray-200 text-gray-400'}`}>
+                  <span className="col-span-4">Form</span>
+                  <span className="col-span-2 hidden sm:block">Fields</span>
+                  <span className="col-span-2 hidden md:block">Status</span>
+                  <span className="col-span-2 hidden md:block">Homepage</span>
+                  <span className="col-span-2 text-right">Actions</span>
+                </div>
 
-              {forms.map((form, i) => (
-                <motion.div key={form.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }}
-                  className={`grid grid-cols-12 gap-3 items-center px-5 py-4 border-b last:border-0
+                {forms.map((form, i) => (
+                  <motion.div key={form.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }}
+                    className={`grid grid-cols-12 gap-3 items-center px-5 py-4 border-b last:border-0
                     ${isDark ? 'border-gray-800/50 hover:bg-gray-900/40' : 'border-gray-100 hover:bg-gray-50'}`}>
 
-                  <div className="col-span-4">
-                    <p className={`font-display text-sm font-bold ${isDark ? 'text-white' : 'text-raw-ink'}`}>{form.title}</p>
-                    <p className={`font-oswald text-[10px] tracking-widest ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>/{form.slug}</p>
-                  </div>
+                    <div className="col-span-4">
+                      <p className={`font-display text-sm font-bold ${isDark ? 'text-white' : 'text-raw-ink'}`}>
+                        {form.title}
+                      </p>
 
-                  <span className={`col-span-2 hidden sm:block font-condensed text-lg ${isDark ? 'text-white' : 'text-raw-ink'}`}>
+                      <p className={`font-oswald text-[10px] tracking-widest ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                        /{form.slug}
+                      </p>
+
+                      <p className="font-oswald text-[10px] tracking-widest uppercase text-emerald-500 mt-1">
+                        {responseCounts[form.id] || 0} Responses
+                      </p>
+                    </div>
+
+                    <span className={`col-span-2 hidden sm:block font-condensed text-lg ${isDark ? 'text-white' : 'text-raw-ink'}`}>
                     {(form.fields || []).length}
                   </span>
 

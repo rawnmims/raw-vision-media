@@ -5,6 +5,7 @@ import JoinRawModal from '../forms/JoinRawModal'
 import CoverageModal from '../forms/CoverageModal'
 import { formService } from '../../services/formService'
 import { getGDriveVideoEmbedUrl, getImageUrl, isGoogleDriveUrl } from '../../utils/helpers'
+import Swal from 'sweetalert2'
 
 /**
  * HeroSection — video background loaded from website_settings.hero_video
@@ -124,14 +125,8 @@ export default function HeroSection() {
             transition={{ duration: 1, delay: 0.2 }}
           >
             <div className="flex items-baseline gap-3 mb-3">
-              <span
-                className="font-condensed text-[6rem] md:text-[9rem] lg:text-[12rem] leading-none text-white"
-                style={{ background: '#000', padding: '0 12px', display: 'inline-block' }}
-              >
-                R
-              </span>
               <span className="font-condensed text-[6rem] md:text-[9rem] lg:text-[12rem] leading-none text-white">
-                AW
+                RAW
               </span>
             </div>
 
@@ -165,13 +160,37 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.9 }}
           >
             <button
-              onClick={() => setJoinOpen(true)}
+              onClick={() => {
+                if (!settings?.join_raw_open) {
+                  Swal.fire({
+                    icon: 'info',
+                    title: 'Applications Closed',
+                    text: 'RAW Vision Media Club recruitment is currently closed.',
+                    confirmButtonText: 'OK'
+                  })
+                  return
+                }
+
+                setJoinOpen(true)
+              }}
               className="flex items-center gap-2 px-6 py-3.5 bg-white text-raw-black font-oswald text-xs tracking-widest uppercase transition-all hover:bg-raw-accent"
             >
               <Camera size={14} /> Join RAW
             </button>
             <button
-              onClick={() => setCoverageOpen(true)}
+              onClick={() => {
+                if (!settings?.coverage_open) {
+                  Swal.fire({
+                    icon: 'info',
+                    title: 'Coverage Closed',
+                    text: 'Coverage requests are currently not being accepted.',
+                    confirmButtonText: 'OK'
+                  })
+                  return
+                }
+
+                setCoverageOpen(true)
+              }}
               className="flex items-center gap-2 px-6 py-3.5 bg-transparent text-white border border-white font-oswald text-xs tracking-widest uppercase transition-all hover:bg-white hover:text-raw-black"
             >
               <Video size={14} /> Request Coverage

@@ -62,8 +62,15 @@ export const formService = {
     const { error } = await supabase.from('dynamic_forms').delete().eq('id', id)
     if (error) throw error
   },
-  async submitFormResponse(formId, response) {
-    const { error } = await supabase.from('form_responses').insert({ form_id: formId, response })
+  async submitFormResponse(formId, slug, response) {
+    const { error } = await supabase
+      .from('form_responses')
+      .insert({
+        form_id: formId,
+        form_slug: slug,
+        response
+      })
+
     if (error) throw error
   },
   async getFormResponses(formId) {
@@ -73,6 +80,14 @@ export const formService = {
     if (error) throw error
     return data || []
   },
+  async deleteFormResponse(id) {
+  const { error } = await supabase
+    .from('form_responses')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
+},
 }
 
 export const scrapbookService = {
