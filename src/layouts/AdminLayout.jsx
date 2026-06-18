@@ -18,6 +18,7 @@ const NAV = [
   { label: 'Videos', path: '/admin/videos', icon: Video },
   { label: 'Applications', path: '/admin/applications', icon: FileText },
   { label: 'Coverage Requests', path: '/admin/coverage', icon: Inbox },
+  { label: 'Forms', path: '/admin/forms', icon: FileText },
   { label: 'Users', path: '/admin/users', icon: Users },
   { label: 'Analytics', path: '/admin/analytics', icon: BarChart2 },
   { label: 'About', path: '/admin/about', icon: Users },

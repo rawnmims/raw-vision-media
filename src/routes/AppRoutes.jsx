@@ -27,6 +27,7 @@ import UsersAdmin from '../pages/admin/UsersAdmin'
 import AnalyticsAdmin from '../pages/admin/AnalyticsAdmin'
 import SettingsAdmin from '../pages/admin/SettingsAdmin'
 import AboutAdmin from '../pages/admin/AboutAdmin'
+import FormsAdmin from '../pages/admin/FormsAdmin'
 
 export default function AppRoutes() {
   return (
@@ -55,6 +56,7 @@ export default function AppRoutes() {
       <Route path="/admin/videos" element={<ProtectedRoute adminOnly><VideosAdmin /></ProtectedRoute>} />
       <Route path="/admin/applications" element={<ProtectedRoute adminOnly><ApplicationsAdmin /></ProtectedRoute>} />
       <Route path="/admin/coverage" element={<ProtectedRoute adminOnly><CoverageAdmin /></ProtectedRoute>} />
+      <Route path="/admin/forms" element={<ProtectedRoute adminOnly><FormsAdmin /></ProtectedRoute>} />
       <Route path="/admin/users" element={<ProtectedRoute adminOnly><UsersAdmin /></ProtectedRoute>} />
       <Route path="/admin/analytics" element={<ProtectedRoute adminOnly><AnalyticsAdmin /></ProtectedRoute>} />
       <Route path="/admin/settings" element={<ProtectedRoute adminOnly><SettingsAdmin /></ProtectedRoute>} />

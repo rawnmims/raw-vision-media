@@ -33,7 +33,46 @@ export const formService = {
       const { error } = await supabase.from('website_settings').insert(updates)
       if (error) throw error
     }
-  }
+  },
+
+  // ── Dynamic Forms ─────────────────────────────────────────────
+  async getForms({ homepageOnly = false } = {}) {
+    let q = supabase.from('dynamic_forms').select('*').order('created_at', { ascending: false })
+    if (homepageOnly) q = q.eq('show_on_homepage', true).eq('is_open', true)
+    const { data, error } = await q
+    if (error) throw error
+    return data || []
+  },
+  async getFormBySlug(slug) {
+    const { data, error } = await supabase.from('dynamic_forms').select('*').eq('slug', slug).single()
+    if (error) throw error
+    return data
+  },
+  async createForm(form) {
+    const { data, error } = await supabase.from('dynamic_forms').insert(form).select().single()
+    if (error) throw error
+    return data
+  },
+  async updateForm(id, updates) {
+    const { data, error } = await supabase.from('dynamic_forms').update(updates).eq('id', id).select().single()
+    if (error) throw error
+    return data
+  },
+  async deleteForm(id) {
+    const { error } = await supabase.from('dynamic_forms').delete().eq('id', id)
+    if (error) throw error
+  },
+  async submitFormResponse(formId, response) {
+    const { error } = await supabase.from('form_responses').insert({ form_id: formId, response })
+    if (error) throw error
+  },
+  async getFormResponses(formId) {
+    const { data, error } = await supabase
+      .from('form_responses').select('*')
+      .eq('form_id', formId).order('created_at', { ascending: false })
+    if (error) throw error
+    return data || []
+  },
 }
 
 export const scrapbookService = {
