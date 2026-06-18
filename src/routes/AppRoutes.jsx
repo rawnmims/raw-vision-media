@@ -28,20 +28,31 @@ import AnalyticsAdmin from '../pages/admin/AnalyticsAdmin'
 import SettingsAdmin from '../pages/admin/SettingsAdmin'
 
 export default function AppRoutes() {
+  const { user } = useAuth()
   return (
     <Routes>
+      {/* Root Route */}
+      <Route
+        path="/"
+        element={
+          user
+            ? <Navigate to="/home" replace />
+            : <Navigate to="/login" replace />
+        }
+      />
+
+      {/* Auth */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+
       {/* Public */}
-      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/events" element={<Events />} />
       <Route path="/events/:id" element={<EventDetails />} />
       <Route path="/archive" element={<Archive />} />
       <Route path="/scrapbook" element={<Scrapbook />} />
       <Route path="/videos" element={<Videos />} />
       <Route path="/about" element={<About />} />
-
-      {/* Auth */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
 
       {/* Admin — protected + admin-only */}
       <Route path="/admin" element={<ProtectedRoute adminOnly><Dashboard /></ProtectedRoute>} />
