@@ -5,6 +5,14 @@ import { Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import ThemeToggle from '../../components/common/ThemeToggle'
+import heroVideo from '../../assets/hero-video.mp4'
+import rLogo from '../../assets/r.png'
+import aLogo from '../../assets/a.png'
+import wLogo from '../../assets/w.png'
+import rBlackLogo from '../../assets/r-black.png'
+import aBlackLogo from '../../assets/a-black.png'
+import wBlackLogo from '../../assets/w-black.png'
+
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
@@ -34,64 +42,114 @@ export default function Login() {
   const formBg = isDark ? 'bg-raw-black text-white' : 'bg-raw-white text-raw-ink'
   const inputBorder = isDark ? 'border-gray-700 text-white placeholder-gray-600 focus:border-white' : 'border-gray-300 text-raw-ink placeholder-gray-400 focus:border-raw-ink'
 
+  const letterVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        delay: 0.1 + i * 0.08,
+        ease: 'easeOut',
+      },
+    }),
+  }
+
   return (
     <div className={`min-h-screen flex ${formBg}`}>
+
       {/* Left — Cinematic Video Panel (desktop only) */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-raw-black">
-        {/* TO CHANGE: Admin → Settings → Hero Video URL. Paste a Google Drive sharing link or any direct image URL. */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1200&q=80)' }}
-        />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/40 to-black/60" />
+
+        {/* Local video */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
+
+        {/* Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/45 to-black/65" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
         {/* Grain */}
-        <div className="absolute inset-0 opacity-20"
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }}
         />
 
         {/* Branding Overlay */}
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
-          {/* Top */}
+
+          {/* Top Badge */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <p className="font-oswald text-xs tracking-[0.3em] text-white/50 uppercase">NMIMS Shirpur · Est. 2016</p>
+            <p className="font-oswald text-xs tracking-[0.3em] text-white/50 uppercase">
+              NMIMS Shirpur · Est. 2016
+            </p>
           </motion.div>
 
-          {/* Center Brand */}
+          {/* Logo + Text */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
           >
-            <div className="flex items-baseline gap-2 mb-4">
-              <span className="font-condensed text-[7rem] leading-none text-white" style={{ background: '#000', padding: '0 10px', display: 'inline-block' }}>R</span>
-              <span className="font-condensed text-[7rem] leading-none text-white">AW</span>
-            </div>
-            <p className="font-oswald text-sm tracking-[0.25em] text-white/70 uppercase mb-1">Vision Media Club</p>
-            <div className="h-px w-16 bg-raw-accent mb-4" />
-            <p className="font-serif text-2xl italic text-white/80">Frames Speak Louder.</p>
-          </motion.div>
 
-          {/* Bottom */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-          >
-            <p className="font-oswald text-xs tracking-[0.2em] text-white/30 uppercase">
-              Photography · Cinematography · Design · Documentation
+            {/* RAW Logo */}
+            <div className="flex items-end gap-0 mb-4">
+              {[rLogo, aLogo, wLogo].map((src, i) => (
+                <motion.div
+                  key={i}
+                  custom={i}
+                  variants={letterVariants}
+                  initial="hidden"
+                  animate="visible"
+                  whileHover={{
+                    scale: 1.06,
+                    filter: 'brightness(1.15)',
+                    transition: {
+                      duration: 0.25,
+                      ease: 'easeOut'
+                    }
+                  }}
+                  style={{
+                    display: 'inline-block',
+                    transformOrigin: 'bottom center'
+                  }}
+                >
+                  <img
+                    src={src}
+                    alt={['R', 'A', 'W'][i]}
+                    className="h-24 md:h-36 lg:h-48 w-auto object-contain"
+                  />
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Subtitle */}
+            <p className="font-oswald text-sm tracking-[0.25em] text-white/70 uppercase mb-1">
+              Vision Media Club
             </p>
+
+            <div className="h-px w-16 bg-raw-accent mb-4" />
+
+            <p className="font-serif text-2xl italic text-white/80">
+              Frames Speak Louder.
+            </p>
+
           </motion.div>
         </div>
       </div>
 
       {/* Right — Login Form */}
       <div className={`flex-1 flex flex-col justify-center px-8 sm:px-16 lg:px-20 py-12 relative ${formBg}`}>
-        {/* Top bar */}
         <div className="absolute top-6 right-6 flex items-center gap-3">
           <ThemeToggle />
         </div>
@@ -99,8 +157,25 @@ export default function Login() {
         {/* Mobile Brand */}
         <div className="lg:hidden mb-12 text-center">
           <div className="flex items-baseline gap-2 justify-center mb-2">
-            <span className="font-condensed text-5xl text-white" style={{ background: '#0A0A0A', padding: '0 8px' }}>R</span>
-            <span className={`font-condensed text-5xl ${isDark ? 'text-white' : 'text-raw-ink'}`}>AW</span>
+            <div className="flex items-end gap-0">
+              <img
+                src={isDark ? rLogo : rBlackLogo}
+                alt="R"
+                className="h-12 w-auto object-contain"
+              />
+
+              <img
+                src={isDark ? aLogo : aBlackLogo}
+                alt="A"
+                className="h-12 w-auto object-contain"
+              />
+
+              <img
+                src={isDark ? wLogo : wBlackLogo}
+                alt="W"
+                className="h-12 w-auto object-contain"
+              />
+            </div>
           </div>
           <p className={`font-oswald text-xs tracking-[0.25em] uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Vision Media Club · NMIMS Shirpur</p>
         </div>
@@ -111,7 +186,6 @@ export default function Login() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          {/* Heading */}
           <div className="mb-10">
             <p className={`font-oswald text-xs tracking-[0.25em] uppercase mb-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
               Welcome Back
@@ -124,7 +198,6 @@ export default function Login() {
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-8">
             <motion.div
               initial={{ opacity: 0, x: -10 }}
@@ -195,7 +268,6 @@ export default function Login() {
             </motion.div>
           </form>
 
-          {/* Footer links */}
           <motion.div
             className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800 text-center"
             initial={{ opacity: 0 }}

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 import { Check, Save } from 'lucide-react'
 import AdminLayout from '../../layouts/AdminLayout'
 import { useTheme } from '../../context/ThemeContext'
@@ -61,7 +60,7 @@ export default function SettingsAdmin() {
           </button>
         </div>
 
-        {/* Hero */}
+        {/* Hero Text */}
         <div className={sectionCls}>
           <p className={`font-condensed text-lg tracking-widest uppercase mb-1 ${isDark ? 'text-white' : 'text-raw-ink'}`}>Hero Section</p>
           <div>
@@ -71,27 +70,6 @@ export default function SettingsAdmin() {
           <div>
             <label className={labelCls}>Hero Subheading / Tagline</label>
             <input name="hero_subheading" value={settings.hero_subheading} onChange={handleChange} className={inputCls} />
-          </div>
-          <div>
-            <label className={labelCls}>Hero Background Image URL</label>
-            <input name="hero_image" value={settings.hero_image || ''} onChange={handleChange} placeholder="Paste Google Drive sharing link or any direct image URL" className={inputCls} />
-            <p className={`font-sans text-xs mt-1.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-              Drive link: Right-click file → Share → "Anyone with the link" → Copy link → Paste here
-            </p>
-          </div>
-          <div>
-            <label className={labelCls}>Hero Video URL (optional — plays over image)</label>
-            <input name="hero_video" value={settings.hero_video || ''} onChange={handleChange} placeholder="Paste Google Drive video sharing link or direct .mp4 URL" className={inputCls} />
-            <p className={`font-sans text-xs mt-1.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-              Drive video: Upload to Drive → Share → "Anyone with the link" → Copy link → Paste here
-            </p>
-          </div>
-          <div>
-            <label className={labelCls}>Login / Signup Page Background Image URL</label>
-            <input name="login_image" value={settings.login_image || ''} onChange={handleChange} placeholder="Paste Google Drive sharing link or any direct image URL" className={inputCls} />
-            <p className={`font-sans text-xs mt-1.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-              This replaces the cinematic background on the left side of the login and signup pages.
-            </p>
           </div>
         </div>
 
@@ -108,10 +86,10 @@ export default function SettingsAdmin() {
         <div className={sectionCls}>
           <p className={`font-condensed text-lg tracking-widest uppercase mb-1 ${isDark ? 'text-white' : 'text-raw-ink'}`}>Social Links</p>
           {[
-            { name: 'instagram', label: 'Instagram URL' },
-            { name: 'youtube', label: 'YouTube URL' },
-            { name: 'linkedin', label: 'LinkedIn URL' },
-            { name: 'website_email', label: 'Contact Email' },
+            { name: 'instagram',      label: 'Instagram URL' },
+            { name: 'youtube',        label: 'YouTube URL' },
+            { name: 'linkedin',       label: 'LinkedIn URL' },
+            { name: 'website_email',  label: 'Contact Email' },
             { name: 'contact_number', label: 'Contact Number' },
           ].map(f => (
             <div key={f.name}>
@@ -126,8 +104,8 @@ export default function SettingsAdmin() {
           <p className={`font-condensed text-lg tracking-widest uppercase mb-1 ${isDark ? 'text-white' : 'text-raw-ink'}`}>Access Control</p>
           <div className="space-y-4">
             {[
-              { name: 'signup_enabled', label: 'Enable New Signups', desc: 'Allow new users to create accounts.' },
-              { name: 'external_users_enabled', label: 'Allow External Users', desc: 'Allow Gmail users to register.' },
+              { name: 'signup_enabled',          label: 'Enable New Signups',    desc: 'Allow new users to create accounts.' },
+              { name: 'external_users_enabled',  label: 'Allow External Users',  desc: 'Allow Gmail users to register.' },
             ].map(item => (
               <label key={item.name} className="flex items-start gap-4 cursor-pointer">
                 <input
