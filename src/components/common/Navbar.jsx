@@ -1,20 +1,57 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, LogOut, User, Settings } from 'lucide-react'
+import { Menu, X, LogOut, User, Settings, Sun, Moon } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import ThemeToggle from './ThemeToggle'
 import { NAV_LINKS } from '../../utils/constants'
+import rawLogo from '../../assets/raw-logo.png'
+
+/* ─── tiny hook: live clock ─── */
+function useLiveClock() {
+  const [now, setNow] = useState(new Date())
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
+  return now
+}
+
+const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+const MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December']
+
+function formatDate(d) {
+  return `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`
+}
+function formatTime(d) {
+  const h = String(d.getHours()).padStart(2,'0')
+  const m = String(d.getMinutes()).padStart(2,'0')
+  const s = String(d.getSeconds()).padStart(2,'0')
+  return `${h}:${m}:${s}`
+}
+
+/* ─── ticker items – swap freely ─── */
+const TICKER_ITEMS = [
+  'Annual Photography Exhibition opens Friday',
+  'New blog: "The Art of Long Exposure"',
+  'RAW wins Best Media Club 2025 at NMIMS Summit',
+  'Submissions open for the Winter Issue',
+]
 
 export default function Navbar() {
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+  /* ── all original state & logic ── */
+  const [mobileOpen, setMobileOpen]   = useState(false)
+  const [scrolled,   setScrolled]     = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const { user, profile, signOut, isAdmin } = useAuth()
   const { isDark } = useTheme()
   const location = useLocation()
-  const navigate = useNavigate()
+  const navigate  = useNavigate()
+
+  /* live clock */
+  const now = useLiveClock()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60)
@@ -34,171 +71,532 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path
 
-  const bg = isDark
-    ? scrolled ? 'bg-raw-black border-b border-gray-800' : 'bg-transparent'
-    : scrolled ? 'bg-raw-white border-b border-gray-200' : 'bg-transparent'
+  /* ── color tokens (dark / light) ── */
+  const cream  = isDark ? '#0d0d0d'  : '#faf8f4'
+  const ink    = isDark ? '#f0ece4'  : '#1a1a1a'
+  const muted  = isDark ? '#8a8078'  : '#7a7068'
+  const rule   = isDark ? '#2e2b26'  : '#d4cec6'
+  const accent = '#c0392b'
 
   return (
     <>
-      {/* Utility Bar */}
-      <div className={`utility-bar hidden md:block ${isDark ? 'bg-raw-black border-gray-800 text-gray-400' : 'bg-raw-cream border-gray-300 text-gray-500'}`}>
-        <div className="max-w-7xl mx-auto px-6 py-1.5 flex items-center justify-between">
-          <span className="font-oswald text-xs tracking-widest">
-            NMIMS SHIRPUR · EST. 2016 · OFFICIAL MEDIA CLUB
-          </span>
-          <div className="flex items-center gap-6">
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-raw-accent transition-colors">Instagram</a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer" className="hover:text-raw-accent transition-colors">YouTube</a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-raw-accent transition-colors">LinkedIn</a>
+      {/* ════════════════════════════════════════
+          UTILITY BAR
+      ════════════════════════════════════════ */}
+      <div
+        className="hidden md:block"
+        style={{
+          background: isDark ? '#111' : '#1a1a1a',
+          borderBottom: `1px solid ${isDark ? '#2a2a2a' : '#2e2b26'}`,
+        }}
+      >
+        <div
+          className="max-w-7xl mx-auto px-6"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '5px 24px',
+            fontFamily: "'Oswald', sans-serif",
+            fontSize: '9.5px',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: '#9a9088',
+          }}
+        >
+          <span>NMIMS Shirpur · Est. 2016 · Official Media Club</span>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            {[
+              { label: 'Instagram', href: 'https://instagram.com' },
+              { label: 'YouTube',   href: 'https://youtube.com'   },
+              { label: 'LinkedIn',  href: 'https://linkedin.com'  },
+            ].map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: '#9a9088', textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={e => e.target.style.color = '#e8d5b0'}
+                onMouseLeave={e => e.target.style.color = '#9a9088'}
+              >
+                {label}
+              </a>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Main Navbar */}
-      <nav className={`sticky top-0 z-50 transition-all duration-300 ${bg}`}>
-        <div className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
-          <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      {/* ════════════════════════════════════════
+          MAIN NAVBAR (sticky)
+      ════════════════════════════════════════ */}
+      <nav
+        className="sticky top-0 z-50"
+        style={{
+          background: cream,
+          borderBottom: `3px double ${ink}`,
+          transition: 'background 0.3s',
+          boxShadow: scrolled
+            ? isDark ? '0 2px 12px rgba(0,0,0,0.6)' : '0 2px 12px rgba(0,0,0,0.08)'
+            : 'none',
+        }}
+      >
+        {/* ── three-column masthead ── */}
+        <div
+          className="max-w-7xl mx-auto"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr auto 1fr',
+            alignItems: 'center',
+            padding: '0 24px',
+            height: '76px',
+          }}
+        >
 
-            {/* Logo */}
-            <Link to="/home" className="flex items-center gap-2 group">
-              <div className="flex items-center">
-                <span
-                  className="font-condensed text-3xl text-white leading-none"
-                  style={{ background: '#0A0A0A', padding: '2px 6px' }}
-                >
-                  R
-                </span>
-                <span className={`font-condensed text-3xl leading-none ${isDark ? 'text-white' : 'text-raw-black'}`}>
-                  AW
-                </span>
-              </div>
-              <div className={`hidden sm:block ml-1 border-l pl-2 ${isDark ? 'border-gray-600' : 'border-gray-300'}`}>
-                <div className={`font-oswald text-xs tracking-widest leading-tight ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                  VISION MEDIA
-                </div>
-              </div>
-            </Link>
-
-            {/* Desktop Nav Links */}
-            <div className="hidden md:flex items-center gap-0">
-              {NAV_LINKS.map(link => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`relative px-4 py-5 font-oswald text-xs tracking-widest uppercase transition-colors duration-200
-                    ${isActive(link.path)
-                      ? isDark ? 'text-white' : 'text-raw-black'
-                      : isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-black'
-                    }`}
-                >
-                  {link.label}
-                  {isActive(link.path) && (
-                    <motion.div
-                      layoutId="nav-underline"
-                      className="absolute bottom-0 left-4 right-4 h-0.5 bg-raw-accent"
-                    />
-                  )}
-                </Link>
-              ))}
-              {isAdmin && (
-                <Link
-                  to="/admin"
-                  className={`px-4 py-5 font-oswald text-xs tracking-widest uppercase transition-colors duration-200
-                    ${isActive('/admin') ? 'text-raw-accent' : 'text-raw-accent opacity-70 hover:opacity-100'}`}
-                >
-                  Admin
-                </Link>
-              )}
+          {/* LEFT – Logo */}
+          <Link
+            to="/home"
+            style={{ display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none' }}
+          >
+            {/* viewfinder box */}
+            <div
+              style={{
+                position: 'relative',
+                width: '54px',
+                height: '54px',
+                border: `2px solid ${ink}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: ink,
+                flexShrink: 0,
+              }}
+            >
+              
+              <img
+                src={rawLogo}
+                alt="RAW Vision Media"
+                style={{ height: '38px', width: 'auto', objectFit: 'contain', position: 'relative', zIndex: 1 }}
+              />
             </div>
 
-            {/* Right Side */}
-            <div className="flex items-center gap-3">
-              <ThemeToggle />
-
-              {user ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className={`flex items-center gap-2 font-oswald text-xs tracking-wider uppercase px-3 py-2 border transition-all
-                      ${isDark ? 'border-gray-700 text-gray-300 hover:border-gray-500' : 'border-gray-300 text-gray-600 hover:border-gray-500'}`}
-                  >
-                    <User size={14} />
-                    <span className="hidden sm:block">{profile?.name?.split(' ')[0] || 'User'}</span>
-                  </button>
-
-                  <AnimatePresence>
-                    {userMenuOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 8 }}
-                        className={`absolute right-0 top-full mt-1 w-44 border z-50
-                          ${isDark ? 'bg-raw-black border-gray-700' : 'bg-raw-white border-gray-200'}`}
-                      >
-                        <div className={`px-4 py-3 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-                          <p className={`font-oswald text-xs tracking-wider uppercase ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                            {profile?.name}
-                          </p>
-                          <p className={`text-xs mt-0.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-                            {profile?.role}
-                          </p>
-                        </div>
-                        {isAdmin && (
-                          <Link
-                            to="/admin"
-                            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-oswald tracking-wider uppercase transition-colors
-                              ${isDark ? 'text-gray-300 hover:text-white hover:bg-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
-                          >
-                            <Settings size={13} /> Dashboard
-                          </Link>
-                        )}
-                        <button
-                          onClick={handleSignOut}
-                          className={`w-full flex items-center gap-2 px-4 py-2.5 text-xs font-oswald tracking-wider uppercase transition-colors
-                            ${isDark ? 'text-gray-300 hover:text-white hover:bg-gray-900' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
-                        >
-                          <LogOut size={13} /> Sign Out
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <Link
-                  to="/login"
-                  className={`font-oswald text-xs tracking-widest uppercase px-4 py-2 border transition-all
-                    ${isDark
-                      ? 'border-gray-600 text-gray-300 hover:border-white hover:text-white'
-                      : 'border-gray-400 text-gray-600 hover:border-raw-black hover:text-raw-black'
-                    }`}
-                >
-                  Sign In
-                </Link>
-              )}
-
-              {/* Mobile Menu Toggle */}
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className={`md:hidden p-1.5 ${isDark ? 'text-white' : 'text-raw-black'}`}
+            <div className="hidden md:flex flex-col">
+              <span
+                style={{
+                  fontFamily: "'Playfair Display', Georgia, serif",
+                  fontWeight: 700,
+                  fontSize: '35px',
+                  color: ink,
+                  lineHeight: 1,
+                  letterSpacing: '0.02em',
+                }}
               >
-                {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-              </button>
+                RAW
+              </span>
+              <span
+                style={{
+                  fontFamily: "'Oswald', sans-serif",
+                  fontSize: '8px',
+                  letterSpacing: '0.44em',
+                  color: muted,
+                  marginTop: '5px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Vision Media Club
+              </span>
             </div>
+          </Link>
+
+          {/* CENTER – Live date / time stamp */}
+          <div
+            className="hidden md:flex flex-col items-center justify-center"
+            style={{
+              borderLeft:  `1px solid ${rule}`,
+              borderRight: `1px solid ${rule}`,
+              padding: '0 32px',
+              height: '100%',
+              gap: '2px',
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "'Oswald', sans-serif",
+                fontSize: '9px',
+                letterSpacing: '0.2em',
+                color: muted,
+                textTransform: 'uppercase',
+              }}
+            >
+              {formatDate(now)}
+            </span>
+
+            <span
+              style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontWeight: 700,
+                fontSize: '26px',
+                color: ink,
+                letterSpacing: '-0.01em',
+                lineHeight: 1,
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              {formatTime(now)}
+            </span>
+
+            <span
+              style={{
+                fontFamily: "'Oswald', sans-serif",
+                fontSize: '7.5px',
+                letterSpacing: '0.24em',
+                color: isDark ? '#5a5248' : '#b5a898',
+                textTransform: 'uppercase',
+                marginTop: '1px',
+              }}
+            >
+              Morning Edition · Vol. X
+            </span>
           </div>
+
+          {/* RIGHT – Theme + User */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px' }}>
+
+            {/* ThemeToggle – original component */}
+            <ThemeToggle />
+
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '7px',
+                    padding: '6px 13px',
+                    border: `1px solid ${isDark ? '#3a3530' : '#c8c0b4'}`,
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    fontFamily: "'Oswald', sans-serif",
+                    fontSize: '10px',
+                    letterSpacing: '0.18em',
+                    textTransform: 'uppercase',
+                    color: isDark ? '#d0c8be' : '#3a3028',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = ink
+                    e.currentTarget.style.color = cream
+                    e.currentTarget.style.borderColor = ink
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'transparent'
+                    e.currentTarget.style.color = isDark ? '#d0c8be' : '#3a3028'
+                    e.currentTarget.style.borderColor = isDark ? '#3a3530' : '#c8c0b4'
+                  }}
+                >
+                  <User size={13} />
+                  <span className="hidden sm:block">
+                    {profile?.name?.split(' ')[0] || 'User'}
+                  </span>
+                </button>
+
+                <AnimatePresence>
+                  {userMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: '100%',
+                        marginTop: '2px',
+                        width: '168px',
+                        background: isDark ? '#111' : '#faf8f4',
+                        border: `1px solid ${isDark ? '#2e2b26' : '#d4cec6'}`,
+                        zIndex: 50,
+                        boxShadow: isDark
+                          ? '0 8px 24px rgba(0,0,0,0.5)'
+                          : '0 8px 24px rgba(0,0,0,0.1)',
+                      }}
+                    >
+                      <div
+                        style={{
+                          padding: '10px 14px',
+                          borderBottom: `1px solid ${isDark ? '#2e2b26' : '#e0d8ce'}`,
+                        }}
+                      >
+                        <p style={{
+                          fontFamily: "'Oswald', sans-serif",
+                          fontSize: '10px',
+                          letterSpacing: '0.16em',
+                          textTransform: 'uppercase',
+                          color: isDark ? '#d0c8be' : '#3a3028',
+                          margin: 0,
+                        }}>
+                          {profile?.name}
+                        </p>
+                        <p style={{
+                          fontSize: '11px',
+                          color: muted,
+                          marginTop: '3px',
+                          marginBottom: 0,
+                          fontFamily: "'Oswald', sans-serif",
+                          letterSpacing: '0.06em',
+                        }}>
+                          {profile?.role}
+                        </p>
+                      </div>
+
+                      {isAdmin && (
+                        <Link
+                          to="/admin"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '9px 14px',
+                            fontFamily: "'Oswald', sans-serif",
+                            fontSize: '10px',
+                            letterSpacing: '0.16em',
+                            textTransform: 'uppercase',
+                            color: isDark ? '#b0a898' : '#5a5048',
+                            textDecoration: 'none',
+                            transition: 'background 0.15s',
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.background = isDark ? '#1e1b18' : '#f0ece4'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                        >
+                          <Settings size={12} /> Dashboard
+                        </Link>
+                      )}
+
+                      <button
+                        onClick={handleSignOut}
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          padding: '9px 14px',
+                          border: 'none',
+                          background: 'transparent',
+                          cursor: 'pointer',
+                          fontFamily: "'Oswald', sans-serif",
+                          fontSize: '10px',
+                          letterSpacing: '0.16em',
+                          textTransform: 'uppercase',
+                          color: isDark ? '#b0a898' : '#5a5048',
+                          transition: 'background 0.15s',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = isDark ? '#1e1b18' : '#f0ece4'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <LogOut size={12} /> Sign Out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                style={{
+                  fontFamily: "'Oswald', sans-serif",
+                  fontSize: '10px',
+                  letterSpacing: '0.22em',
+                  textTransform: 'uppercase',
+                  padding: '7px 16px',
+                  border: `1px solid ${ink}`,
+                  background: ink,
+                  color: cream,
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = accent
+                  e.currentTarget.style.borderColor = accent
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = ink
+                  e.currentTarget.style.borderColor = ink
+                }}
+              >
+                Sign In
+              </Link>
+            )}
+
+            {/* Mobile menu toggle */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden"
+              style={{
+                padding: '6px',
+                border: `1px solid ${rule}`,
+                background: 'transparent',
+                cursor: 'pointer',
+                color: ink,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
+        </div>
+
+        {/* ── thin gradient rule ── */}
+        <div
+          style={{
+            height: '1px',
+            background: isDark
+              ? 'linear-gradient(to right, #1a1a1a 0%, #3a3530 30%, #3a3530 70%, #1a1a1a 100%)'
+              : 'linear-gradient(to right, #faf8f4 0%, #1a1a1a 30%, #1a1a1a 70%, #faf8f4 100%)',
+          }}
+        />
+
+        {/* ── desktop nav strip ── */}
+        <div
+          className="hidden md:flex items-stretch justify-center"
+          style={{ background: isDark ? '#0d0d0d' : '#faf8f4' }}
+        >
+          {NAV_LINKS.map((link, i) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              style={{
+                position: 'relative',
+                padding: '9px 18px',
+                fontFamily: "'Oswald', sans-serif",
+                fontSize: '10px',
+                letterSpacing: '0.22em',
+                textTransform: 'uppercase',
+                color: isActive(link.path)
+                  ? ink
+                  : isDark ? '#7a7068' : '#6b6058',
+                textDecoration: 'none',
+                borderRight: `1px solid ${isDark ? '#2e2b26' : '#e0d8ce'}`,
+                borderLeft: i === 0 ? `1px solid ${isDark ? '#2e2b26' : '#e0d8ce'}` : 'none',
+                fontWeight: isActive(link.path) ? 500 : 400,
+                transition: 'color 0.2s, background 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+              onMouseEnter={e => {
+                if (!isActive(link.path)) {
+                  e.currentTarget.style.color = ink
+                  e.currentTarget.style.background = isDark ? '#1a1714' : '#f0ece4'
+                }
+              }}
+              onMouseLeave={e => {
+                if (!isActive(link.path)) {
+                  e.currentTarget.style.color = isDark ? '#7a7068' : '#6b6058'
+                  e.currentTarget.style.background = 'transparent'
+                }
+              }}
+            >
+              {link.label}
+              {isActive(link.path) && (
+                <motion.div
+                  layoutId="nav-underline"
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: '10px',
+                    right: '10px',
+                    height: '2px',
+                    background: accent,
+                  }}
+                />
+              )}
+            </Link>
+          ))}
+
+          {isAdmin && (
+            <Link
+              to="/admin"
+              style={{
+                padding: '9px 18px',
+                fontFamily: "'Oswald', sans-serif",
+                fontSize: '10px',
+                letterSpacing: '0.22em',
+                textTransform: 'uppercase',
+                color: accent,
+                textDecoration: 'none',
+                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'center',
+                opacity: isActive('/admin') ? 1 : 0.75,
+                transition: 'opacity 0.2s',
+                marginLeft: 'auto',
+                borderLeft: `1px solid ${isDark ? '#2e2b26' : '#e0d8ce'}`,
+              }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+              onMouseLeave={e => { if (!isActive('/admin')) e.currentTarget.style.opacity = '0.75' }}
+            >
+              Admin
+            </Link>
+          )}
+        </div>
+
+        {/* ── breaking ticker ── */}
+        <div
+          className="hidden md:flex items-center"
+          style={{
+            background: accent,
+            padding: '4px 24px',
+            gap: '14px',
+            fontFamily: "'Oswald', sans-serif",
+            fontSize: '9px',
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+          }}
+        >
+          <span
+            style={{
+              background: '#faf8f4',
+              color: accent,
+              padding: '1px 8px',
+              fontSize: '8px',
+              letterSpacing: '0.2em',
+              fontWeight: 500,
+              flexShrink: 0,
+            }}
+          >
+            Live
+          </span>
+          <span style={{ color: 'rgba(250,248,244,0.88)', fontSize: '9px', letterSpacing: '0.13em' }}>
+            {TICKER_ITEMS.join('  ·  ')}
+          </span>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* ════════════════════════════════════════
+          MOBILE MENU
+      ════════════════════════════════════════ */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className={`fixed top-0 left-0 right-0 z-40 pt-20 pb-8 px-6 ${isDark ? 'bg-raw-black' : 'bg-raw-white'} border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}
-            style={{ top: '0', paddingTop: '80px' }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 40,
+              paddingTop: '88px',
+              paddingBottom: '32px',
+              paddingLeft: '24px',
+              paddingRight: '24px',
+              background: isDark ? '#0d0d0d' : '#faf8f4',
+              borderBottom: `1px solid ${rule}`,
+            }}
           >
-            <div className="flex flex-col gap-1">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               {NAV_LINKS.map((link, i) => (
                 <motion.div
                   key={link.path}
@@ -208,27 +606,60 @@ export default function Navbar() {
                 >
                   <Link
                     to={link.path}
-                    className={`block py-3 font-condensed text-2xl tracking-widest border-b transition-colors
-                      ${isDark ? 'border-gray-800 text-gray-200 hover:text-white' : 'border-gray-100 text-gray-700 hover:text-raw-black'}
-                      ${isActive(link.path) ? 'text-raw-accent!' : ''}`}
+                    style={{
+                      display: 'block',
+                      padding: '14px 0',
+                      fontFamily: "'Oswald', sans-serif",
+                      fontSize: '22px',
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      color: isActive(link.path) ? accent : isDark ? '#d0c8be' : '#3a3028',
+                      textDecoration: 'none',
+                      borderBottom: `1px solid ${rule}`,
+                      fontWeight: isActive(link.path) ? 500 : 300,
+                    }}
                   >
                     {link.label}
                   </Link>
                 </motion.div>
               ))}
+
               {isAdmin && (
-                <Link to="/admin" className="block py-3 font-condensed text-2xl tracking-widest text-raw-accent border-b border-gray-800">
+                <Link
+                  to="/admin"
+                  style={{
+                    display: 'block',
+                    padding: '14px 0',
+                    fontFamily: "'Oswald', sans-serif",
+                    fontSize: '22px',
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: accent,
+                    textDecoration: 'none',
+                    borderBottom: `1px solid ${rule}`,
+                    fontWeight: 500,
+                  }}
+                >
                   Admin
                 </Link>
               )}
+
               {!user && (
-                <div className="flex gap-3 mt-4">
-                  <Link to="/login" className="btn-ghost flex-1 text-center justify-center">Sign In</Link>
-                  <Link to="/signup" className="btn-primary flex-1 text-center justify-center">Sign Up</Link>
+                <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+                  <Link to="/login" className="btn-ghost flex-1 text-center justify-center">
+                    Sign In
+                  </Link>
+                  <Link to="/signup" className="btn-primary flex-1 text-center justify-center">
+                    Sign Up
+                  </Link>
                 </div>
               )}
+
               {user && (
-                <button onClick={handleSignOut} className="mt-4 btn-ghost w-full justify-center">
+                <button
+                  onClick={handleSignOut}
+                  className="mt-4 btn-ghost w-full justify-center"
+                >
                   <LogOut size={14} /> Sign Out
                 </button>
               )}
