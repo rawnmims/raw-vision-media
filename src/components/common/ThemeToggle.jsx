@@ -21,9 +21,9 @@ export default function ThemeToggle() {
         transition={{ duration: 0.3 }}
       >
         {theme === 'light' ? (
-          <Moon size={15} className="text-gray-600" />
+          <Moon size={25} className="text-gray-600" />
         ) : (
-          <Sun size={15} className="text-gray-300" />
+          <Sun size={25} className="text-gray-300" />
         )}
       </motion.div>
     </button>
