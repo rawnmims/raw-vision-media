@@ -251,18 +251,18 @@ body.dark {
   color: var(--raw-black);
 }
 
-/* Marquee */
-.marquee-track {
-  display: flex;
+/* Motto Strip */
+.motto-scroll {
+  display: inline-flex;
   width: max-content;
-  animation: ticker 200s linear infinite;
+  animation: editorial-marquee 60s linear infinite;
 }
 
-.marquee-track:hover {
+.motto-scroll:hover {
   animation-play-state: paused;
 }
 
-@keyframes ticker {
+@keyframes editorial-marquee {
   from {
     transform: translateX(0);
   }

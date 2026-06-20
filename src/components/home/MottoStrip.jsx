@@ -8,20 +8,63 @@ import { formService } from '../../services/formService'
 
 export function MottoStrip() {
   const { isDark } = useTheme()
-  const items = ['Photography', 'Cinematography', 'Editing', 'Graphic Design', 'Documentation', 'Logistics', 'Marketing', 'Data Handling']
-  const repeated = [...items, ...items, ...items, ...items]
+
+  const BASE_ITEMS = [
+    'Shoot. Click. Capture.',
+    'Every Frame Tells a Story',
+    'RAW Vision Media — Est. 2016',
+    'Where Moments Become Legacy',
+    'Born from Passion. Built on Precision.',
+    'Frames Speak Louder.',
+    'The Eye Behind Every Event',
+    "NMIMS Shirpur's Visual Voice",
+  ]
+
+  const ITEMS = [...BASE_ITEMS, ...BASE_ITEMS, ...BASE_ITEMS]
 
   return (
-    <div className={`motto-strip py-3 border-y overflow-hidden ${isDark ? 'bg-raw-black border-gray-800 text-gray-400' : 'bg-raw-cream border-gray-300 text-gray-500'}`}>
-      <div className="motto-scroll">
-        {repeated.map((item, i) => (
-          <span key={i} className="font-condensed text-sm tracking-[0.2em] uppercase mx-6">
-            {item}
-            <span className="mx-6 text-raw-accent">·</span>
-          </span>
-        ))}
+    <section
+      className="overflow-hidden border-y"
+      style={{
+        background: isDark ? '#2b0f0f' : '#5c1a1a',
+        borderColor: isDark ? '#4a1b1b' : '#7a2525',
+      }}
+    >
+      <div
+        className="py-3 md:py-4 whitespace-nowrap"
+        style={{
+          position: 'relative',
+        }}
+      >
+        <div className="motto-scroll">
+          {ITEMS.map((item, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center px-8 md:px-12"
+              style={{
+                fontFamily: 'Cormorant Garamond, serif',
+                fontStyle: 'italic',
+                fontSize: 'clamp(1rem, 1.2vw, 1.7rem)',
+                color: 'rgba(245,240,232,0.92)',
+                letterSpacing: '0.01em',
+              }}
+            >
+              {item}
+
+              <span
+                style={{
+                  marginLeft: '2rem',
+                  color: 'rgba(245,240,232,0.25)',
+                  fontSize: '0.75rem',
+                }}
+              >
+                ◆
+              </span>
+            </span>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
 
