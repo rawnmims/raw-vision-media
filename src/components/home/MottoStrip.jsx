@@ -26,8 +26,8 @@ export function MottoStrip() {
     <section
       className="overflow-hidden border-y"
       style={{
-        background: isDark ? '#2b0f0f' : '#5c1a1a',
-        borderColor: isDark ? '#4a1b1b' : '#7a2525',
+        background: isDark ? '#f5f0e8' : '#5c1a1a',
+        borderColor: isDark ? '#000' : '#7a2525',
       }}
     >
       <div
@@ -45,7 +45,7 @@ export function MottoStrip() {
                 fontFamily: 'Cormorant Garamond, serif',
                 fontStyle: 'italic',
                 fontSize: 'clamp(1rem, 1.2vw, 1.7rem)',
-                color: 'rgba(245,240,232,0.92)',
+                color: isDark ? '#000000' : 'rgba(245,240,232,0.92)',
                 letterSpacing: '0.01em',
               }}
             >
@@ -54,7 +54,7 @@ export function MottoStrip() {
               <span
                 style={{
                   marginLeft: '2rem',
-                  color: 'rgba(245,240,232,0.25)',
+                  color: isDark ? 'rgba(0,0,0,0.35)' : 'rgba(245,240,232,0.25)',
                   fontSize: '0.75rem',
                 }}
               >

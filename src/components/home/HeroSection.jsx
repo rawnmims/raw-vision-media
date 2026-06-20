@@ -148,7 +148,7 @@ export default function HeroSection() {
               onMouseEnter={() => setJoinHover(true)}
               onMouseLeave={() => setJoinHover(false)}
               className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-xs tracking-widest uppercase w-[220px]"
-              style={{ background: 'rgba(255,255,255,1)', color: '#0A0A0A' }}
+              style={{ background: '#f5f0e8', color: '#0A0A0A' }}
             >
               {/* Hover fill sweep */}
               <motion.span
@@ -180,7 +180,7 @@ export default function HeroSection() {
             >
               {/* Hover fill sweep */}
               <motion.span
-                className="absolute inset-0 bg-white"
+                className="absolute inset-0 bg-[#f5f0e8]"
                 initial={{ x: '100%' }}
                 animate={{ x: coverageHover ? '0%' : '100%' }}
                 transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
@@ -198,7 +198,7 @@ export default function HeroSection() {
                 className="relative z-10"
                 animate={{
                   x: coverageHover ? 4 : 0,
-                  color: coverageHover ? '#0A0A0A' : '#ffffff'
+                  color: coverageHover ? '#f5f0e8' : '#ffffff'
                 }}
                 transition={{ duration: 0.25 }}
               >

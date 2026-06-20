@@ -22,6 +22,7 @@ export default {
           accent: '#C8A96E',
           red: '#C0392B',
           darkgray: '#2A2A2A',
+          paper: '#F5F0E8',
         }
       },
       animation: {

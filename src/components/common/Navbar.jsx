@@ -61,7 +61,7 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path
 
-  const cream  = isDark ? '#0d0d0d' : '#faf8f4'
+  const cream  = isDark ? '#0d0d0d' : '#f5f0e8'
   const ink    = isDark ? '#f0ece4' : '#1a1a1a'
   const muted  = isDark ? '#8a8078' : '#7a7068'
   const rule   = isDark ? '#2e2b26' : '#d4cec6'
@@ -262,7 +262,7 @@ export default function Navbar() {
         <div style={{ height: '2px', background: isDark ? 'linear-gradient(to right, #1a1a1a 0%, #3a3530 30%, #3a3530 70%, #1a1a1a 100%)' : 'linear-gradient(to right, #faf8f4 0%, #1a1a1a 30%, #1a1a1a 70%, #faf8f4 100%)' }} />
 
         {/* ── nav link strip ── */}
-        <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'center', background: isDark ? '#0d0d0d' : '#faf8f4' }}>
+        <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'center', background: isDark ? '#0d0d0d' : '#f5f0e8' }}>
           {NAV_LINKS.map((link, i) => (
             <Link
               key={link.path}
