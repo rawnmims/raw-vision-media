@@ -32,15 +32,15 @@ export default function HeroSection() {
   return (
     <>
       <section className="
-  relative
-  w-full
-  h-[70vh]
-  md:h-screen
-  min-h-[450px]
-  md:min-h-[600px]
-  overflow-hidden
-  bg-raw-black
-">
+        relative
+        w-full
+        h-[75vh]
+        md:h-screen
+        min-h-[520px]
+        md:min-h-[600px]
+        overflow-hidden
+       bg-raw-black
+      ">
 
         {/* ── Video ───────────────────────────────────────── */}
         <video
@@ -74,8 +74,7 @@ export default function HeroSection() {
         />
 
         {/* ── Content ─────────────────────────────────────── */}
-        <div className="relative z-10 h-full flex flex-col justify-end pb-20 px-6 md:px-12 lg:px-20 max-w-7xl mx-auto">
-
+        <div className="relative z-10 h-full flex flex-col justify-end md:justify-end pb-4 md:pb-20 px-4 md:px-12 lg:px-20 max-w-7xl mx-auto">
           {/* Top badge */}
           <motion.div
             className="absolute top-8 left-6 md:left-12 lg:left-20"
@@ -108,7 +107,7 @@ export default function HeroSection() {
                   <img
                     src={src}
                     alt={['R', 'A', 'W'][i]}
-                    className="h-24 md:h-36 lg:h-48 w-auto object-contain"
+                    className="h-12 sm:h-16 md:h-36 lg:h-48 w-auto object-contain"
                   />
                 </motion.div>
               ))}
@@ -138,7 +137,7 @@ export default function HeroSection() {
 
           {/* CTAs */}
           <motion.div
-            className="flex flex-wrap gap-4"
+            className="flex flex-col sm:flex-row gap-3 items-start"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.95 }}
@@ -148,7 +147,7 @@ export default function HeroSection() {
               onClick={() => setJoinOpen(true)}
               onMouseEnter={() => setJoinHover(true)}
               onMouseLeave={() => setJoinHover(false)}
-              className="relative overflow-hidden flex items-center gap-3 px-7 py-4 font-oswald text-xs tracking-widest uppercase"
+              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-xs tracking-widest uppercase w-[220px]"
               style={{ background: 'rgba(255,255,255,1)', color: '#0A0A0A' }}
             >
               {/* Hover fill sweep */}
@@ -177,7 +176,7 @@ export default function HeroSection() {
               onClick={() => setCoverageOpen(true)}
               onMouseEnter={() => setCoverageHover(true)}
               onMouseLeave={() => setCoverageHover(false)}
-              className="relative overflow-hidden flex items-center gap-3 px-7 py-4 font-oswald text-xs tracking-widest uppercase border border-white text-white"
+              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-xs tracking-widest uppercase border border-white text-white w-[220px]"
             >
               {/* Hover fill sweep */}
               <motion.span
