@@ -253,6 +253,85 @@ body.dark {
 }
 
 /* Motto Strip */
+
+.film-track {
+  display: flex;
+  width: max-content;
+  animation: filmScroll 35s linear infinite;
+}
+
+.film-track:hover {
+  animation-play-state: paused;
+}
+
+.film-frame {
+  position: relative;
+  width: 260px;
+  height: 90px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  background: #111;
+  border-left: 3px solid #222;
+  border-right: 3px solid #222;
+  overflow: hidden;
+}
+
+/* film holes */
+.film-frame::before,
+.film-frame::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14px;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 10px,
+      #f5f0e8 10px,
+      #f5f0e8 18px,
+      transparent 18px,
+      transparent 28px
+    );
+}
+
+.film-frame::before {
+  top: 0;
+}
+
+.film-frame::after {
+  bottom: 0;
+}
+
+.film-frame span {
+  padding: 0 20px;
+  text-align: center;
+
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+
+  color: #f5f0e8;
+
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+@keyframes filmScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 .motto-scroll {
   display: inline-flex;
   width: max-content;

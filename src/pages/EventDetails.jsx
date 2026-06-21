@@ -1,13 +1,40 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Calendar, Tag, ExternalLink } from 'lucide-react'
+import { ArrowLeft, Calendar, Tag, ExternalLink, Lock } from 'lucide-react'
 import { MainLayout } from '../layouts/MainLayout'
 import EventGallery from '../components/events/EventGallery'
 import { useTheme } from '../context/ThemeContext'
 import { eventService } from '../services/eventService'
 import { SAMPLE_EVENTS } from '../utils/constants'
 import { formatDate } from '../utils/helpers'
+
+const EDITION_GOLD = '#C8A96E'
+const EDITION_VARIANTS = ['#C0392B', '#C8C4BC']
+function hashCategory(str = '') {
+  let h = 0
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0
+  return h
+}
+function getEditionHex(category, featured) {
+  if (featured) return EDITION_GOLD
+  return EDITION_VARIANTS[hashCategory(category) % EDITION_VARIANTS.length]
+}
+
+function NewsprintBackdrop({ isDark }) {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden grain-overlay">
+      <div
+        className="absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage: isDark
+            ? 'repeating-linear-gradient(90deg, rgba(255,255,255,0.6) 0px, rgba(255,255,255,0.6) 1px, transparent 1px, transparent 140px)'
+            : 'repeating-linear-gradient(90deg, rgba(0,0,0,0.6) 0px, rgba(0,0,0,0.6) 1px, transparent 1px, transparent 140px)',
+        }}
+      />
+    </div>
+  )
+}
 
 export default function EventDetails() {
   const { id } = useParams()
@@ -28,8 +55,15 @@ export default function EventDetails() {
   if (loading) {
     return (
       <MainLayout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="font-condensed text-2xl tracking-widest text-gray-400 animate-pulse">Loading...</div>
+        <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+          <motion.div
+            initial={{ opacity: 0.3, rotate: -4 }}
+            animate={{ opacity: [0.3, 0.7, 0.3], rotate: [-4, 4, -4] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            className={`w-16 h-20 rounded-[6px] border-2 ${isDark ? 'border-gray-700' : 'border-gray-300'}`}
+            style={{ clipPath: 'polygon(0% 0%, 78% 0%, 100% 12%, 100% 100%, 0% 100%)' }}
+          />
+          <div className="font-condensed text-2xl tracking-widest text-gray-400">Reading card…</div>
         </div>
       </MainLayout>
     )
@@ -46,9 +80,14 @@ export default function EventDetails() {
     )
   }
 
+  const accent = getEditionHex(event.category, event.featured)
+  const eventDay = event.event_date ? new Date(event.event_date).getDate() : null
+
   return (
     <MainLayout>
-      <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-raw-white'}`}>
+      <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-raw-paper'}`}>
+        <NewsprintBackdrop isDark={isDark} />
+
         {/* Hero */}
         <div className="relative h-72 md:h-96 overflow-hidden">
           <img
@@ -61,23 +100,53 @@ export default function EventDetails() {
             <Link to="/events" className="inline-flex items-center gap-2 font-oswald text-xs tracking-widest uppercase text-white/60 hover:text-white mb-4 transition-colors">
               <ArrowLeft size={13} /> All Events
             </Link>
+            <motion.p
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="font-oswald text-xs tracking-[0.25em] uppercase mb-2"
+              style={{ color: accent }}
+            >
+              {event.category || 'Coverage'} — Archive
+            </motion.p>
             <motion.h1
               className="font-display text-3xl md:text-5xl text-white font-bold leading-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08 }}
             >
               {event.title}
             </motion.h1>
           </div>
         </div>
 
-        {/* Meta bar */}
-        <div className={`border-b ${isDark ? 'border-gray-800 bg-raw-darkgray' : 'border-gray-200 bg-raw-cream'}`}>
+        {/* Meta bar — styled as a "loaded card" stub */}
+        <motion.div
+          initial={{ opacity: 0, x: -24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.15, type: 'spring', stiffness: 140, damping: 20 }}
+          className={`relative border-b ${isDark ? 'border-gray-800 bg-raw-darkgray' : 'border-gray-300 bg-raw-cream'}`}
+        >
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center gap-6">
+            {/* mini card swatch */}
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-9 h-11 rounded-[4px] flex items-center justify-center font-condensed text-lg text-white flex-shrink-0"
+                style={{ backgroundColor: accent, clipPath: 'polygon(0% 0%, 72% 0%, 100% 18%, 100% 100%, 0% 100%)' }}
+              >
+                {eventDay ?? '—'}
+              </div>
+              <div className="flex items-center gap-1">
+                <Lock size={9} className={isDark ? 'text-gray-500' : 'text-gray-400'} />
+                <span className="font-oswald text-[9px] tracking-[0.2em] uppercase text-gray-400">Raw Vision</span>
+              </div>
+            </div>
+
+            <span className={`hidden sm:block w-px h-6 ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`} />
+
             <span className={`flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
               <Calendar size={12} /> {formatDate(event.event_date)}
             </span>
-            <span className="flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase text-raw-accent">
+            <span className="flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase" style={{ color: accent }}>
               <Tag size={12} /> {event.category}
             </span>
             {event.google_drive_folder && (
@@ -91,20 +160,25 @@ export default function EventDetails() {
               </a>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Description */}
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="relative max-w-7xl mx-auto px-6 py-8">
           {event.description && (
-            <p className={`font-serif text-lg leading-relaxed max-w-3xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className={`font-serif text-lg leading-relaxed max-w-3xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
+            >
               {event.description}
-            </p>
+            </motion.p>
           )}
         </div>
 
         {/* Divider */}
-        <div className={`max-w-7xl mx-auto px-6 mb-8`}>
-          <div className={`flex items-center gap-4 pb-4 border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
+        <div className="relative max-w-7xl mx-auto px-6 mb-8">
+          <div className={`flex items-center gap-4 pb-4 border-b ${isDark ? 'border-gray-800' : 'border-gray-300'}`}>
             <p className="section-eyebrow">Gallery</p>
             <div className="flex-1 h-px bg-current opacity-10" />
             <p className={`font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
@@ -114,7 +188,7 @@ export default function EventDetails() {
         </div>
 
         {/* Gallery */}
-        <div className="max-w-7xl mx-auto px-6 pb-20">
+        <div className="relative max-w-7xl mx-auto px-6 pb-20">
           <EventGallery event={event} />
         </div>
       </div>

@@ -4,9 +4,22 @@ import { X, ChevronLeft, ChevronRight, Download, ExternalLink } from 'lucide-rea
 import { useTheme } from '../../context/ThemeContext'
 import { GALLERY_IMAGES } from '../../utils/constants'
 
+const EDITION_GOLD = '#C8A96E'
+const EDITION_VARIANTS = ['#C0392B', '#C8C4BC']
+function hashCategory(str = '') {
+  let h = 0
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0
+  return h
+}
+function getEditionHex(category, featured) {
+  if (featured) return EDITION_GOLD
+  return EDITION_VARIANTS[hashCategory(category) % EDITION_VARIANTS.length]
+}
+
 export default function EventGallery({ event }) {
   const { isDark } = useTheme()
   const [lightboxIndex, setLightboxIndex] = useState(null)
+  const accent = getEditionHex(event?.category, event?.featured)
 
   // Use sample images as placeholders when no real images exist
   const images = GALLERY_IMAGES.map((url, i) => ({ id: i, url, caption: `${event?.title || 'Event'} — ${i + 1}` }))
@@ -28,23 +41,35 @@ export default function EventGallery({ event }) {
         {images.map((img, i) => (
           <motion.div
             key={img.id}
-            className="masonry-item group cursor-pointer overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: i * 0.04 }}
+            className="masonry-item group relative cursor-pointer overflow-hidden border border-black/5"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ delay: Math.min(i * 0.04, 0.5) }}
             onClick={() => openLightbox(i)}
           >
             <div className="relative overflow-hidden">
               <img
                 src={img.url}
                 alt={img.caption}
+                loading="lazy"
                 className="w-full block transition-transform duration-500 group-hover:scale-105"
+              />
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{ boxShadow: `inset 0 0 0 2px ${accent}` }}
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center">
                 <span className="text-white font-oswald text-xs tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity">
                   View
                 </span>
               </div>
+              {/* film-negative frame number */}
+              <span
+                className="absolute bottom-2 left-2 font-oswald text-[10px] tracking-widest text-white/90 bg-black/50 backdrop-blur-sm px-1.5 py-0.5"
+              >
+                Nº {String(i + 1).padStart(2, '0')}
+              </span>
             </div>
           </motion.div>
         ))}
@@ -110,7 +135,7 @@ export default function EventGallery({ event }) {
                 className="max-w-full max-h-[80vh] object-contain mx-auto block"
               />
               <p className="text-center font-oswald text-xs tracking-widest text-white/50 uppercase mt-4">
-                {lightboxIndex + 1} / {images.length} — {images[lightboxIndex]?.caption}
+                Nº {String(lightboxIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')} — {images[lightboxIndex]?.caption}
               </p>
             </motion.div>
 
