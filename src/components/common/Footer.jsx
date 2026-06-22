@@ -11,9 +11,26 @@ import wLogo from '../../assets/w.png'
 export default function Footer() {
   const { isDark } = useTheme()
   const [settings, setSettings] = useState({})
+  const [mapHeight, setMapHeight] = useState(130)
 
   useEffect(() => {
     formService.getSettings().then(d => { if (d) setSettings(d) }).catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setMapHeight(100)
+      } else if (window.innerWidth < 1024) {
+        setMapHeight(120)
+      } else {
+        setMapHeight(130)
+      }
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const accent = '#c0392b'
@@ -32,7 +49,7 @@ export default function Footer() {
     }),
   }
   const NAV_LINKS = [
-    { label: 'Home',      to: '/'          },
+    { label: 'Home',      to: '/home'          },
     { label: 'Events',    to: '/events'    },
     { label: 'Archive',   to: '/archive'   },
     { label: 'Scrapbook', to: '/scrapbook' },
@@ -46,7 +63,7 @@ export default function Footer() {
     { label: 'Sign In',   to: '/login'  },
     { label: 'Create Account', to: '/signup' },
   ]
-
+console.log(NAV_LINKS)
   return (
     <footer
       style={{
@@ -58,16 +75,26 @@ export default function Footer() {
         borderTop: `3px double ${rule}`,
         color: '#a89f94',
         fontFamily: "'Oswald', sans-serif",
+        width: '100%',
+        boxSizing: 'border-box',
       }}
     >
 
       {/* ── masthead rule ── */}
-      <div style={{ borderBottom: `1px solid ${rule}`, padding: '12px 40px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '24px' }}>
-        <div style={{ flex: 1, height: '1px', background: `linear-gradient(to right, transparent, ${rule})` }} />
-        <span style={{ fontSize: '9px', letterSpacing: '0.36em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', whiteSpace: 'nowrap' }}>
+      <div style={{ 
+        borderBottom: `1px solid ${rule}`, 
+        padding: 'clamp(8px, 3vw, 12px) clamp(16px, 5vw, 40px)', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        gap: 'clamp(12px, 4vw, 24px)',
+        flexWrap: 'wrap'
+      }}>
+        <div style={{ flex: 1, height: '1px', background: `linear-gradient(to right, transparent, ${rule})`, minWidth: '20px' }} />
+        <span style={{ fontSize: 'clamp(7px, 1.5vw, 9px)', letterSpacing: '0.36em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', whiteSpace: 'nowrap' }}>
           RAW Vision Media Club · NMIMS Shirpur · Est. 2016
         </span>
-        <div style={{ flex: 1, height: '1px', background: `linear-gradient(to left, transparent, ${rule})` }} />
+        <div style={{ flex: 1, height: '1px', background: `linear-gradient(to left, transparent, ${rule})`, minWidth: '20px' }} />
       </div>
 
       {/* ── main grid ── */}
@@ -75,15 +102,15 @@ export default function Footer() {
         style={{
           maxWidth: '1280px',
           margin: '0 auto',
-          padding: '56px 40px 48px',
+          padding: 'clamp(24px, 5vw, 56px) clamp(16px, 5vw, 40px) clamp(20px, 4vw, 48px)',
           display: 'grid',
-          gridTemplateColumns: '1.6fr 1px 1fr 1px 1fr 1px 1.4fr',
-          gap: 0,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: 'clamp(24px, 6vw, 48px)',
         }}
       >
 
         {/* ── COL 1: Brand ── */}
-        <div style={{ paddingRight: '40px' }}>
+        <div style={{ paddingRight: 'clamp(12px, 3vw, 40px)' }}>
           {/* RAW logotype — staggered per letter */}
           <div>
             <div className="flex items-end gap-0 md:gap-1 mb-3 overflow-hidden">
@@ -116,14 +143,14 @@ export default function Footer() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.55 }}
             >
-              <div className="h-px bg-white/40 w-12" />
-              <span className="font-oswald text-sm md:text-base tracking-[0.25em] text-white/80 uppercase">
+              <div className="h-px bg-white/40 w-8 sm:w-12" />
+              <span className="font-oswald text-xs sm:text-sm md:text-base tracking-[0.25em] text-white/80 uppercase">
                 Vision Media Club
               </span>
             </motion.div>
 
             <motion.p
-              className="font-serif text-2xl md:text-4xl text-white/90 italic mt-4 mb-8"
+              className="font-serif text-lg sm:text-2xl md:text-4xl text-white/90 italic mt-4 mb-6 sm:mb-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.75 }}
@@ -135,19 +162,16 @@ export default function Footer() {
           {/* thin rule */}
           <div style={{ height: '1px', background: rule, marginBottom: '20px' }} />
 
-          <p style={{ fontSize: '15px', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: '0 0 4px' }}>
+          <p style={{ fontSize: 'clamp(12px, 2vw, 15px)', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: '0 0 4px' }}>
             NMIMS Shirpur · Est. 2016
           </p>
-          <p style={{ fontSize: '15px', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: 0 }}>
+          <p style={{ fontSize: 'clamp(12px, 2vw, 15px)', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: 0 }}>
             Official Media Club
           </p>
         </div>
 
-        {/* vertical divider */}
-        <div style={{ background: rule, margin: '0 0' }} />
-
         {/* ── COL 2: Navigate ── */}
-        <div style={{ padding: '0 36px' }}>
+        <div style={{ padding: 'clamp(8px, 2vw, 36px)' }}>
           <h4 style={{ fontSize: '12px', letterSpacing: '0.34em', textTransform: 'uppercase', color: accent, marginBottom: '20px', paddingBottom: '10px', borderBottom: `1px solid ${rule}` }}>
             Navigate
           </h4>
@@ -157,7 +181,7 @@ export default function Footer() {
                 <span style={{ width: '14px', height: '1px', background: rule, flexShrink: 0 }} />
                 <Link
                   to={link.to}
-                  style={{ fontSize: '12px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
+                  style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
                   onMouseEnter={e => e.currentTarget.style.color = '#fff'}
                   onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
                 >
@@ -168,11 +192,8 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* vertical divider */}
-        <div style={{ background: rule }} />
-
         {/* ── COL 3: Get Involved ── */}
-        <div style={{ padding: '0 36px' }}>
+        <div style={{ padding: 'clamp(8px, 2vw, 36px)' }}>
           <h4 style={{ fontSize: '12px', letterSpacing: '0.34em', textTransform: 'uppercase', color: accent, marginBottom: '20px', paddingBottom: '10px', borderBottom: `1px solid ${rule}` }}>
             Get Involved
           </h4>
@@ -183,7 +204,7 @@ export default function Footer() {
                 {link.to ? (
                   <Link
                     to={link.to}
-                    style={{ fontSize: '12px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
+                    style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
                     onMouseEnter={e => e.currentTarget.style.color = '#fff'}
                     onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
                   >
@@ -191,7 +212,7 @@ export default function Footer() {
                   </Link>
                 ) : (
                   <span
-                    style={{ fontSize: '12px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', cursor: 'pointer', transition: 'color 0.2s' }}
+                    style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', cursor: 'pointer', transition: 'color 0.2s' }}
                     onMouseEnter={e => e.currentTarget.style.color = '#fff'}
                     onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
                   >
@@ -203,21 +224,18 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* vertical divider */}
-        <div style={{ background: rule }} />
-
         {/* ── COL 4: Contact + Socials + Map ── */}
-        <div style={{ paddingLeft: '36px' }}>
+        <div style={{ paddingLeft: 'clamp(8px, 2vw, 36px)' }}>
           <h4 style={{ fontSize: '12px', letterSpacing: '0.34em', textTransform: 'uppercase', color: accent, marginBottom: '20px', paddingBottom: '10px', borderBottom: `1px solid ${rule}` }}>
             Contact
           </h4>
 
           {/* email */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
             <Mail size={13} color="rgba(255,255,255,0.25)" />
             <a
               href={`mailto:${settings.website_email || 'rawvision@nmims.in'}`}
-              style={{ fontSize: '12px', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
+              style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s', wordBreak: 'break-word' }}
               onMouseEnter={e => e.currentTarget.style.color = '#fff'}
               onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
             >
@@ -235,24 +253,24 @@ export default function Footer() {
             <a
               href={settings.instagram || 'https://instagram.com/rawvisionmedia'}
               target="_blank" rel="noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'rgba(255,255,255,0.38)', transition: 'color 0.2s' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'rgba(255,255,255,0.38)', transition: 'color 0.2s', flexWrap: 'wrap' }}
               onMouseEnter={e => e.currentTarget.style.color = '#fff'}
               onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
             >
               <Instagram size={13} />
-              <span style={{ fontSize: '11px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>RAW Vision Media</span>
+              <span style={{ fontSize: 'clamp(10px, 1.5vw, 11px)', letterSpacing: '0.16em', textTransform: 'uppercase' }}>RAW Vision Media</span>
             </a>
 
             {/* NMIMS Shirpur Instagram */}
             <a
               href={settings.instagram_nmims || 'https://instagram.com/nmimshirpur'}
               target="_blank" rel="noreferrer"
-              style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'rgba(255,255,255,0.38)', transition: 'color 0.2s' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'rgba(255,255,255,0.38)', transition: 'color 0.2s', flexWrap: 'wrap' }}
               onMouseEnter={e => e.currentTarget.style.color = '#fff'}
               onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
             >
               <Instagram size={13} />
-              <span style={{ fontSize: '11px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>NMIMS Shirpur</span>
+              <span style={{ fontSize: 'clamp(10px, 1.5vw, 11px)', letterSpacing: '0.16em', textTransform: 'uppercase' }}>NMIMS Shirpur</span>
             </a>
 
             {/* LinkedIn */}
@@ -260,12 +278,12 @@ export default function Footer() {
               <a
                 href={settings.linkedin || 'https://linkedin.com'}
                 target="_blank" rel="noreferrer"
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'rgba(255,255,255,0.38)', transition: 'color 0.2s' }}
+                style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'rgba(255,255,255,0.38)', transition: 'color 0.2s', flexWrap: 'wrap' }}
                 onMouseEnter={e => e.currentTarget.style.color = '#fff'}
                 onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
               >
                 <Linkedin size={13} />
-                <span style={{ fontSize: '11px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>LinkedIn</span>
+                <span style={{ fontSize: 'clamp(10px, 1.5vw, 11px)', letterSpacing: '0.16em', textTransform: 'uppercase' }}>LinkedIn</span>
               </a>
             )}
           </div>
@@ -279,9 +297,9 @@ export default function Footer() {
             </div>
             <iframe
               title="NMIMS Shirpur Location"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.6!2d74.8820!3d21.3520!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd9a8a0e8e8e8e8%3A0x0!2sNMIMS+Shirpur!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3717.6625384721074!2d74.84441950000001!3d21.2848216!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdf2ef04f9a5f9b%3A0xc4e460f10542781b!2sNMIMS%20Shirpur!5e0!3m2!1sen!2sin!4v1782109877234!5m2!1sen!2sin"
               width="100%"
-              height="130"
+              height={mapHeight}
               style={{ border: 0, display: 'block', filter: 'grayscale(1) invert(0.88) contrast(0.9)', opacity: 0.7 }}
               allowFullScreen=""
               loading="lazy"
@@ -293,13 +311,13 @@ export default function Footer() {
 
       {/* ── bottom bar ── */}
       <div style={{ borderTop: `1px solid ${rule}` }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '14px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-          <p style={{ fontSize: '10px', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)', margin: 0 }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: 'clamp(10px, 2vw, 14px) clamp(16px, 5vw, 40px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'clamp(8px, 2vw, 16px)' }}>
+          <p style={{ fontSize: 'clamp(8px, 1.2vw, 10px)', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)', margin: 0 }}>
             © {new Date().getFullYear()} RAW Vision Media · NMIMS Shirpur
           </p>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Camera size={10} color="rgba(255,255,255,0.18)" />
-            <span style={{ fontSize: '10px', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)' }}>
+            <span style={{ fontSize: 'clamp(8px, 1.2vw, 10px)', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)' }}>
               Frames Speak Louder
             </span>
           </div>

@@ -127,11 +127,26 @@ export function DynamicFormsBanner() {
   const [joinOpen,     setJoinOpen]     = useState(false)
   const [coverageOpen, setCoverageOpen] = useState(false)
   const [settings,     setSettings]     = useState({})
+  const [columns,      setColumns]      = useState('1fr 1px 1fr')
 
   useEffect(() => {
     formService.getSettings()
       .then(d => { if (d) setSettings(d) })
       .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const updateColumns = () => {
+      if (window.innerWidth < 768) {
+        setColumns('1fr')
+      } else {
+        setColumns('1fr 1px 1fr')
+      }
+    }
+
+    updateColumns()
+    window.addEventListener('resize', updateColumns)
+    return () => window.removeEventListener('resize', updateColumns)
   }, [])
 
   const bg      = isDark ? '#0d0d0d' : '#1a1a1a'
@@ -185,11 +200,11 @@ export function DynamicFormsBanner() {
         }} />
 
         {/* top rule with label */}
-        <div style={{ borderBottom: `1px solid ${rule}`, padding: '10px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ borderBottom: `1px solid ${rule}`, padding: '10px clamp(16px, 4vw, 40px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
           <motion.div
             initial={{ scaleX: 0 }} animate={inView ? { scaleX: 1 } : {}}
             transition={{ duration: 0.8, ease: 'easeInOut' }}
-            style={{ height: '1px', flex: 1, background: `linear-gradient(to right, transparent, ${rule})`, transformOrigin: 'left' }}
+            style={{ height: '1px', flex: 1, minWidth: '24px', background: `linear-gradient(to right, transparent, ${rule})`, transformOrigin: 'left' }}
           />
           <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: '9px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', padding: '0 20px', flexShrink: 0 }}>
             RAW VISION MEDIA CLUB · OPEN CALLS
@@ -202,7 +217,7 @@ export function DynamicFormsBanner() {
         </div>
 
         {/* two-column grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: columns, gap: 0, width: '100%' }}>
 
           {panels.map((panel, idx) => (
             <>
@@ -211,13 +226,13 @@ export function DynamicFormsBanner() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.7, delay: idx * 0.15 }}
-                style={{ padding: '48px 44px 52px', position: 'relative' }}
+                style={{ padding: 'clamp(28px, 4vw, 52px) clamp(18px, 3vw, 44px) clamp(32px, 4vw, 48px)', position: 'relative' }}
               >
                 {/* large ghost column number */}
                 <span style={{
-                  position: 'absolute', top: '20px', right: '24px',
+                  position: 'absolute', top: 'clamp(12px, 2vw, 20px)', right: 'clamp(14px, 3vw, 24px)',
                   fontFamily: "'Playfair Display', Georgia, serif",
-                  fontSize: '72px', fontWeight: 900, fontStyle: 'italic',
+                  fontSize: 'clamp(48px, 8vw, 72px)', fontWeight: 900, fontStyle: 'italic',
                   color: 'rgba(255,255,255,0.04)', lineHeight: 1, userSelect: 'none',
                 }}>
                   {panel.col}
@@ -281,7 +296,12 @@ export function DynamicFormsBanner() {
                   initial={{ scaleY: 0 }}
                   animate={inView ? { scaleY: 1 } : {}}
                   transition={{ duration: 0.8, delay: 0.2 }}
-                  style={{ background: rule, transformOrigin: 'top' }}
+                  style={{
+                    background: rule,
+                    width: columns === '1fr' ? '100%' : '1px',
+                    height: columns === '1fr' ? '1px' : 'auto',
+                    justifySelf: 'center',
+                  }}
                 />
               )}
             </>
@@ -289,8 +309,8 @@ export function DynamicFormsBanner() {
         </div>
 
         {/* bottom rule */}
-        <div style={{ borderTop: `1px solid ${rule}`, padding: '8px 40px', display: 'flex', justifyContent: 'center' }}>
-          <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: '8px', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.15)' }}>
+        <div style={{ borderTop: `1px solid ${rule}`, padding: '8px clamp(16px, 4vw, 40px)', display: 'flex', justifyContent: 'center' }}>
+          <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: 'clamp(7px, 1.2vw, 8px)', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.15)' }}>
             Est. 2016 · NMIMS Shirpur · rawvisionmediaclub.in
           </span>
         </div>

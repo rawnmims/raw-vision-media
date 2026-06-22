@@ -4,6 +4,7 @@ import { MainLayout } from '../layouts/MainLayout'
 import { useTheme } from '../context/ThemeContext'
 import { userService } from '../services/formService'
 import { getImageUrl } from '../utils/helpers'
+import aboutImg from '../assets/about-img.jpeg'
 
 const DEPARTMENTS_INFO = [
   { name: 'Photography',      desc: 'Capturing every decisive moment with precision and artistry.' },
@@ -93,8 +94,10 @@ export default function About() {
         {/* Hero */}
         <div className="relative h-80 md:h-96 overflow-hidden bg-raw-black">
           <div className="absolute inset-0 bg-cover bg-center opacity-40"
-            style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=1600&q=80)' }} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+            style={{
+              backgroundImage: `url(${aboutImg})`
+            }} />
+          <div className="absolute inset-0 bg-black/20" />
           <div className="relative z-10 h-full flex flex-col justify-end p-8 md:p-16 max-w-7xl mx-auto">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <p className="font-oswald text-xs tracking-[0.3em] text-white/50 uppercase mb-2">Est. 2016 · NMIMS Shirpur</p>

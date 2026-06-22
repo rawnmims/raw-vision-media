@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { ArrowLeft, Calendar, Tag, ExternalLink, Lock } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, Calendar, Tag, ExternalLink, Lock, Share2, Check } from 'lucide-react'
 import { MainLayout } from '../layouts/MainLayout'
 import EventGallery from '../components/events/EventGallery'
 import { useTheme } from '../context/ThemeContext'
+import { useAuth } from '../context/AuthContext'
 import { eventService } from '../services/eventService'
 import { SAMPLE_EVENTS } from '../utils/constants'
 import { formatDate } from '../utils/helpers'
@@ -39,8 +40,11 @@ function NewsprintBackdrop({ isDark }) {
 export default function EventDetails() {
   const { id } = useParams()
   const { isDark } = useTheme()
+  const { user } = useAuth()
+  const isExternal = user?.role === 'external' || !user
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     eventService.getEventById(id)
@@ -51,6 +55,30 @@ export default function EventDetails() {
       })
       .finally(() => setLoading(false))
   }, [id])
+
+  async function handleShare() {
+    if (!event) return
+    const shareData = {
+      title: event.title,
+      text: `${event.title} — Raw Vision Media`,
+      url: window.location.href,
+    }
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData)
+      } catch {
+        // user dismissed the native share sheet — nothing to do
+      }
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(shareData.url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // clipboard blocked by browser permissions — fail silently
+    }
+  }
 
   if (loading) {
     return (
@@ -149,16 +177,49 @@ export default function EventDetails() {
             <span className="flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase" style={{ color: accent }}>
               <Tag size={12} /> {event.category}
             </span>
-            {event.google_drive_folder && (
-              <a
-                href={event.google_drive_folder}
-                target="_blank"
-                rel="noreferrer"
-                className={`flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase ml-auto ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}
+            <div className="flex items-center gap-5 ml-auto">
+              <motion.button
+                onClick={handleShare}
+                whileTap={{ scale: 0.92 }}
+                className={`flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase transition-colors ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}
               >
-                <ExternalLink size={12} /> Drive Folder
-              </a>
-            )}
+                <AnimatePresence mode="wait" initial={false}>
+                  {copied ? (
+                    <motion.span
+                      key="copied"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      className="flex items-center gap-1.5"
+                      style={{ color: accent }}
+                    >
+                      <Check size={12} /> Copied
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="share"
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      className="flex items-center gap-1.5"
+                    >
+                      <Share2 size={12} /> Share
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+
+              {!isExternal && event.google_drive_folder && (
+                <a
+                  href={event.google_drive_folder}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}
+                >
+                  <ExternalLink size={12} /> Drive Folder
+                </a>
+              )}
+            </div>
           </div>
         </motion.div>
 

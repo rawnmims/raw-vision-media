@@ -18,11 +18,11 @@ export default function EventFilters({ selected, onChange }) {
             className={`relative font-oswald text-xs tracking-widest uppercase px-4 py-2 border transition-colors duration-200 overflow-hidden
               ${active
                 ? isDark
-                  ? 'text-black border-white'
-                  : 'text-white border-raw-ink'
+                  ? 'text-raw-red border-white'
+                  : 'text-raw-red border-raw-ink'
                 : isDark
-                  ? 'border-gray-700 text-gray-400 hover:border-gray-500 hover:text-white'
-                  : 'border-gray-300 text-gray-500 hover:border-gray-500 hover:text-raw-ink'
+                  ? 'border-gray-700 text-gray-400 hover:border-gray-500 hover:text-raw-red'
+                  : 'border-gray-300 text-gray-500 hover:border-gray-500 hover:text-raw-red'
               }`}
           >
             {active && (

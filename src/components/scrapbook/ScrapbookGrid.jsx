@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getImageUrl } from '../../utils/helpers'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react'
@@ -20,7 +20,7 @@ const SPAN_PATTERN = [
   { col: 'span 1', row: 'span 2' }, // tall
 ]
 
-export function PhotoCard({ photo, onClick, index }) {
+export function PhotoCard({ photo, onClick, index, layoutMode }) {
   const span = SPAN_PATTERN[index % SPAN_PATTERN.length]
 
   return (
@@ -31,20 +31,23 @@ export function PhotoCard({ photo, onClick, index }) {
       transition={{ delay: index * 0.04, duration: 0.4 }}
       onClick={onClick}
       style={{
-        gridColumn: span.col,
-        gridRow: span.row,
+        ...(layoutMode === 'desktop' ? { gridColumn: span.col, gridRow: span.row } : {}),
         position: 'relative',
         overflow: 'hidden',
         cursor: 'pointer',
-        background: '#111',
+        background: 'transparent',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: layoutMode === 'desktop' ? undefined : 240,
       }}
     >
       <img
         src={getImageUrl(photo.image_url)}
         alt={photo.caption}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.6s ease' }}
+        style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', objectPosition: 'center', display: 'block', transition: 'transform 0.6s ease' }}
         loading="lazy"
-        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
         onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
       />
 
@@ -81,7 +84,24 @@ export function PhotoCard({ photo, onClick, index }) {
 
 export function ScrapbookGrid({ photos }) {
   const [lightboxIndex, setLightboxIndex] = useState(null)
+  const [layoutMode, setLayoutMode] = useState('desktop')
   const { isDark } = useTheme()
+
+  useEffect(() => {
+    const resizeHandler = () => {
+      if (window.innerWidth < 768) {
+        setLayoutMode('mobile')
+      } else if (window.innerWidth < 1024) {
+        setLayoutMode('tablet')
+      } else {
+        setLayoutMode('desktop')
+      }
+    }
+
+    resizeHandler()
+    window.addEventListener('resize', resizeHandler)
+    return () => window.removeEventListener('resize', resizeHandler)
+  }, [])
 
   const prev = () => setLightboxIndex(i => (i - 1 + photos.length) % photos.length)
   const next = () => setLightboxIndex(i => (i + 1) % photos.length)
@@ -99,9 +119,18 @@ export function ScrapbookGrid({ photos }) {
   return (
     <>
       {/* ── mosaic grid ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: '180px', gap: '4px' }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: layoutMode === 'desktop'
+          ? 'repeat(4, minmax(0, 1fr))'
+          : layoutMode === 'tablet'
+            ? 'repeat(2, minmax(0, 1fr))'
+            : '1fr',
+        gridAutoRows: layoutMode === 'desktop' ? '220px' : 'auto',
+        gap: '8px',
+      }}>
         {photos.map((photo, i) => (
-          <PhotoCard key={photo.id} photo={photo} index={i} onClick={() => setLightboxIndex(i)} />
+          <PhotoCard key={photo.id} photo={photo} index={i} layoutMode={layoutMode} onClick={() => setLightboxIndex(i)} />
         ))}
       </div>
 
@@ -134,7 +163,7 @@ export function ScrapbookGrid({ photos }) {
               key={lightboxIndex}
               initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              style={{ padding: '0 72px', maxWidth: '1000px', width: '100%' }}
+              style={{ padding: '0 clamp(16px, 5vw, 72px)', maxWidth: '1000px', width: '100%' }}
               onClick={e => e.stopPropagation()}
             >
               {/* editorial top bar */}

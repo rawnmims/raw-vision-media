@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Edit2, Trash2, X, Check, Eye, EyeOff, Star } from 'lucide-react'
+import { Plus, Edit2, Trash2, X, Check, Star } from 'lucide-react'
 import AdminLayout from '../../layouts/AdminLayout'
 import { useTheme } from '../../context/ThemeContext'
 import { eventService } from '../../services/eventService'
@@ -14,7 +14,7 @@ export default function EventsAdmin() {
   const { isDark } = useTheme()
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
-  const [modal, setModal] = useState(null) // null | 'add' | 'edit'
+  const [modal, setModal] = useState(null)
   const [form, setForm] = useState(EMPTY)
   const [saving, setSaving] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState(null)
@@ -183,6 +183,19 @@ export default function EventsAdmin() {
                   <label className={labelCls}>Google Drive Folder URL</label>
                   <input name="google_drive_folder" value={form.google_drive_folder} onChange={handleChange} placeholder="https://drive.google.com/drive/folders/..." className={inputCls} />
                 </div>
+
+                {form.google_drive_folder && (
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Pick Thumbnail From Drive</label>
+                    <DriveThumbnailPicker
+                      driveFolderUrl={form.google_drive_folder}
+                      currentValue={form.cover_image}
+                      category={form.category}
+                      featured={form.featured}
+                      onSelect={(url) => setForm(p => ({ ...p, cover_image: url }))}
+                    />
+                  </div>
+                )}
 
                 <div className="sm:col-span-2">
                   <label className={labelCls}>Cover Image</label>

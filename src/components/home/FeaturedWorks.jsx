@@ -21,6 +21,7 @@ export function FeaturedWorks() {
   const [photos, setPhotos] = useState(
     SAMPLE_SCRAPBOOK.filter(p => p.featured).slice(0, 6)
   )
+  const [layoutMode, setLayoutMode] = useState('desktop')
 
   useEffect(() => {
     scrapbookService.getPhotos({ featured: true })
@@ -28,9 +29,25 @@ export function FeaturedWorks() {
       .catch(() => {})
   }, [])
 
+  useEffect(() => {
+    const resizeHandler = () => {
+      if (window.innerWidth < 768) {
+        setLayoutMode('mobile')
+      } else if (window.innerWidth < 1024) {
+        setLayoutMode('tablet')
+      } else {
+        setLayoutMode('desktop')
+      }
+    }
+
+    resizeHandler()
+    window.addEventListener('resize', resizeHandler)
+    return () => window.removeEventListener('resize', resizeHandler)
+  }, [])
+
   const ink  = isDark ? '#f0ece4' : '#1a1a1a'
   const rule = isDark ? '#2a2520' : '#d4cec6'
-  const bg   = isDark ? '#0d0d0d' : '#faf8f4'
+  const bg   = isDark ? '#0d0d0d' : '#F5F0E8'
 
   return (
     <section style={{ padding: '80px 24px', background: bg }}>
@@ -59,12 +76,12 @@ export function FeaturedWorks() {
           </Link>
         </div>
 
-        {/* ── 4-col × 3-row mosaic grid ── */}
+        {/* ── responsive mosaic grid ── */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gridTemplateRows: 'repeat(3, 200px)',
-          gap: '4px',
+          gridTemplateColumns: layoutMode === 'desktop' ? 'repeat(4, 1fr)' : layoutMode === 'tablet' ? 'repeat(2, minmax(0, 1fr))' : '1fr',
+          gridAutoRows: layoutMode === 'desktop' ? '200px' : '220px',
+          gap: '8px',
         }}>
           {photos.slice(0, 6).map((photo, i) => (
             <motion.div
@@ -74,18 +91,22 @@ export function FeaturedWorks() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.09, duration: 0.45 }}
               style={{
-                ...FEATURED_SLOTS[i],
+                ...(layoutMode === 'desktop' ? FEATURED_SLOTS[i] : {}),
                 position: 'relative',
                 overflow: 'hidden',
-                background: '#111',
+                background: bg,
                 cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: layoutMode === 'desktop' ? undefined : '220px',
               }}
             >
               <img
                 src={photo.image_url}
                 alt={photo.caption}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.7s ease' }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.06)'}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', display: 'block', transition: 'transform 0.7s ease' }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
                 onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
               />
 
