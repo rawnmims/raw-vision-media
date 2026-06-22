@@ -6,6 +6,7 @@ import { useTheme } from '../../context/ThemeContext'
 import { eventService } from '../../services/eventService'
 import { SAMPLE_EVENTS, EVENT_CATEGORIES, CURRENT_YEAR } from '../../utils/constants'
 import { formatDateShort } from '../../utils/helpers'
+import CoverImageUploader from '../../pages/admin/CoverImageUploader'
 
 const EMPTY = { title: '', description: '', event_date: '', year: CURRENT_YEAR, cover_image: '', google_drive_folder: '', category: '', visibility: 'public', featured: false }
 
@@ -179,12 +180,25 @@ export default function EventsAdmin() {
                   </select>
                 </div>
                 <div className="sm:col-span-2">
-                  <label className={labelCls}>Cover Image URL</label>
-                  <input name="cover_image" value={form.cover_image} onChange={handleChange} placeholder="https://..." className={inputCls} />
-                </div>
-                <div className="sm:col-span-2">
                   <label className={labelCls}>Google Drive Folder URL</label>
                   <input name="google_drive_folder" value={form.google_drive_folder} onChange={handleChange} placeholder="https://drive.google.com/drive/folders/..." className={inputCls} />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls}>Cover Image</label>
+                  <CoverImageUploader
+                    currentUrl={form.cover_image}
+                    onUpload={(url) => setForm(p => ({ ...p, cover_image: url }))}
+                    onClear={() => setForm(p => ({ ...p, cover_image: '' }))}
+                  />
+                  {/* Manual URL fallback — still editable in case they want to paste a link directly */}
+                  <input
+                    name="cover_image"
+                    value={form.cover_image}
+                    onChange={handleChange}
+                    placeholder="Or paste an image URL…"
+                    className={`${inputCls} mt-2 text-xs`}
+                  />
                 </div>
                 <div className="sm:col-span-2">
                   <label className={labelCls}>Description</label>

@@ -5,23 +5,22 @@ import { useTheme } from '../../context/ThemeContext'
 import { formService } from '../../services/formService'
 
 const DEFAULT_SETTINGS = {
-  hero_heading: 'RAW Vision Media',
-  hero_subheading: 'Frames Speak Louder.',
-  quote_text: 'Photography is the story I fail to put into words.',
-  instagram: 'https://instagram.com/rawvisionmedia',
-  youtube: 'https://youtube.com/@rawvisionmedia',
-  linkedin: '',
-  website_email: 'rawvision@nmims.in',
-  contact_number: '',
-  signup_enabled: true,
+  hero_heading:           'RAW Vision Media',
+  hero_subheading:        'Frames Speak Louder.',
+  quote_text:             'Photography is the story I fail to put into words.',
+  instagram:              'https://instagram.com/rawvisionmedia',
+  instagram_nmims:        'https://instagram.com/nmimshirpur',
+  linkedin:               '',
+  website_email:          'rawvision@nmims.in',
+  signup_enabled:         true,
   external_users_enabled: true,
 }
 
 export default function SettingsAdmin() {
   const { isDark } = useTheme()
   const [settings, setSettings] = useState(DEFAULT_SETTINGS)
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const [saving,   setSaving]   = useState(false)
+  const [saved,    setSaved]    = useState(false)
 
   useEffect(() => {
     formService.getSettings()
@@ -43,92 +42,160 @@ export default function SettingsAdmin() {
     } catch (e) { alert(e.message) } finally { setSaving(false) }
   }
 
-  const inputCls = `w-full py-2.5 px-3 border text-sm bg-transparent outline-none transition-colors ${isDark ? 'border-gray-700 text-white placeholder-gray-600 focus:border-raw-accent' : 'border-gray-300 text-raw-ink placeholder-gray-400 focus:border-raw-ink'}`
-  const labelCls = `font-oswald text-xs tracking-widest uppercase block mb-1.5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`
-  const sectionCls = `p-6 border ${isDark ? 'bg-[#111] border-gray-800' : 'bg-white border-gray-200'} space-y-5`
+  const ink    = isDark ? '#f0ece4' : '#1a1a1a'
+  const bg     = isDark ? '#111'    : '#faf8f4'
+  const rule   = isDark ? '#2a2520' : '#d4cec6'
+  const muted  = isDark ? '#6a6460' : '#9a9088'
+  const cardBg = isDark ? '#0d0d0d' : '#fff'
+  const accent = '#c0392b'
+
+  const inputStyle = {
+    width: '100%', padding: '10px 14px',
+    border: `1px solid ${rule}`,
+    background: 'transparent', color: ink,
+    fontFamily: "'Oswald', sans-serif", fontSize: '13px', letterSpacing: '0.06em',
+    outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s',
+  }
+
+  const labelStyle = {
+    fontFamily: "'Oswald', sans-serif", fontSize: '9px',
+    letterSpacing: '0.3em', textTransform: 'uppercase',
+    color: muted, display: 'block', marginBottom: '7px',
+  }
+
+  const sectionStyle = {
+    background: cardBg, border: `1px solid ${rule}`, padding: '28px 28px 32px',
+  }
+
+  const sectionTitle = {
+    fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700,
+    fontSize: '1.1rem', color: ink, margin: '0 0 4px',
+  }
+
+  const sectionTag = {
+    fontFamily: "'Oswald', sans-serif", fontSize: '9px',
+    letterSpacing: '0.32em', textTransform: 'uppercase',
+    color: accent, margin: '0 0 20px',
+  }
 
   return (
     <AdminLayout>
-      <div className="space-y-6 max-w-3xl">
-        <div className="flex items-center justify-between">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxWidth: '760px' }}>
+
+        {/* page header */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', paddingBottom: '16px', borderBottom: `1px solid ${rule}`, marginBottom: '20px' }}>
           <div>
-            <p className="section-eyebrow mb-1">Configuration</p>
-            <h1 className={`font-display text-3xl font-bold ${isDark ? 'text-white' : 'text-raw-ink'}`}>Website Settings</h1>
+            <p style={{ fontFamily: "'Oswald', sans-serif", fontSize: '9px', letterSpacing: '0.32em', textTransform: 'uppercase', color: accent, margin: '0 0 4px' }}>Configuration</p>
+            <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: '2rem', color: ink, margin: 0 }}>Website Settings</h1>
           </div>
-          <button onClick={handleSave} disabled={saving} className={`btn-primary ${saved ? 'bg-green-700 border-green-700' : ''}`}>
-            {saved ? <><Check size={14} /> Saved!</> : <><Save size={14} /> {saving ? 'Saving...' : 'Save All'}</>}
+          <button
+            onClick={handleSave} disabled={saving}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 22px', background: saved ? '#2d6a2d' : ink, color: bg, border: 'none', cursor: 'pointer', fontFamily: "'Oswald', sans-serif", fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', transition: 'all 0.2s' }}
+          >
+            {saved ? <><Check size={13} /> Saved!</> : <><Save size={13} /> {saving ? 'Saving…' : 'Save All'}</>}
           </button>
         </div>
 
-        {/* Hero Text */}
-        <div className={sectionCls}>
-          <p className={`font-condensed text-lg tracking-widest uppercase mb-1 ${isDark ? 'text-white' : 'text-raw-ink'}`}>Hero Section</p>
-          <div>
-            <label className={labelCls}>Hero Heading</label>
-            <input name="hero_heading" value={settings.hero_heading} onChange={handleChange} className={inputCls} />
-          </div>
-          <div>
-            <label className={labelCls}>Hero Subheading / Tagline</label>
-            <input name="hero_subheading" value={settings.hero_subheading} onChange={handleChange} className={inputCls} />
-          </div>
-        </div>
-
-        {/* Quote */}
-        <div className={sectionCls}>
-          <p className={`font-condensed text-lg tracking-widest uppercase mb-1 ${isDark ? 'text-white' : 'text-raw-ink'}`}>Quote Section</p>
-          <div>
-            <label className={labelCls}>Quote Text</label>
-            <textarea name="quote_text" value={settings.quote_text} onChange={handleChange} rows={3} className={`${inputCls} resize-none`} />
-          </div>
-        </div>
-
-        {/* Social */}
-        <div className={sectionCls}>
-          <p className={`font-condensed text-lg tracking-widest uppercase mb-1 ${isDark ? 'text-white' : 'text-raw-ink'}`}>Social Links</p>
-          {[
-            { name: 'instagram',      label: 'Instagram URL' },
-            { name: 'youtube',        label: 'YouTube URL' },
-            { name: 'linkedin',       label: 'LinkedIn URL' },
-            { name: 'website_email',  label: 'Contact Email' },
-            { name: 'contact_number', label: 'Contact Number' },
-          ].map(f => (
-            <div key={f.name}>
-              <label className={labelCls}>{f.label}</label>
-              <input name={f.name} value={settings[f.name] || ''} onChange={handleChange} className={inputCls} />
+        {/* ── Hero Section ── */}
+        <div style={sectionStyle}>
+          <p style={sectionTag}>Hero Section</p>
+          <h3 style={{ ...sectionTitle, marginBottom: '20px' }}>Hero Text</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+              <label style={labelStyle}>Hero Heading</label>
+              <input name="hero_heading" value={settings.hero_heading} onChange={handleChange} style={inputStyle}
+                onFocus={e => e.target.style.borderColor = accent}
+                onBlur={e => e.target.style.borderColor = rule} />
             </div>
-          ))}
+            <div>
+              <label style={labelStyle}>Hero Subheading / Tagline</label>
+              <input name="hero_subheading" value={settings.hero_subheading} onChange={handleChange} style={inputStyle}
+                onFocus={e => e.target.style.borderColor = accent}
+                onBlur={e => e.target.style.borderColor = rule} />
+            </div>
+          </div>
         </div>
 
-        {/* Security */}
-        <div className={sectionCls}>
-          <p className={`font-condensed text-lg tracking-widest uppercase mb-1 ${isDark ? 'text-white' : 'text-raw-ink'}`}>Access Control</p>
-          <div className="space-y-4">
+        {/* ── Quote ── */}
+        <div style={sectionStyle}>
+          <p style={sectionTag}>Quote Section</p>
+          <h3 style={{ ...sectionTitle, marginBottom: '20px' }}>Quote Text</h3>
+          <div>
+            <label style={labelStyle}>Quote</label>
+            <textarea name="quote_text" value={settings.quote_text} onChange={handleChange} rows={3}
+              style={{ ...inputStyle, resize: 'none', fontFamily: 'Cormorant Garamond, Georgia, serif', fontStyle: 'italic', fontSize: '15px' }}
+              onFocus={e => e.target.style.borderColor = accent}
+              onBlur={e => e.target.style.borderColor = rule} />
+          </div>
+        </div>
+
+        {/* ── Social & Contact ── */}
+        <div style={sectionStyle}>
+          <p style={sectionTag}>Social & Contact</p>
+          <h3 style={{ ...sectionTitle, marginBottom: '20px' }}>Links & Contact</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
             {[
-              { name: 'signup_enabled',          label: 'Enable New Signups',    desc: 'Allow new users to create accounts.' },
-              { name: 'external_users_enabled',  label: 'Allow External Users',  desc: 'Allow Gmail users to register.' },
-            ].map(item => (
-              <label key={item.name} className="flex items-start gap-4 cursor-pointer">
+              { name: 'instagram',       label: 'Instagram URL — RAW Vision Media',  placeholder: 'https://instagram.com/rawvisionmedia' },
+              { name: 'instagram_nmims', label: 'Instagram URL — NMIMS Shirpur',     placeholder: 'https://instagram.com/nmimshirpur'    },
+              { name: 'linkedin',        label: 'LinkedIn URL',                       placeholder: 'https://linkedin.com/company/...'     },
+              { name: 'website_email',   label: 'Contact Email',                      placeholder: 'rawvision@nmims.in'                  },
+            ].map(f => (
+              <div key={f.name}>
+                <label style={labelStyle}>{f.label}</label>
                 <input
-                  type="checkbox"
-                  name={item.name}
+                  name={f.name}
+                  value={settings[f.name] || ''}
+                  onChange={handleChange}
+                  placeholder={f.placeholder}
+                  style={{ ...inputStyle, color: settings[f.name] ? ink : muted }}
+                  onFocus={e => e.target.style.borderColor = accent}
+                  onBlur={e => e.target.style.borderColor = rule}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Access Control ── */}
+        <div style={sectionStyle}>
+          <p style={sectionTag}>Security</p>
+          <h3 style={{ ...sectionTitle, marginBottom: '20px' }}>Access Control</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {[
+              { name: 'signup_enabled',         label: 'Enable New Signups',   desc: 'Allow new users to create accounts.'    },
+              { name: 'external_users_enabled', label: 'Allow External Users', desc: 'Allow Gmail users to register.'         },
+            ].map(item => (
+              <label key={item.name} style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', cursor: 'pointer' }}>
+                <input
+                  type="checkbox" name={item.name}
                   checked={settings[item.name]}
                   onChange={handleChange}
-                  className="w-4 h-4 mt-0.5 accent-raw-accent flex-shrink-0"
+                  style={{ width: '14px', height: '14px', marginTop: '3px', accentColor: accent, flexShrink: 0, cursor: 'pointer' }}
                 />
                 <div>
-                  <p className={`font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-white' : 'text-raw-ink'}`}>{item.label}</p>
-                  <p className={`font-sans text-xs mt-0.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{item.desc}</p>
+                  <p style={{ fontFamily: "'Oswald', sans-serif", fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: ink, margin: '0 0 3px' }}>
+                    {item.label}
+                  </p>
+                  <p style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '14px', color: muted, margin: 0, lineHeight: 1.5 }}>
+                    {item.desc}
+                  </p>
                 </div>
               </label>
             ))}
           </div>
         </div>
 
-        <div className="flex justify-end">
-          <button onClick={handleSave} disabled={saving} className={`btn-primary ${saved ? 'bg-green-700 border-green-700' : ''}`}>
-            {saved ? <><Check size={14} /> Saved!</> : <><Save size={14} /> {saving ? 'Saving...' : 'Save All Settings'}</>}
+        {/* save bottom */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '4px' }}>
+          <button
+            onClick={handleSave} disabled={saving}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 28px', background: saved ? '#2d6a2d' : ink, color: bg, border: 'none', cursor: 'pointer', fontFamily: "'Oswald', sans-serif", fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', transition: 'all 0.2s' }}
+          >
+            {saved ? <><Check size={13} /> Saved!</> : <><Save size={13} /> {saving ? 'Saving…' : 'Save All Settings'}</>}
           </button>
         </div>
+
       </div>
     </AdminLayout>
   )

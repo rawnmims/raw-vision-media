@@ -3,9 +3,9 @@ import { motion } from 'framer-motion'
 import DynamicFormsMarquee from '../components/home/DynamicFormsMarquee'
 import HeroSection from '../components/home/HeroSection'
 import { MottoStrip, DynamicFormsBanner, QuoteSection } from '../components/home/MottoStrip'
-import { FeaturedEvents, FeaturedWorks } from '../components/home/FeaturedEvents'
+import { FeaturedEvents } from '../components/home/FeaturedEvents'
 import { MainLayout } from '../layouts/MainLayout'
-
+import { FeaturedWorks } from '../components/home/FeaturedWorks'
 import { supabase } from '../services/supabase'
 
 export default function Home() {

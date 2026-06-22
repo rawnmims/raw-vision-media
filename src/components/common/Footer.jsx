@@ -1,117 +1,308 @@
 import { Link } from 'react-router-dom'
-import { Instagram, Youtube, Linkedin, Mail, Phone, Camera } from 'lucide-react'
+import { Instagram, Linkedin, Mail, Camera } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { formService } from '../../services/formService'
+import rLogo from '../../assets/r.png'
+import aLogo from '../../assets/a.png'
+import wLogo from '../../assets/w.png'
 
 export default function Footer() {
   const { isDark } = useTheme()
+  const [settings, setSettings] = useState({})
+
+  useEffect(() => {
+    formService.getSettings().then(d => { if (d) setSettings(d) }).catch(() => {})
+  }, [])
+
+  const accent = '#c0392b'
+  const rule   = 'rgba(255,255,255,0.08)'
+  const letterVariants = {
+    hidden: { opacity: 0, y: 80, skewY: 6 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      skewY: 0,
+      transition: {
+        duration: 0.9,
+        delay: 0.1 + i * 0.12,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    }),
+  }
+  const NAV_LINKS = [
+    { label: 'Home',      to: '/'          },
+    { label: 'Events',    to: '/events'    },
+    { label: 'Archive',   to: '/archive'   },
+    { label: 'Scrapbook', to: '/scrapbook' },
+    { label: 'Videos',    to: '/videos'    },
+    { label: 'About',     to: '/about'     },
+  ]
+
+  const INVOLVE_LINKS = [
+    { label: 'Join RAW'          },
+    { label: 'Request Coverage'  },
+    { label: 'Sign In',   to: '/login'  },
+    { label: 'Create Account', to: '/signup' },
+  ]
 
   return (
-    <footer className={`border-t ${isDark ? 'bg-raw-black border-gray-800 text-gray-300' : 'bg-raw-ink text-gray-300 border-gray-800'}`}>
-      {/* Top section */}
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+    <footer
+      style={{
+        background: '#0a0a0a',
+        backgroundImage: `
+          url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+          repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.012) 28px, rgba(255,255,255,0.012) 29px)
+        `,
+        borderTop: `3px double ${rule}`,
+        color: '#a89f94',
+        fontFamily: "'Oswald', sans-serif",
+      }}
+    >
 
-          {/* Brand */}
-          <div className="md:col-span-1">
-            <div className="flex items-center gap-1 mb-4">
-              <span className="font-condensed text-5xl text-white" style={{ background: '#000', padding: '2px 6px' }}>R</span>
-              <span className="font-condensed text-5xl text-white">AW</span>
+      {/* ── masthead rule ── */}
+      <div style={{ borderBottom: `1px solid ${rule}`, padding: '12px 40px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '24px' }}>
+        <div style={{ flex: 1, height: '1px', background: `linear-gradient(to right, transparent, ${rule})` }} />
+        <span style={{ fontSize: '9px', letterSpacing: '0.36em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', whiteSpace: 'nowrap' }}>
+          RAW Vision Media Club · NMIMS Shirpur · Est. 2016
+        </span>
+        <div style={{ flex: 1, height: '1px', background: `linear-gradient(to left, transparent, ${rule})` }} />
+      </div>
+
+      {/* ── main grid ── */}
+      <div
+        style={{
+          maxWidth: '1280px',
+          margin: '0 auto',
+          padding: '56px 40px 48px',
+          display: 'grid',
+          gridTemplateColumns: '1.6fr 1px 1fr 1px 1fr 1px 1.4fr',
+          gap: 0,
+        }}
+      >
+
+        {/* ── COL 1: Brand ── */}
+        <div style={{ paddingRight: '40px' }}>
+          {/* RAW logotype — staggered per letter */}
+          <div>
+            <div className="flex items-end gap-0 md:gap-1 mb-3 overflow-hidden">
+              {[rLogo, aLogo, wLogo].map((src, i) => (
+                <motion.div
+                  key={i}
+                  custom={i}
+                  variants={letterVariants}
+                  initial="hidden"
+                  animate="visible"
+                  whileHover={{
+                    scale: 1.06,
+                    filter: 'brightness(1.15)',
+                    transition: { duration: 0.25, ease: 'easeOut' }
+                  }}
+                  style={{ display: 'inline-block', transformOrigin: 'bottom center' }}
+                >
+                  <img
+                    src={src}
+                    alt={['R', 'A', 'W'][i]}
+                    className="h-12 sm:h-16 md:h-36 lg:h-48 w-auto object-contain"
+                  />
+                </motion.div>
+              ))}
             </div>
-            <p className="font-serif text-gray-400 text-sm leading-relaxed italic mb-4">
+
+            <motion.div
+              className="flex items-center gap-4 mb-2"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.55 }}
+            >
+              <div className="h-px bg-white/40 w-12" />
+              <span className="font-oswald text-sm md:text-base tracking-[0.25em] text-white/80 uppercase">
+                Vision Media Club
+              </span>
+            </motion.div>
+
+            <motion.p
+              className="font-serif text-2xl md:text-4xl text-white/90 italic mt-4 mb-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.75 }}
+            >
               Frames Speak Louder.
-            </p>
-            <p className="font-oswald text-xs tracking-widest text-gray-500 uppercase">
-              NMIMS Shirpur · Est. 2016
-            </p>
-            <p className="font-oswald text-xs tracking-widest text-gray-500 uppercase mt-1">
-              Official Media Club
-            </p>
+            </motion.p>
           </div>
 
-          {/* Navigation */}
-          <div>
-            <h4 className="font-oswald text-xs tracking-widest text-gray-500 uppercase mb-4 border-b border-gray-700 pb-2">Navigate</h4>
-            <ul className="space-y-2">
-              {[
-                { label: 'Home', to: '/' },
-                { label: 'Events', to: '/events' },
-                { label: 'Archive', to: '/archive' },
-                { label: 'Scrapbook', to: '/scrapbook' },
-                { label: 'Videos', to: '/videos' },
-                { label: 'About', to: '/about' },
-              ].map(link => (
-                <li key={link.to}>
-                  <Link to={link.to} className="font-oswald text-xs tracking-wider text-gray-400 hover:text-white uppercase transition-colors">
+          {/* thin rule */}
+          <div style={{ height: '1px', background: rule, marginBottom: '20px' }} />
+
+          <p style={{ fontSize: '15px', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: '0 0 4px' }}>
+            NMIMS Shirpur · Est. 2016
+          </p>
+          <p style={{ fontSize: '15px', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: 0 }}>
+            Official Media Club
+          </p>
+        </div>
+
+        {/* vertical divider */}
+        <div style={{ background: rule, margin: '0 0' }} />
+
+        {/* ── COL 2: Navigate ── */}
+        <div style={{ padding: '0 36px' }}>
+          <h4 style={{ fontSize: '12px', letterSpacing: '0.34em', textTransform: 'uppercase', color: accent, marginBottom: '20px', paddingBottom: '10px', borderBottom: `1px solid ${rule}` }}>
+            Navigate
+          </h4>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {NAV_LINKS.map(link => (
+              <li key={link.to} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ width: '14px', height: '1px', background: rule, flexShrink: 0 }} />
+                <Link
+                  to={link.to}
+                  style={{ fontSize: '12px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* vertical divider */}
+        <div style={{ background: rule }} />
+
+        {/* ── COL 3: Get Involved ── */}
+        <div style={{ padding: '0 36px' }}>
+          <h4 style={{ fontSize: '12px', letterSpacing: '0.34em', textTransform: 'uppercase', color: accent, marginBottom: '20px', paddingBottom: '10px', borderBottom: `1px solid ${rule}` }}>
+            Get Involved
+          </h4>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {INVOLVE_LINKS.map((link, i) => (
+              <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ width: '14px', height: '1px', background: rule, flexShrink: 0 }} />
+                {link.to ? (
+                  <Link
+                    to={link.to}
+                    style={{ fontSize: '12px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
+                  >
                     {link.label}
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Actions */}
-          <div>
-            <h4 className="font-oswald text-xs tracking-widest text-gray-500 uppercase mb-4 border-b border-gray-700 pb-2">Get Involved</h4>
-            <ul className="space-y-2">
-              {[
-                { label: 'Join RAW', action: true },
-                { label: 'Request Coverage', action: true },
-                { label: 'Sign In', to: '/login' },
-                { label: 'Create Account', to: '/signup' },
-              ].map((link, i) => (
-                <li key={i}>
-                  <span className="font-oswald text-xs tracking-wider text-gray-400 hover:text-white uppercase transition-colors cursor-pointer">
+                ) : (
+                  <span
+                    style={{ fontSize: '12px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', cursor: 'pointer', transition: 'color 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                    onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
+                  >
                     {link.label}
                   </span>
-                </li>
-              ))}
-            </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* vertical divider */}
+        <div style={{ background: rule }} />
+
+        {/* ── COL 4: Contact + Socials + Map ── */}
+        <div style={{ paddingLeft: '36px' }}>
+          <h4 style={{ fontSize: '12px', letterSpacing: '0.34em', textTransform: 'uppercase', color: accent, marginBottom: '20px', paddingBottom: '10px', borderBottom: `1px solid ${rule}` }}>
+            Contact
+          </h4>
+
+          {/* email */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+            <Mail size={13} color="rgba(255,255,255,0.25)" />
+            <a
+              href={`mailto:${settings.website_email || 'rawvision@nmims.in'}`}
+              style={{ fontSize: '12px', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
+            >
+              {settings.website_email || 'rawvision@nmims.in'}
+            </a>
           </div>
 
-          {/* Contact */}
-          <div>
-            <h4 className="font-oswald text-xs tracking-widest text-gray-500 uppercase mb-4 border-b border-gray-700 pb-2">Contact</h4>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-2 text-gray-400">
-                <Mail size={13} />
-                <span className="font-oswald text-xs tracking-wider">rawvision@nmims.in</span>
-              </li>
-              <li className="flex items-center gap-2 text-gray-400">
-                <Phone size={13} />
-                <span className="font-oswald text-xs tracking-wider">+91 XXXXX XXXXX</span>
-              </li>
-            </ul>
+          {/* follow us */}
+          <h4 style={{ fontSize: '9px', letterSpacing: '0.34em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: '14px' }}>
+            Follow Us
+          </h4>
 
-            <div className="mt-6">
-              <h4 className="font-oswald text-xs tracking-widest text-gray-500 uppercase mb-3">Follow Us</h4>
-              <div className="flex items-center gap-4">
-                <a href="https://instagram.com" target="_blank" rel="noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors">
-                  <Instagram size={16} />
-                </a>
-                <a href="https://youtube.com" target="_blank" rel="noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors">
-                  <Youtube size={16} />
-                </a>
-                <a href="https://linkedin.com" target="_blank" rel="noreferrer"
-                  className="text-gray-400 hover:text-white transition-colors">
-                  <Linkedin size={16} />
-                </a>
-              </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
+            {/* RAW Instagram */}
+            <a
+              href={settings.instagram || 'https://instagram.com/rawvisionmedia'}
+              target="_blank" rel="noreferrer"
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'rgba(255,255,255,0.38)', transition: 'color 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
+            >
+              <Instagram size={13} />
+              <span style={{ fontSize: '11px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>RAW Vision Media</span>
+            </a>
+
+            {/* NMIMS Shirpur Instagram */}
+            <a
+              href={settings.instagram_nmims || 'https://instagram.com/nmimshirpur'}
+              target="_blank" rel="noreferrer"
+              style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'rgba(255,255,255,0.38)', transition: 'color 0.2s' }}
+              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
+            >
+              <Instagram size={13} />
+              <span style={{ fontSize: '11px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>NMIMS Shirpur</span>
+            </a>
+
+            {/* LinkedIn */}
+            {(settings.linkedin || true) && (
+              <a
+                href={settings.linkedin || 'https://linkedin.com'}
+                target="_blank" rel="noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', color: 'rgba(255,255,255,0.38)', transition: 'color 0.2s' }}
+                onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
+              >
+                <Linkedin size={13} />
+                <span style={{ fontSize: '11px', letterSpacing: '0.16em', textTransform: 'uppercase' }}>LinkedIn</span>
+              </a>
+            )}
+          </div>
+
+          {/* ── embedded map ── */}
+          <div style={{ border: `1px solid ${rule}`, overflow: 'hidden', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 2, background: '#0a0a0a', padding: '2px 8px' }}>
+              <span style={{ fontSize: '8px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>
+                NMIMS Shirpur
+              </span>
             </div>
+            <iframe
+              title="NMIMS Shirpur Location"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.6!2d74.8820!3d21.3520!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd9a8a0e8e8e8e8%3A0x0!2sNMIMS+Shirpur!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin"
+              width="100%"
+              height="130"
+              style={{ border: 0, display: 'block', filter: 'grayscale(1) invert(0.88) contrast(0.9)', opacity: 0.7 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="font-oswald text-xs tracking-wider text-gray-600 uppercase">
+      {/* ── bottom bar ── */}
+      <div style={{ borderTop: `1px solid ${rule}` }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '14px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+          <p style={{ fontSize: '10px', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)', margin: 0 }}>
             © {new Date().getFullYear()} RAW Vision Media · NMIMS Shirpur
           </p>
-          <p className="font-oswald text-xs tracking-wider text-gray-600 uppercase flex items-center gap-1">
-            <Camera size={11} /> Frames Speak Louder
-          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Camera size={10} color="rgba(255,255,255,0.18)" />
+            <span style={{ fontSize: '10px', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)' }}>
+              Frames Speak Louder
+            </span>
+          </div>
         </div>
       </div>
     </footer>
