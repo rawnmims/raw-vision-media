@@ -70,7 +70,6 @@ export const formService = {
         form_slug: slug,
         response
       })
-
     if (error) throw error
   },
   async getFormResponses(formId) {
@@ -81,13 +80,12 @@ export const formService = {
     return data || []
   },
   async deleteFormResponse(id) {
-  const { error } = await supabase
-    .from('form_responses')
-    .delete()
-    .eq('id', id)
-
-  if (error) throw error
-},
+    const { error } = await supabase
+      .from('form_responses')
+      .delete()
+      .eq('id', id)
+    if (error) throw error
+  },
 }
 
 export const scrapbookService = {
@@ -152,6 +150,9 @@ export const userService = {
     const { error } = await supabase.from('profiles').delete().eq('id', id)
     if (error) throw error
   },
+
+  // ── Team members ──────────────────────────────────────────────────────────
+
   async getTeamMembers() {
     const { data, error } = await supabase.from('team_members').select('*').order('order_index')
     if (error) return []
@@ -167,8 +168,66 @@ export const userService = {
     if (error) throw error
     return data
   },
-  async deleteTeamMember(id) {
+  async deleteTeamMember(id, photoUrl) {
+    // best-effort: clean up the stored photo so the bucket doesn't fill up with orphans
+    if (photoUrl) {
+      try { await this.deleteTeamPhoto(photoUrl) } catch (_) { /* non-fatal */ }
+    }
     const { error } = await supabase.from('team_members').delete().eq('id', id)
     if (error) throw error
-  }
+  },
+
+  // ── Team years (table: "team_years") ───────────────────────────────────────
+  // Lets the admin create next year's team in advance, before anyone is
+  // assigned to it, and explicitly mark which year is "current" on the
+  // About page (instead of guessing from the highest label).
+
+  async getTeamYears() {
+    const { data, error } = await supabase.from('team_years').select('*').order('label', { ascending: false })
+    if (error) return [] // table may not exist yet — callers fall back gracefully
+    return data || []
+  },
+  async addTeamYear(label, isCurrent = false) {
+    if (isCurrent) {
+      await supabase.from('team_years').update({ is_current: false }).eq('is_current', true)
+    }
+    const { data, error } = await supabase
+      .from('team_years')
+      .insert({ label, is_current: isCurrent })
+      .select()
+      .single()
+    if (error) throw error
+    return data
+  },
+  async setCurrentTeamYear(id) {
+    await supabase.from('team_years').update({ is_current: false }).eq('is_current', true)
+    const { error } = await supabase.from('team_years').update({ is_current: true }).eq('id', id)
+    if (error) throw error
+  },
+  async deleteTeamYear(id) {
+    const { error } = await supabase.from('team_years').delete().eq('id', id)
+    if (error) throw error
+  },
+
+  // ── Photo storage (Supabase Storage bucket: "team-photos") ─────────────────
+
+  async uploadTeamPhoto(file) {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${crypto.randomUUID()}.${fileExt}`
+
+    const { error } = await supabase.storage
+      .from('team-photos')
+      .upload(fileName, file, { cacheControl: '3600', upsert: false })
+    if (error) throw error
+
+    const { data } = supabase.storage.from('team-photos').getPublicUrl(fileName)
+    return data.publicUrl
+  },
+  async deleteTeamPhoto(photoUrl) {
+    if (!photoUrl || !photoUrl.includes('/team-photos/')) return
+    const fileName = photoUrl.split('/team-photos/').pop()
+    if (!fileName) return
+    const { error } = await supabase.storage.from('team-photos').remove([fileName])
+    if (error) throw error
+  },
 }

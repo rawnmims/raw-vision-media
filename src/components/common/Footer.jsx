@@ -4,6 +4,8 @@ import { useTheme } from '../../context/ThemeContext'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { formService } from '../../services/formService'
+import JoinRawModal from '../forms/JoinRawModal'
+import CoverageModal from '../forms/CoverageModal'
 import rLogo from '../../assets/r.png'
 import aLogo from '../../assets/a.png'
 import wLogo from '../../assets/w.png'
@@ -12,6 +14,8 @@ export default function Footer() {
   const { isDark } = useTheme()
   const [settings, setSettings] = useState({})
   const [mapHeight, setMapHeight] = useState(130)
+  const [joinOpen, setJoinOpen] = useState(false)
+  const [coverageOpen, setCoverageOpen] = useState(false)
 
   useEffect(() => {
     formService.getSettings().then(d => { if (d) setSettings(d) }).catch(() => {})
@@ -49,7 +53,7 @@ export default function Footer() {
     }),
   }
   const NAV_LINKS = [
-    { label: 'Home',      to: '/home'          },
+    { label: 'Home',      to: '/home'      },
     { label: 'Events',    to: '/events'    },
     { label: 'Archive',   to: '/archive'   },
     { label: 'Scrapbook', to: '/scrapbook' },
@@ -58,12 +62,12 @@ export default function Footer() {
   ]
 
   const INVOLVE_LINKS = [
-    { label: 'Join RAW'          },
-    { label: 'Request Coverage'  },
+    { label: 'Join RAW' , action: "join"         },
+    { label: 'Request Coverage' , action: "coverage"  },
     { label: 'Sign In',   to: '/login'  },
     { label: 'Create Account', to: '/signup' },
   ]
-console.log(NAV_LINKS)
+
   return (
     <footer
       style={{
@@ -114,7 +118,7 @@ console.log(NAV_LINKS)
                   <img
                     src={src}
                     alt={['R', 'A', 'W'][i]}
-                    className="h-12 sm:h-16 md:h-36 lg:h-48 w-auto object-contain"
+                    className="h-9 sm:h-12 md:h-20 lg:h-20 w-auto object-contain"
                   />
                 </motion.div>
               ))}
@@ -193,7 +197,23 @@ console.log(NAV_LINKS)
                   </Link>
                 ) : (
                   <span
-                    style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', cursor: 'pointer', transition: 'color 0.2s' }}
+                    onClick={() => {
+                      if (link.label === 'Join RAW') {
+                        setJoinOpen(true)
+                      }
+
+                      if (link.label === 'Request Coverage') {
+                        setCoverageOpen(true)
+                      }
+                    }}
+                    style={{
+                      fontSize: 'clamp(10px, 1.5vw, 12px)',
+                      letterSpacing: '0.2em',
+                      textTransform: 'uppercase',
+                      color: 'rgba(255,255,255,0.38)',
+                      cursor: 'pointer',
+                      transition: 'color 0.2s',
+                    }}
                     onMouseEnter={e => e.currentTarget.style.color = '#fff'}
                     onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
                   >
@@ -292,31 +312,40 @@ console.log(NAV_LINKS)
 
       {/* ── bottom bar ── */}
       <div style={{ borderTop: `1px solid ${rule}` }}>
-  <div
-    style={{
-      maxWidth: '1280px',
-      margin: '0 auto',
-      padding: 'clamp(10px, 2vw, 14px) clamp(16px, 5vw, 40px)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      textAlign: 'center',
-    }}
-  >
-    <p
-      style={{
-        fontSize: 'clamp(8px, 1.2vw, 10px)',
-        letterSpacing: '0.24em',
-        textTransform: 'uppercase',
-        color: '#f5f0e8',
-        opacity: 0.75,
-        margin: 0,
-      }}
-    >
-      © {new Date().getFullYear()} RAW Vision Media · NMIMS Shirpur
-    </p>
-  </div>
-</div>
+        <div
+          style={{
+            maxWidth: '1280px',
+            margin: '0 auto',
+            padding: 'clamp(10px, 2vw, 14px) clamp(16px, 5vw, 40px)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            textAlign: 'center',
+          }}
+        >
+          <p
+            style={{
+              fontSize: 'clamp(8px, 1.2vw, 10px)',
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: '#f5f0e8',
+              opacity: 0.75,
+              margin: 0,
+            }}
+          >
+            © {new Date().getFullYear()} RAW Vision Media · NMIMS Shirpur
+          </p>
+        </div>
+      </div>
+      <JoinRawModal
+        isOpen={joinOpen}
+        onClose={() => setJoinOpen(false)}
+      />
+
+      <CoverageModal
+        isOpen={coverageOpen}
+        onClose={() => setCoverageOpen(false)}
+      />
     </footer>
   )
 }

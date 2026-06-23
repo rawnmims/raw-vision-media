@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Fragment } from 'react'
 import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useTheme } from '../../context/ThemeContext'
 import JoinRawModal from '../forms/JoinRawModal'
@@ -231,7 +231,7 @@ export function DynamicFormsBanner() {
         <div style={{ display: 'grid', gridTemplateColumns: columns, gap: 0, width: '100%' }}>
 
           {panels.map((panel, idx) => (
-            <>
+            <Fragment key={panel.col}>
               <motion.div
                 key={panel.col}
                 initial={{ opacity: 0, y: 30 }}
@@ -315,7 +315,7 @@ export function DynamicFormsBanner() {
                   }}
                 />
               )}
-            </>
+            </Fragment>
           ))}
         </div>
       </section>

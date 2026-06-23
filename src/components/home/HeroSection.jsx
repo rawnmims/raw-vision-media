@@ -107,7 +107,7 @@ export default function HeroSection() {
                   <img
                     src={src}
                     alt={['R', 'A', 'W'][i]}
-                    className="h-12 sm:h-16 md:h-36 lg:h-48 w-auto object-contain"
+                    className="h-12 sm:h-16 md:h-20 lg:h-20 w-auto object-contain"
                   />
                 </motion.div>
               ))}

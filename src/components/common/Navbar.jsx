@@ -143,16 +143,8 @@ export default function Navbar() {
               <img
                 src={isDark ? rawLogoWhite : rawLogo}
                 alt="RAW Vision Media"
-                style={{ height: '50px', width: 'auto', objectFit: 'contain', position: 'relative', zIndex: 1, right: 10 }}
+                style={{ height: '65px', width: 'auto', objectFit: 'contain', position: 'relative', zIndex: 1, right: 10 }}
               />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: '35px', color: ink, lineHeight: 1, letterSpacing: '0.02em' }}>
-                RAW
-              </span>
-              <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: '8px', letterSpacing: '0.44em', color: muted, marginTop: '5px', textTransform: 'uppercase' }}>
-                Vision Media Club
-              </span>
             </div>
           </Link>
 

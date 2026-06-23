@@ -1,14 +1,32 @@
-// VideoCard.jsx — complete replacement
-
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Play, X, Instagram } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
-import { getVideoEmbedUrl, getImageUrl, detectVideoType } from '../../utils/helpers'
+import {
+  getVideoEmbedUrl,
+  detectVideoType,
+  getVideoThumbnail,
+  getYouTubeThumbnailFallbackUrl,
+} from '../../utils/helpers'
 
+// ─────────────────────────────────────────────
+// Single portrait card — same format for all videos
+// ─────────────────────────────────────────────
 export function VideoCard({ video, index = 0, onClick }) {
-  const { isDark } = useTheme()
-  const thumbUrl = getImageUrl(video.thumbnail)
+  const videoType = detectVideoType(video.video_url)
+  const thumbSrc = getVideoThumbnail(video)
+
+  const handleImgError = (e) => {
+    // YouTube: try hqdefault if maxresdefault 404s
+    if (videoType === 'youtube') {
+      const fallback = getYouTubeThumbnailFallbackUrl(video.video_url)
+      if (fallback && e.target.src !== fallback) {
+        e.target.src = fallback
+        return
+      }
+    }
+    e.target.src = 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80'
+  }
 
   return (
     <motion.div
@@ -16,40 +34,48 @@ export function VideoCard({ video, index = 0, onClick }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.06 }}
-      className="relative flex-none cursor-pointer group"
-      style={{ width: '260px', aspectRatio: '3/4' }}
       onClick={onClick}
+      className="relative flex-none cursor-pointer group"
+      style={{ width: '240px', aspectRatio: '3/4' }}
     >
       <div className="relative w-full h-full overflow-hidden rounded-xl">
+        {/* Thumbnail */}
         <img
-          src={thumbUrl || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80'}
+          src={thumbSrc}
           alt={video.title}
+          onError={handleImgError}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
+
         {/* Gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
 
-        {/* Play button top-right */}
-        <div className="absolute top-3 right-3 w-8 h-8 rounded-full border border-white/50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        {/* Play — top right */}
+        <div className="absolute top-3 right-3 w-8 h-8 rounded-full border border-white/50 bg-black/20 backdrop-blur-sm flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
           <Play size={12} className="text-white ml-0.5" fill="white" />
         </div>
 
-        {/* Platform badge */}
-        {video.video_url && detectVideoType(video.video_url) === 'instagram' && (
+        {/* Platform badge — top left */}
+        {videoType === 'instagram' && (
           <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-0.5 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full">
-            <Instagram size={10} className="text-white" />
+            <Instagram size={9} className="text-white" />
             <span className="text-[9px] tracking-widest text-white uppercase font-medium">Reel</span>
           </div>
         )}
+        {videoType === 'youtube' && (
+          <div className="absolute top-3 left-3 px-2 py-0.5 bg-red-600 rounded-full">
+            <span className="text-[9px] tracking-widest text-white uppercase font-medium">YouTube</span>
+          </div>
+        )}
 
-        {/* Text bottom */}
+        {/* Text — bottom */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
-          {(video.category || video.tag) && (
+          {video.category && (
             <p className="text-[9px] tracking-widest uppercase text-white/55 mb-1.5">
-              {video.category || video.tag}
+              {video.category}
             </p>
           )}
-          <h3 className="text-lg font-black text-white leading-tight uppercase tracking-wide">
+          <h3 className="text-base font-black text-white leading-tight uppercase tracking-wide line-clamp-2">
             {video.title}
           </h3>
         </div>
@@ -58,6 +84,9 @@ export function VideoCard({ video, index = 0, onClick }) {
   )
 }
 
+// ─────────────────────────────────────────────
+// Horizontal scrolling grid + lightbox
+// ─────────────────────────────────────────────
 export function VideoGrid({ videos, loading }) {
   const { isDark } = useTheme()
   const [activeVideo, setActiveVideo] = useState(null)
@@ -65,11 +94,11 @@ export function VideoGrid({ videos, loading }) {
   if (loading) {
     return (
       <div className="flex gap-4 overflow-hidden">
-        {[1, 2, 3, 4].map(i => (
+        {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
             className={`flex-none rounded-xl animate-pulse ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}
-            style={{ width: '260px', aspectRatio: '3/4' }}
+            style={{ width: '240px', aspectRatio: '3/4' }}
           />
         ))}
       </div>
@@ -94,18 +123,20 @@ export function VideoGrid({ videos, loading }) {
     <>
       {/* Horizontal scroll strip */}
       <div
-        className="flex gap-4 overflow-x-auto pb-4"
+        className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 md:mx-0 md:px-0"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <style>{`.hide-scroll::-webkit-scrollbar { display: none; }`}</style>
-        {videos.map((v, i) => (
-          <VideoCard
-            key={v.id}
-            video={v}
-            index={i}
-            onClick={() => setActiveVideo(v)}
-          />
-        ))}
+        <style>{`.no-scrollbar::-webkit-scrollbar { display: none; }`}</style>
+        <div className="no-scrollbar flex gap-4">
+          {videos.map((v, i) => (
+            <VideoCard
+              key={v.id}
+              video={v}
+              index={i}
+              onClick={() => setActiveVideo(v)}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Lightbox */}
@@ -129,7 +160,7 @@ export function VideoGrid({ videos, loading }) {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
               className={`w-full mx-auto px-4 ${isInstagram ? 'max-w-sm' : 'max-w-5xl'}`}
             >
               {isInstagram ? (

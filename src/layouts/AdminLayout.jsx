@@ -9,6 +9,8 @@ import {
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import ThemeToggle from '../components/common/ThemeToggle'
+import rawLogo from '../assets/raw-logo.png'
+import rawLogoWhite from '../assets/raw-white-transparent.png'
 
 const NAV = [
   { label: 'Dashboard', path: '/admin', icon: LayoutDashboard },
@@ -47,8 +49,13 @@ export default function AdminLayout({ children }) {
       {/* Brand */}
       <div className={`px-5 py-5 border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
         <Link to="/" className="flex items-center gap-2">
-          <span className="font-condensed text-2xl text-white" style={{ background: '#000', padding: '1px 5px' }}>R</span>
-          <span className={`font-condensed text-2xl ${isDark ? 'text-white' : 'text-raw-ink'}`}>AW</span>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <img
+              src={isDark ? rawLogoWhite : rawLogo}
+              alt="RAW Vision Media"
+              style={{ height: '65px', width: 'auto', objectFit: 'contain', position: 'relative', zIndex: 1, right: 10 }}
+            />
+          </div>
           <span className={`font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-500' : 'text-gray-400'} border-l pl-2 ${isDark ? 'border-gray-700' : 'border-gray-300'}`}>
             Admin
           </span>
@@ -149,7 +156,7 @@ export default function AdminLayout({ children }) {
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Link to="/" className={`font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}>
+            <Link to="/home" className={`font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}>
               ← View Site
             </Link>
           </div>
