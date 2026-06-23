@@ -191,7 +191,7 @@ export default function Login() {
               Welcome Back
             </p>
             <h1 className={`font-display text-4xl font-bold leading-tight ${isDark ? 'text-white' : 'text-raw-ink'}`}>
-              Sign In To RAW Vision
+              Sign In To RAW Vision Media
             </h1>
             <p className={`font-serif text-base italic mt-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
               Enter The Archives
@@ -211,7 +211,7 @@ export default function Login() {
                 value={form.email}
                 onChange={handleChange}
                 required
-                placeholder="your@email.com"
+                placeholder="your@gmail.com"
                 className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors ${inputBorder}`}
               />
             </motion.div>
