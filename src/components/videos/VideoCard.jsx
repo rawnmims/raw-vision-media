@@ -1,89 +1,126 @@
+// VideoCard.jsx — complete replacement
+
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Play, X, Instagram } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
 import { getVideoEmbedUrl, getImageUrl, detectVideoType } from '../../utils/helpers'
 
-/**
- * VideoCard — supports YouTube, Instagram Reels, and Google Drive videos.
- * Admin just pastes any link — detection is automatic.
- *
- * For Instagram:
- *   - Paste the Reel/Post URL from Instagram (the "Copy Link" URL)
- *   - Embeds work on real domains only (not localhost)
- *   - On localhost, Instagram shows a "View on Instagram" fallback
- */
-export function VideoCard({ video, index = 0, featured = false }) {
+export function VideoCard({ video, index = 0, onClick }) {
   const { isDark } = useTheme()
-  const [playing, setPlaying] = useState(false)
-
-  const videoType = detectVideoType(video.video_url)
-  const embedUrl  = getVideoEmbedUrl(video.video_url)
-  const thumbUrl  = getImageUrl(video.thumbnail)
-
-  const isInstagram = videoType === 'instagram'
+  const thumbUrl = getImageUrl(video.thumbnail)
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.08 }}
-      className={`group ${featured ? 'col-span-full' : ''}`}
+      transition={{ delay: index * 0.06 }}
+      className="relative flex-none cursor-pointer group"
+      style={{ width: '260px', aspectRatio: '3/4' }}
+      onClick={onClick}
     >
-      {/* Thumbnail / click-to-play */}
-      <div
-        className={`relative overflow-hidden cursor-pointer ${featured ? 'aspect-[21/9]' : 'aspect-video'}`}
-        onClick={() => setPlaying(true)}
-      >
+      <div className="relative w-full h-full overflow-hidden rounded-xl">
         <img
           src={thumbUrl || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80'}
           alt={video.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-all duration-300 flex flex-col items-center justify-center gap-3">
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 border-2 border-white rounded-full flex items-center justify-center"
-          >
-            <Play size={24} className="text-white ml-1" fill="white" />
-          </motion.div>
-          {/* Platform badge */}
-          {isInstagram && (
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full">
-              <Instagram size={12} className="text-white" />
-              <span className="font-oswald text-[10px] tracking-widest text-white uppercase">Instagram Reel</span>
-            </div>
+        {/* Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+
+        {/* Play button top-right */}
+        <div className="absolute top-3 right-3 w-8 h-8 rounded-full border border-white/50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <Play size={12} className="text-white ml-0.5" fill="white" />
+        </div>
+
+        {/* Platform badge */}
+        {video.video_url && detectVideoType(video.video_url) === 'instagram' && (
+          <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-0.5 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full">
+            <Instagram size={10} className="text-white" />
+            <span className="text-[9px] tracking-widest text-white uppercase font-medium">Reel</span>
+          </div>
+        )}
+
+        {/* Text bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          {(video.category || video.tag) && (
+            <p className="text-[9px] tracking-widest uppercase text-white/55 mb-1.5">
+              {video.category || video.tag}
+            </p>
           )}
-          {videoType === 'youtube' && (
-            <div className="flex items-center gap-1.5 px-3 py-1 bg-red-600 rounded-full">
-              <span className="font-oswald text-[10px] tracking-widest text-white uppercase">YouTube</span>
-            </div>
-          )}
+          <h3 className="text-lg font-black text-white leading-tight uppercase tracking-wide">
+            {video.title}
+          </h3>
         </div>
       </div>
+    </motion.div>
+  )
+}
 
-      {/* Title */}
-      <div className={`mt-4 border-t-2 pt-3 ${isDark ? 'border-gray-700' : 'border-gray-200'} group-hover:border-raw-accent transition-colors`}>
-        <h3 className={`font-display ${featured ? 'text-xl' : 'text-base'} font-bold ${isDark ? 'text-white' : 'text-raw-ink'}`}>
-          {video.title}
-        </h3>
+export function VideoGrid({ videos, loading }) {
+  const { isDark } = useTheme()
+  const [activeVideo, setActiveVideo] = useState(null)
+
+  if (loading) {
+    return (
+      <div className="flex gap-4 overflow-hidden">
+        {[1, 2, 3, 4].map(i => (
+          <div
+            key={i}
+            className={`flex-none rounded-xl animate-pulse ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}
+            style={{ width: '260px', aspectRatio: '3/4' }}
+          />
+        ))}
+      </div>
+    )
+  }
+
+  if (!videos || videos.length === 0) {
+    return (
+      <div className="py-20 text-center">
+        <p className={`font-display text-2xl italic ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+          No videos yet.
+        </p>
+      </div>
+    )
+  }
+
+  const videoType = activeVideo ? detectVideoType(activeVideo.video_url) : null
+  const embedUrl = activeVideo ? getVideoEmbedUrl(activeVideo.video_url) : null
+  const isInstagram = videoType === 'instagram'
+
+  return (
+    <>
+      {/* Horizontal scroll strip */}
+      <div
+        className="flex gap-4 overflow-x-auto pb-4"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <style>{`.hide-scroll::-webkit-scrollbar { display: none; }`}</style>
+        {videos.map((v, i) => (
+          <VideoCard
+            key={v.id}
+            video={v}
+            index={i}
+            onClick={() => setActiveVideo(v)}
+          />
+        ))}
       </div>
 
-      {/* Lightbox player */}
+      {/* Lightbox */}
       <AnimatePresence>
-        {playing && (
+        {activeVideo && (
           <motion.div
             className="lightbox-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setPlaying(false)}
+            onClick={() => setActiveVideo(null)}
           >
             <button
               className="absolute top-4 right-4 text-white/70 hover:text-white z-10 p-2"
-              onClick={() => setPlaying(false)}
+              onClick={() => setActiveVideo(null)}
             >
               <X size={24} />
             </button>
@@ -96,7 +133,6 @@ export function VideoCard({ video, index = 0, featured = false }) {
               className={`w-full mx-auto px-4 ${isInstagram ? 'max-w-sm' : 'max-w-5xl'}`}
             >
               {isInstagram ? (
-                /* Instagram embed — portrait ratio */
                 <div style={{ paddingBottom: '177%', position: 'relative' }}>
                   <iframe
                     src={`${embedUrl}?autoplay=1`}
@@ -105,11 +141,10 @@ export function VideoCard({ video, index = 0, featured = false }) {
                     scrolling="no"
                     allowTransparency
                     allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    title={video.title}
+                    title={activeVideo.title}
                   />
                 </div>
               ) : (
-                /* YouTube / Drive / direct — 16:9 */
                 <div className="aspect-video">
                   <iframe
                     src={videoType === 'youtube' ? `${embedUrl}?autoplay=1` : embedUrl}
@@ -117,54 +152,17 @@ export function VideoCard({ video, index = 0, featured = false }) {
                     frameBorder="0"
                     allow="autoplay; fullscreen; picture-in-picture"
                     allowFullScreen
-                    title={video.title}
+                    title={activeVideo.title}
                   />
                 </div>
               )}
-
               <p className="text-center font-oswald text-sm tracking-widest text-white/60 uppercase mt-4">
-                {video.title}
+                {activeVideo.title}
               </p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
-  )
-}
-
-export function VideoGrid({ videos, loading }) {
-  const { isDark } = useTheme()
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {[1, 2, 3].map(i => (
-          <div key={i} className={`animate-pulse ${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}>
-            <div className="aspect-video bg-gray-300/20 mb-4" />
-            <div className={`h-4 w-3/4 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`} />
-          </div>
-        ))}
-      </div>
-    )
-  }
-
-  if (!videos || videos.length === 0) {
-    return (
-      <div className="py-20 text-center">
-        <p className={`font-display text-2xl italic ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>No videos yet.</p>
-      </div>
-    )
-  }
-
-  const [featured, ...rest] = videos
-
-  return (
-    <div className="space-y-10">
-      {featured && <VideoCard video={featured} featured />}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {rest.map((v, i) => <VideoCard key={v.id} video={v} index={i} />)}
-      </div>
-    </div>
+    </>
   )
 }

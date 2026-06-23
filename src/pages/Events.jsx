@@ -75,9 +75,6 @@ export default function Events() {
                 </p>
               </div>
               <div className={`mt-4 h-px ${isDark ? 'bg-gray-800' : 'bg-gray-300'}`} />
-              <p className={`font-oswald text-[10px] tracking-widest uppercase mt-2 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
-                Every card below holds the full-resolution archive — tap to load
-              </p>
             </motion.div>
           </div>
         </div>

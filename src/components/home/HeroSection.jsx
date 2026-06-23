@@ -82,7 +82,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <span className="font-oswald text-xs tracking-[0.3em] text-white/60 uppercase">
+            <span className="font-oswald text-lg tracking-[0.3em] text-white/60 uppercase">
               NMIMS Shirpur · Est. 2016
             </span>
           </motion.div>
@@ -147,7 +147,7 @@ export default function HeroSection() {
               onClick={() => setJoinOpen(true)}
               onMouseEnter={() => setJoinHover(true)}
               onMouseLeave={() => setJoinHover(false)}
-              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-xs tracking-widest uppercase w-[220px]"
+              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-lg tracking-widest uppercase w-[220px]"
               style={{ background: '#f5f0e8', color: '#0A0A0A' }}
             >
               {/* Hover fill sweep */}
@@ -176,7 +176,7 @@ export default function HeroSection() {
               onClick={() => setCoverageOpen(true)}
               onMouseEnter={() => setCoverageHover(true)}
               onMouseLeave={() => setCoverageHover(false)}
-              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-xs tracking-widest uppercase border border-white text-white w-[220px]"
+              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-lg tracking-widest uppercase border border-white text-white w-[270px]"
             >
               {/* Hover fill sweep */}
               <motion.span

@@ -133,9 +133,9 @@ export function EventCard({ event, index = 0 }) {
               {/* brand row */}
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-1.5">
-                  <Lock size={10} className="text-white/50" />
-                  <span className="font-oswald text-[9px] tracking-[0.25em] uppercase text-white/70">
-                    Raw Vision
+                  <Lock size={10} className="text-white/70" />
+                  <span className="font-oswald text-[9px] tracking-[0.25em] uppercase text-white/90">
+                    Raw
                   </span>
                 </div>
                 {event.featured && (
@@ -151,7 +151,7 @@ export function EventCard({ event, index = 0 }) {
               {/* category / specs / big date */}
               <div>
                 <p
-                  className="font-display font-bold italic text-base leading-tight mb-1.5 truncate"
+                  className="font-display font-bold italic text-2xl leading-tight mb-1.5 truncate"
                   style={{ color: edition.hex }}
                 >
                   {event.category || 'Coverage'}
@@ -159,15 +159,13 @@ export function EventCard({ event, index = 0 }) {
 
                 <div className="flex items-center gap-2 mb-3">
                   <div
-                    className="w-6 h-6 rounded-full border flex items-center justify-center font-oswald text-[9px] font-semibold flex-shrink-0"
+                    className="w-9 h-9 rounded-full border flex items-center justify-center font-oswald text-[13px] font-semibold flex-shrink-0"
                     style={{ borderColor: edition.hex, color: edition.hex }}
                   >
                     {yearBadge || '—'}
                   </div>
                   <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/30 backdrop-blur-sm border border-white/15">
-                    <Camera size={10} className="text-white/80" />
-                    <span className="w-px h-2.5 bg-white/30" />
-                    <Video size={10} className="text-white/80" />
+                    <Camera size={18} className="text-white/80" />
                   </div>
                 </div>
 
@@ -188,12 +186,44 @@ export function EventCard({ event, index = 0 }) {
           </div>
 
           {/* ── LABEL ZONE (printed headline) ── */}
-          <div className={`flex-1 px-3.5 py-3 flex flex-col justify-center ${isDark ? 'bg-raw-darkgray' : 'bg-raw-paper'}`}>
-            <h3 className={`font-display font-bold text-base leading-snug line-clamp-2 mb-1 group-hover:opacity-80 transition-opacity ${isDark ? 'text-white' : 'text-raw-ink'}`}>
+          <div
+            className={`flex-1 px-3 py-3 sm:px-4 sm:py-4 md:px-5 md:py-5 flex flex-col justify-center
+  ${isDark ? 'bg-raw-darkgray' : 'bg-raw-paper'}`}
+          >
+            <h3
+              className={`
+      font-display
+      font-bold
+      tracking-[-0.02em]
+      text-base
+      sm:text-lg
+      md:text-2xl
+      lg:text-3xl
+      leading-tight
+      line-clamp-2
+      mb-1.5
+      group-hover:opacity-80
+      transition-opacity
+      ${isDark ? 'text-white' : 'text-raw-ink'}
+    `}
+            >
               {event.title}
             </h3>
+
             {event.description && (
-              <p className={`font-serif italic text-xs leading-relaxed line-clamp-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              <p
+                className={`
+        font-serif
+        italic
+        text-xs
+        sm:text-sm
+        md:text-base
+        lg:text-lg
+        leading-relaxed
+        line-clamp-2
+        ${isDark ? 'text-gray-400' : 'text-gray-500'}
+      `}
+              >
                 {event.description}
               </p>
             )}
@@ -202,11 +232,11 @@ export function EventCard({ event, index = 0 }) {
           {/* ── BRAND STRIP ── */}
           <div className="h-9 bg-raw-red flex items-center justify-center gap-2 border-t border-black/10 flex-shrink-0">
             <span className="font-oswald text-[11px] font-bold tracking-[0.3em] uppercase text-white">
-              Raw Vision
+              Raw
             </span>
             <span className="w-1 h-1 rounded-full bg-white/50" />
             <span className="font-oswald text-[9px] tracking-[0.2em] uppercase text-white/70">
-              Media
+              Vision Media
             </span>
           </div>
 

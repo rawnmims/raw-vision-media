@@ -1,79 +1,88 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronDown, ChevronUp, Calendar, Images } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
-import { formatDateShort } from '../../utils/helpers'
+import { EventCard } from '../events/EventCard'
 
-export function ArchiveCard({ event }) {
-  const { isDark } = useTheme()
-  return (
-    <Link to={`/events/${event.id}`} className="group flex gap-4 items-start">
-      <div className="w-20 h-16 flex-shrink-0 overflow-hidden">
-        <img
-          src={event.cover_image || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&q=80'}
-          alt={event.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
-      </div>
-      <div className={`flex-1 border-l-2 pl-3 transition-colors duration-200 group-hover:border-raw-accent ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
-        <span className="font-oswald text-[10px] tracking-widest text-raw-accent uppercase">{event.category}</span>
-        <h4 className={`font-display text-sm font-bold leading-tight ${isDark ? 'text-white' : 'text-raw-ink'}`}>{event.title}</h4>
-        <p className={`font-oswald text-[10px] tracking-wider mt-0.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-          <Calendar size={9} className="inline mr-1" />{formatDateShort(event.event_date)}
-        </p>
-      </div>
-    </Link>
-  )
-}
-
-export function YearSection({ year, events }) {
-  const [open, setOpen] = useState(false)
+export function YearSection({ year, events, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen)
   const { isDark } = useTheme()
 
+  // Unique categories for the subline
+  const uniqueCats = [...new Set(events.map(e => e.category).filter(Boolean))].slice(0, 4)
+
   return (
-    <div className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
-      {/* Year Header */}
+    <div className={`border-b-2 ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
+
+      {/* ── Year accordion header ── */}
       <button
-        onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between py-6 px-0 group transition-colors ${isDark ? 'hover:text-white' : 'hover:text-raw-ink'}`}
+        onClick={() => setOpen(v => !v)}
+        className="w-full text-left py-7 group"
+        aria-expanded={open}
       >
-        <div className="flex items-baseline gap-6">
-          <span className={`font-condensed text-5xl md:text-7xl ${isDark ? 'text-white' : 'text-raw-ink'}`}>{year}</span>
-          <div className="text-left">
-            <p className={`font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-              {events.length} Event{events.length !== 1 ? 's' : ''} Covered
-            </p>
-            <p className={`font-serif text-sm italic ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-              {events.map(e => e.category).filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).join(' · ')}
-            </p>
+        <div className="flex items-center justify-between gap-4">
+
+          {/* Left — edition stamp */}
+          <div className="flex items-end gap-5 min-w-0">
+            {/* Big year numeral */}
+            <div className="relative flex-shrink-0">
+              <span
+                className={`font-condensed leading-none select-none transition-colors duration-300
+                  text-[72px] md:text-[96px]
+                  ${open
+                    ? 'text-raw-accent'
+                    : isDark ? 'text-white group-hover:text-raw-accent' : 'text-raw-ink group-hover:text-raw-accent'
+                  }`}
+              >
+                {year}
+              </span>
+              {/* thin rule under the year */}
+              <span
+                className={`absolute -bottom-1 left-0 h-[2px] transition-all duration-500 ${open ? 'w-full bg-raw-accent' : 'w-0 bg-raw-accent'}`}
+              />
+            </div>
+
+            {/* Meta — event count + categories */}
+            <div className="pb-2 min-w-0">
+              <p className={`font-oswald text-[11px] tracking-[0.25em] uppercase mb-0.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+                Vol. {year} &nbsp;·&nbsp; {events.length} Event{events.length !== 1 ? 's' : ''}
+              </p>
+              {uniqueCats.length > 0 && (
+                <p className={`font-serif italic text-sm truncate ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {uniqueCats.join(' · ')}
+                </p>
+              )}
+            </div>
           </div>
+
+          {/* Right — chevron */}
+          <motion.div
+            animate={{ rotate: open ? 180 : 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            className="flex-shrink-0"
+          >
+            <ChevronDown
+              size={22}
+              className={`transition-colors ${open ? 'text-raw-accent' : isDark ? 'text-gray-600 group-hover:text-gray-400' : 'text-gray-400 group-hover:text-gray-600'}`}
+            />
+          </motion.div>
         </div>
-        <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.3 }}>
-          <ChevronDown size={20} className={isDark ? 'text-gray-400' : 'text-gray-500'} />
-        </motion.div>
       </button>
 
-      {/* Events List */}
-      <AnimatePresence>
+      {/* ── Expanded card grid ── */}
+      <AnimatePresence initial={false}>
         {open && (
           <motion.div
+            key="grid"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            transition={{ duration: 0.38, ease: [0.4, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="pb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="pb-10 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
               {events.map((event, i) => (
-                <motion.div
-                  key={event.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <ArchiveCard event={event} />
-                </motion.div>
+                <EventCard key={event.id} event={event} index={i} />
               ))}
             </div>
           </motion.div>

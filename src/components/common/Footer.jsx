@@ -80,23 +80,6 @@ console.log(NAV_LINKS)
       }}
     >
 
-      {/* ── masthead rule ── */}
-      <div style={{ 
-        borderBottom: `1px solid ${rule}`, 
-        padding: 'clamp(8px, 3vw, 12px) clamp(16px, 5vw, 40px)', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        gap: 'clamp(12px, 4vw, 24px)',
-        flexWrap: 'wrap'
-      }}>
-        <div style={{ flex: 1, height: '1px', background: `linear-gradient(to right, transparent, ${rule})`, minWidth: '20px' }} />
-        <span style={{ fontSize: 'clamp(7px, 1.5vw, 9px)', letterSpacing: '0.36em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', whiteSpace: 'nowrap' }}>
-          RAW Vision Media Club · NMIMS Shirpur · Est. 2016
-        </span>
-        <div style={{ flex: 1, height: '1px', background: `linear-gradient(to left, transparent, ${rule})`, minWidth: '20px' }} />
-      </div>
-
       {/* ── main grid ── */}
       <div
         style={{
@@ -162,10 +145,10 @@ console.log(NAV_LINKS)
           {/* thin rule */}
           <div style={{ height: '1px', background: rule, marginBottom: '20px' }} />
 
-          <p style={{ fontSize: 'clamp(12px, 2vw, 15px)', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: '0 0 4px' }}>
+          <p style={{ fontSize: 'clamp(8px, 2vw, 12px)', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: '0 0 4px' }}>
             NMIMS Shirpur · Est. 2016
           </p>
-          <p style={{ fontSize: 'clamp(12px, 2vw, 15px)', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: 0 }}>
+          <p style={{ fontSize: 'clamp(8px, 2vw, 12px)', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: 0 }}>
             Official Media Club
           </p>
         </div>
@@ -178,7 +161,6 @@ console.log(NAV_LINKS)
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {NAV_LINKS.map(link => (
               <li key={link.to} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ width: '14px', height: '1px', background: rule, flexShrink: 0 }} />
                 <Link
                   to={link.to}
                   style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
@@ -200,7 +182,6 @@ console.log(NAV_LINKS)
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {INVOLVE_LINKS.map((link, i) => (
               <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ width: '14px', height: '1px', background: rule, flexShrink: 0 }} />
                 {link.to ? (
                   <Link
                     to={link.to}
@@ -225,7 +206,7 @@ console.log(NAV_LINKS)
         </div>
 
         {/* ── COL 4: Contact + Socials + Map ── */}
-        <div style={{ paddingLeft: 'clamp(8px, 2vw, 36px)' }}>
+        <div style={{ padding: 'clamp(8px, 2vw, 36px)' }}>
           <h4 style={{ fontSize: '12px', letterSpacing: '0.34em', textTransform: 'uppercase', color: accent, marginBottom: '20px', paddingBottom: '10px', borderBottom: `1px solid ${rule}` }}>
             Contact
           </h4>
@@ -311,18 +292,31 @@ console.log(NAV_LINKS)
 
       {/* ── bottom bar ── */}
       <div style={{ borderTop: `1px solid ${rule}` }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: 'clamp(10px, 2vw, 14px) clamp(16px, 5vw, 40px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 'clamp(8px, 2vw, 16px)' }}>
-          <p style={{ fontSize: 'clamp(8px, 1.2vw, 10px)', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)', margin: 0 }}>
-            © {new Date().getFullYear()} RAW Vision Media · NMIMS Shirpur
-          </p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Camera size={10} color="rgba(255,255,255,0.18)" />
-            <span style={{ fontSize: 'clamp(8px, 1.2vw, 10px)', letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.18)' }}>
-              Frames Speak Louder
-            </span>
-          </div>
-        </div>
-      </div>
+  <div
+    style={{
+      maxWidth: '1280px',
+      margin: '0 auto',
+      padding: 'clamp(10px, 2vw, 14px) clamp(16px, 5vw, 40px)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
+    }}
+  >
+    <p
+      style={{
+        fontSize: 'clamp(8px, 1.2vw, 10px)',
+        letterSpacing: '0.24em',
+        textTransform: 'uppercase',
+        color: '#f5f0e8',
+        opacity: 0.75,
+        margin: 0,
+      }}
+    >
+      © {new Date().getFullYear()} RAW Vision Media · NMIMS Shirpur
+    </p>
+  </div>
+</div>
     </footer>
   )
 }

@@ -80,9 +80,12 @@ export function FeaturedWorks() {
               Selected Works
             </h2>
           </div>
-          <Link to="/scrapbook" className={`font-oswald text-xs tracking-widest uppercase flex items-center gap-2
-            ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}>
-            View All <ArrowRight size={14} />
+          <Link
+            to="/scrapbook"
+            className={`font-oswald text-[10px] sm:text-xs tracking-[0.15em] sm:tracking-widest uppercase flex items-center gap-1 sm:gap-2
+  ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}
+          >
+            View All <ArrowRight size={12} className="sm:w-[14px] sm:h-[14px]" />
           </Link>
         </div>
 

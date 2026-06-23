@@ -59,7 +59,7 @@ export function FeaturedWorks() {
           marginBottom: '32px', paddingBottom: '16px', borderBottom: `1px solid ${rule}`,
         }}>
           <div>
-            <p style={{ fontFamily: "'Oswald', sans-serif", fontSize: '9px', letterSpacing: '0.32em', textTransform: 'uppercase', color: '#c0392b', margin: '0 0 6px' }}>
+            <p style={{ fontFamily: "'Oswald', sans-serif", fontSize: '15px', letterSpacing: '0.32em', textTransform: 'uppercase', color: '#c0392b', margin: '0 0 6px' }}>
               Featured
             </p>
             <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', color: ink, margin: 0, lineHeight: 1 }}>

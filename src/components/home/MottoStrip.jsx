@@ -25,7 +25,6 @@ function SprocketRow({ count = 60, holeColor = 'rgba(255,255,255,0.15)' }) {
    theme='dark'  → charcoal     (QuoteMottoStrip)
 ════════════════════════════════════════════════ */
 function FilmStrip({ items, speed = 45, theme = 'sepia' }) {
-  const FRAME_W  = 320
   const BASE_LEN = items.length / 3
 
   const isSepiaTheme = theme === 'sepia'
@@ -38,13 +37,41 @@ function FilmStrip({ items, speed = 45, theme = 'sepia' }) {
   const numColor    = isSepiaTheme ? 'rgba(240,210,140,0.22)' : 'rgba(255,255,255,0.15)'
   const dotColor    = '#c0392b'
 
+  const [frameWidth, setFrameWidth] = useState(320)
+  const [framePadding, setFramePadding] = useState('18px 36px')
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const updateFrame = () => {
+      const width = window.innerWidth
+      if (width < 640) {
+        setFrameWidth(220)
+        setFramePadding('14px 18px')
+      } else if (width < 900) {
+        setFrameWidth(280)
+        setFramePadding('16px 24px')
+      } else if (width < 1200) {
+        setFrameWidth(320)
+        setFramePadding('18px 32px')
+      } else {
+        setFrameWidth(360)
+        setFramePadding('20px 40px')
+      }
+    }
+
+    updateFrame()
+    window.addEventListener('resize', updateFrame)
+    return () => window.removeEventListener('resize', updateFrame)
+  }, [])
+
   return (
     <section style={{ background: filmBg, borderTop: `3px solid ${frameBorder}`, borderBottom: `3px solid ${frameBorder}`, overflow: 'hidden', position: 'relative', userSelect: 'none' }}>
 
       {/* top sprocket */}
       <div style={{ background: sprocketBg, borderBottom: `1px solid ${frameBorder}`, overflow: 'hidden' }}>
         <motion.div
-          animate={{ x: ['0px', `-${FRAME_W * BASE_LEN}px`] }}
+          animate={{ x: ['0px', `-${frameWidth * BASE_LEN}px`] }}
           transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
           style={{ display: 'flex', padding: '5px 0', width: 'max-content' }}
         >
@@ -56,7 +83,7 @@ function FilmStrip({ items, speed = 45, theme = 'sepia' }) {
 
       {/* frames */}
       <motion.div
-        animate={{ x: ['0px', `-${FRAME_W * BASE_LEN}px`] }}
+        animate={{ x: ['0px', `-${frameWidth * BASE_LEN}px`] }}
         transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
         style={{ display: 'flex', width: 'max-content', background: filmBg }}
       >
@@ -64,8 +91,8 @@ function FilmStrip({ items, speed = 45, theme = 'sepia' }) {
           <div
             key={i}
             style={{
-              minWidth: `${FRAME_W}px`, maxWidth: `${FRAME_W}px`,
-              padding: '18px 36px',
+              minWidth: `${frameWidth}px`, maxWidth: `${frameWidth}px`,
+              padding: framePadding,
               borderRight: `2px solid ${frameBorder}`,
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               position: 'relative', boxSizing: 'border-box',
@@ -85,7 +112,7 @@ function FilmStrip({ items, speed = 45, theme = 'sepia' }) {
       {/* bottom sprocket */}
       <div style={{ background: sprocketBg, borderTop: `1px solid ${frameBorder}`, overflow: 'hidden' }}>
         <motion.div
-          animate={{ x: ['0px', `-${FRAME_W * BASE_LEN}px`] }}
+          animate={{ x: ['0px', `-${frameWidth * BASE_LEN}px`] }}
           transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
           style={{ display: 'flex', padding: '5px 0', width: 'max-content' }}
         >
@@ -199,22 +226,6 @@ export function DynamicFormsBanner() {
           backgroundSize: '24px 24px',
         }} />
 
-        {/* top rule with label */}
-        <div style={{ borderBottom: `1px solid ${rule}`, padding: '10px clamp(16px, 4vw, 40px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
-          <motion.div
-            initial={{ scaleX: 0 }} animate={inView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.8, ease: 'easeInOut' }}
-            style={{ height: '1px', flex: 1, minWidth: '24px', background: `linear-gradient(to right, transparent, ${rule})`, transformOrigin: 'left' }}
-          />
-          <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: '9px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', padding: '0 20px', flexShrink: 0 }}>
-            RAW VISION MEDIA CLUB · OPEN CALLS
-          </span>
-          <motion.div
-            initial={{ scaleX: 0 }} animate={inView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.8, ease: 'easeInOut' }}
-            style={{ height: '1px', flex: 1, background: `linear-gradient(to left, transparent, ${rule})`, transformOrigin: 'right' }}
-          />
-        </div>
 
         {/* two-column grid */}
         <div style={{ display: 'grid', gridTemplateColumns: columns, gap: 0, width: '100%' }}>
@@ -239,12 +250,12 @@ export function DynamicFormsBanner() {
                 </span>
 
                 {/* tag line */}
-                <p style={{ fontFamily: "'Oswald', sans-serif", fontSize: '9px', letterSpacing: '0.32em', textTransform: 'uppercase', color: accent, marginBottom: '8px', marginTop: 0 }}>
+                <p style={{ fontFamily: "'Oswald', sans-serif", fontSize: '18px',fontWeight: 600 , letterSpacing: '0.15em', textTransform: 'uppercase', color: accent, marginBottom: '8px', marginTop: 0 }}>
                   {panel.tag}
                 </p>
 
                 {/* issue/section label */}
-                <p style={{ fontFamily: "'Oswald', sans-serif", fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: '20px', marginTop: 0 }}>
+                <p style={{ fontFamily: "'Oswald', sans-serif", fontSize: '14px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: '20px', marginTop: 0 }}>
                   {panel.issue}
                 </p>
 
@@ -257,7 +268,7 @@ export function DynamicFormsBanner() {
                 </h3>
 
                 {/* body */}
-                <p style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '1rem', color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, marginBottom: '32px', marginTop: 0 }}>
+                <p style={{ fontFamily: 'Cormorant Garamond, Georgia, serif', fontSize: '1.2rem', color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, marginBottom: '32px', marginTop: 0 }}>
                   {panel.body}
                 </p>
 
@@ -272,7 +283,7 @@ export function DynamicFormsBanner() {
                   }}
                   style={{
                     fontFamily: "'Oswald', sans-serif",
-                    fontSize: '10px', letterSpacing: '0.26em', textTransform: 'uppercase',
+                    fontSize: '15px', letterSpacing: '0.26em', textTransform: 'uppercase',
                     color: '#f0ece4',
                     border: '1px solid rgba(255,255,255,0.25)',
                     background: 'transparent',
@@ -306,13 +317,6 @@ export function DynamicFormsBanner() {
               )}
             </>
           ))}
-        </div>
-
-        {/* bottom rule */}
-        <div style={{ borderTop: `1px solid ${rule}`, padding: '8px clamp(16px, 4vw, 40px)', display: 'flex', justifyContent: 'center' }}>
-          <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: 'clamp(7px, 1.2vw, 8px)', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.15)' }}>
-            Est. 2016 · NMIMS Shirpur · rawvisionmediaclub.in
-          </span>
         </div>
       </section>
 
@@ -352,6 +356,27 @@ export function QuoteSection() {
   const sectionRef = useRef(null)
   const inView     = useInView(sectionRef, { once: true, margin: '-80px' })
 
+  const [sectionPadding, setSectionPadding] = useState('160px 24px')
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const updatePadding = () => {
+      const width = window.innerWidth
+      if (width < 640) {
+        setSectionPadding('96px 18px')
+      } else if (width < 900) {
+        setSectionPadding('120px 20px')
+      } else {
+        setSectionPadding('160px 24px')
+      }
+    }
+
+    updatePadding()
+    window.addEventListener('resize', updatePadding)
+    return () => window.removeEventListener('resize', updatePadding)
+  }, [])
+
   const mouseX  = useMotionValue(0)
   const mouseY  = useMotionValue(0)
   const springX = useSpring(mouseX, { stiffness: 60, damping: 20 })
@@ -381,7 +406,7 @@ export function QuoteSection() {
         ref={sectionRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={() => { mouseX.set(0); mouseY.set(0) }}
-        style={{ position: 'relative', overflow: 'hidden', padding: '160px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+        style={{ position: 'relative', overflow: 'hidden', padding: sectionPadding, borderBottom: '1px solid rgba(255,255,255,0.08)' }}
       >
         {/* vintage photography bg with parallax */}
         <motion.div style={{
@@ -430,13 +455,13 @@ export function QuoteSection() {
         ))}
 
         {/* content */}
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: '760px', margin: '0 auto', textAlign: 'center' }}>
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: 'min(760px, 100%)', width: '100%', margin: '0 auto', textAlign: 'center' }}>
 
           <motion.div initial={{ scaleX: 0 }} animate={inView ? { scaleX: 1 } : {}} transition={{ duration: 1, ease: 'easeInOut' }}
             style={{ height: '1px', background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.18), transparent)', marginBottom: '36px', transformOrigin: 'center' }} />
 
           <motion.p initial={{ opacity: 0, y: 12 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: 0.2 }}
-            style={{ fontFamily: "'Oswald', sans-serif", fontSize: '10px', letterSpacing: '0.38em', textTransform: 'uppercase', color: muted, marginBottom: '28px' }}>
+            style={{ fontFamily: "'Oswald', sans-serif", fontSize: '14px', letterSpacing: '0.38em', textTransform: 'uppercase', color: muted, marginBottom: '28px' }}>
             NMIMS Shirpur &bull; Since 2016
           </motion.p>
 
