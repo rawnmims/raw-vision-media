@@ -94,7 +94,7 @@ export default function Signup() {
                   whileHover={{ scale: 1.06, filter: 'brightness(1.15)', transition: { duration: 0.25, ease: 'easeOut' } }}
                   style={{ display: 'inline-block', transformOrigin: 'bottom center' }}
                 >
-                  <img src={src} alt={['R', 'A', 'W'][i]} className="h-24 md:h-36 lg:h-48 w-auto object-contain" />
+                  <img src={src} alt={['R', 'A', 'W'][i]} className="h-24 md:h-25 lg:h-34 w-auto object-contain" />
                 </motion.div>
               ))}
             </div>
@@ -103,17 +103,7 @@ export default function Signup() {
             <p className="font-serif text-2xl italic text-white/80">Frames Speak Louder.</p>
           </motion.div>
 
-          {/* Domain rules legend */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.8 }}>
-            <div className="space-y-1.5">
-              {ROLES.map(r => (
-                <div key={r.value} className="flex items-center gap-3">
-                  <span className={`font-oswald text-[10px] tracking-widest uppercase w-20 ${isDark ? 'text-white/40' : 'text-white/40'}`}>{r.label}</span>
-                  <span className="font-oswald text-[10px] tracking-widest text-raw-accent">{r.domain}</span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+    
         </div>
       </div>
 

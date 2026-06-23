@@ -118,7 +118,7 @@ export default function Footer() {
                   <img
                     src={src}
                     alt={['R', 'A', 'W'][i]}
-                    className="h-9 sm:h-12 md:h-20 lg:h-20 w-auto object-contain"
+                    className="h-9 sm:h-12 md:h-14 lg:h-15 w-auto object-contain"
                   />
                 </motion.div>
               ))}
@@ -131,13 +131,13 @@ export default function Footer() {
               transition={{ duration: 0.8, delay: 0.55 }}
             >
               <div className="h-px bg-white/40 w-8 sm:w-12" />
-              <span className="font-oswald text-xs sm:text-sm md:text-base tracking-[0.25em] text-white/80 uppercase">
+              <span className="font-oswald text-xs sm:text-sm md:text-sm tracking-[0.25em] text-white/80 uppercase">
                 Vision Media Club
               </span>
             </motion.div>
 
             <motion.p
-              className="font-serif text-lg sm:text-2xl md:text-4xl text-white/90 italic mt-4 mb-6 sm:mb-8"
+              className="font-serif text-lg sm:text-2xl md:text-xl text-white/90 italic mt-4 mb-6 sm:mb-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.75 }}

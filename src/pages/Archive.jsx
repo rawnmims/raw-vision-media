@@ -4,7 +4,10 @@ import { MainLayout } from '../layouts/MainLayout'
 import { YearSection } from '../components/archive/YearSection'
 import { useTheme } from '../context/ThemeContext'
 import { eventService } from '../services/eventService'
-import { SAMPLE_EVENTS, CURRENT_YEAR } from '../utils/constants'
+import { CURRENT_YEAR } from '../utils/constants'
+
+// Only show these 3 years in archive
+const ARCHIVE_YEARS = [CURRENT_YEAR, CURRENT_YEAR - 1, CURRENT_YEAR - 2]
 
 function NewsprintBackdrop({ isDark }) {
   return (
@@ -28,33 +31,20 @@ export default function Archive() {
   const yearRefs = useRef({})
 
   useEffect(() => {
-    eventService.getEvents({ visibility: 'public' })
-      .then(data => {
-        const list = data.length > 0 ? data : SAMPLE_EVENTS
-        const grouped = {}
-        list.forEach(e => {
-          const y = e.year || new Date(e.event_date).getFullYear()
-          if (y < CURRENT_YEAR) {
-            if (!grouped[y]) grouped[y] = []
-            grouped[y].push(e)
-          }
-        })
-        // Demo fallback
-        if (Object.keys(grouped).length === 0) {
-          const archiveYears = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016]
-          archiveYears.forEach(y => {
-            grouped[y] = SAMPLE_EVENTS.map((e, i) => ({
-              ...e,
-              id: `${y}-${i}`,
-              year: y,
-              title: `${e.title} ${y}`,
-            }))
-          })
-        }
-        setByYear(grouped)
+    // Fetch all 3 years in parallel
+    Promise.all(
+      ARCHIVE_YEARS.map(year =>
+        eventService.getEvents({ visibility: 'public', year })
+          .then(data => ({ year, data }))
+          .catch(() => ({ year, data: [] }))
+      )
+    ).then(results => {
+      const grouped = {}
+      results.forEach(({ year, data }) => {
+        if (data.length > 0) grouped[year] = data
       })
-      .catch(() => {})
-      .finally(() => setLoading(false))
+      setByYear(grouped)
+    }).finally(() => setLoading(false))
   }, [])
 
   const years = Object.keys(byYear).map(Number).sort((a, b) => b - a)
@@ -68,7 +58,7 @@ export default function Archive() {
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-raw-paper'}`}>
         <NewsprintBackdrop isDark={isDark} />
 
-        {/* ── Page Header ── */}
+        {/* Header */}
         <div className={`relative border-b ${isDark ? 'border-gray-800' : 'border-gray-300'} pt-12 pb-8 px-6`}>
           <div className="max-w-7xl mx-auto">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -95,7 +85,7 @@ export default function Archive() {
           </div>
         </div>
 
-        {/* ── Year quick-jump pill bar ── */}
+        {/* Year quick-jump */}
         {!loading && years.length > 0 && (
           <div className={`relative border-b ${isDark ? 'border-gray-800' : 'border-gray-300'} px-6 py-3`}>
             <div className="max-w-7xl mx-auto flex flex-wrap gap-2">
@@ -104,11 +94,11 @@ export default function Archive() {
                   key={year}
                   onClick={() => scrollToYear(year)}
                   whileTap={{ scale: 0.93 }}
-                  className={`font-oswald text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors duration-200
-                    ${isDark
+                  className={`font-oswald text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors duration-200 ${
+                    isDark
                       ? 'border-gray-700 text-gray-400 hover:border-raw-accent hover:text-raw-accent'
                       : 'border-gray-300 text-gray-500 hover:border-raw-accent hover:text-raw-accent'
-                    }`}
+                  }`}
                 >
                   {year}
                 </motion.button>
@@ -117,7 +107,7 @@ export default function Archive() {
           </div>
         )}
 
-        {/* ── Content ── */}
+        {/* Content */}
         <div className="relative max-w-7xl mx-auto px-6 py-6">
           {loading ? (
             <div className="py-24 text-center">
@@ -137,10 +127,7 @@ export default function Archive() {
             </div>
           ) : (
             years.map((year, i) => (
-              <div
-                key={year}
-                ref={el => { yearRefs.current[year] = el }}
-              >
+              <div key={year} ref={el => { yearRefs.current[year] = el }}>
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}

@@ -5,7 +5,7 @@ import { EventGrid } from '../components/events/EventCard'
 import EventFilters from '../components/events/EventFilters'
 import { useTheme } from '../context/ThemeContext'
 import { eventService } from '../services/eventService'
-import { SAMPLE_EVENTS, CURRENT_YEAR } from '../utils/constants'
+import { CURRENT_YEAR } from '../utils/constants'
 
 function NewsprintBackdrop({ isDark }) {
   return (
@@ -32,13 +32,13 @@ export default function Events() {
   useEffect(() => {
     eventService.getEvents({ year: CURRENT_YEAR, visibility: 'public' })
       .then(data => {
-        const list = data.length > 0 ? data : SAMPLE_EVENTS.filter(e => e.year === CURRENT_YEAR || true)
-        setEvents(list)
-        setFiltered(list)
+        setEvents(data)
+        setFiltered(data)
       })
-      .catch(() => {
-        setEvents(SAMPLE_EVENTS)
-        setFiltered(SAMPLE_EVENTS)
+      .catch(err => {
+        console.error('Events fetch error:', err)
+        setEvents([])
+        setFiltered([])
       })
       .finally(() => setLoading(false))
   }, [])
@@ -52,14 +52,9 @@ export default function Events() {
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-raw-paper'}`}>
         <NewsprintBackdrop isDark={isDark} />
 
-        {/* Page Header */}
         <div className={`relative border-b ${isDark ? 'border-gray-800' : 'border-gray-300'} pt-12 pb-8 px-6`}>
           <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ staggerChildren: 0.08 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <div className="flex items-center gap-3 mb-2">
                 <p className="section-eyebrow">{CURRENT_YEAR} Coverage</p>
                 <span className="font-oswald text-[10px] tracking-[0.25em] uppercase px-2 py-0.5 border border-raw-accent text-raw-accent rotate-[-2deg]">
@@ -79,14 +74,12 @@ export default function Events() {
           </div>
         </div>
 
-        {/* Filters */}
         <div className={`relative border-b ${isDark ? 'border-gray-800' : 'border-gray-300'} px-6 py-4`}>
           <div className="max-w-7xl mx-auto">
             <EventFilters selected={category} onChange={setCategory} />
           </div>
         </div>
 
-        {/* Grid */}
         <div className="relative max-w-7xl mx-auto px-6 py-12">
           <EventGrid events={filtered} loading={loading} />
         </div>

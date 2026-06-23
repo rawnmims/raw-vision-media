@@ -127,7 +127,7 @@ export default function Login() {
                   <img
                     src={src}
                     alt={['R', 'A', 'W'][i]}
-                    className="h-24 md:h-36 lg:h-48 w-auto object-contain"
+                    className="h-24 md:h-20 lg:h-34 w-auto object-contain"
                   />
                 </motion.div>
               ))}
