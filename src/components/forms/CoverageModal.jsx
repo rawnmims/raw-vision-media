@@ -12,14 +12,60 @@ export default function CoverageModal({ isOpen, onClose }) {
     contact_person: '', email: '', phone: '',
     coverage_type: '', description: '', expected_crowd: '', special_requirements: ''
   })
+  const [fieldErrors, setFieldErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
-  const handleChange = e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  // Per-field validators
+  const validators = {
+    contact_person: v => /^[a-zA-Z\s]+$/.test(v) ? '' : 'Name can only contain letters and spaces.',
+    email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Enter a valid email address.',
+    phone: v => /^[\d\s]+$/.test(v) ? '' : 'Phone number can only contain digits.',
+    committee: v => /^[a-zA-Z0-9.\-\s]+$/.test(v) ? '' : 'Committee name can only contain letters, numbers, spaces, dots, or hyphens.',
+  }
+
+  const handleChange = e => {
+    const { name, value } = e.target
+
+    // Restrict input characters on the fly
+    if (name === 'contact_person' && value && !/^[a-zA-Z\s]*$/.test(value)) return
+    if (name === 'phone' && value && !/^[\d\s]*$/.test(value)) return
+    if (name === 'committee' && value && !/^[a-zA-Z0-9.\-\s]*$/.test(value)) return
+
+    setForm(prev => ({ ...prev, [name]: value }))
+
+    // Clear field error on change
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: '' }))
+    }
+  }
+
+  const handleBlur = e => {
+    const { name, value } = e.target
+    if (validators[name] && value) {
+      const msg = validators[name](value)
+      setFieldErrors(prev => ({ ...prev, [name]: msg }))
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Run all field validators
+    const newErrors = {}
+    Object.entries(validators).forEach(([field, validate]) => {
+      if (form[field]) {
+        const msg = validate(form[field])
+        if (msg) newErrors[field] = msg
+      }
+    })
+
+    if (Object.keys(newErrors).length > 0) {
+      setFieldErrors(newErrors)
+      return
+    }
+
     setLoading(true)
     setError('')
     try {
@@ -32,10 +78,22 @@ export default function CoverageModal({ isOpen, onClose }) {
     }
   }
 
-  const inputClass = `raw-input ${isDark ? 'text-white border-gray-600 placeholder-gray-500' : 'text-raw-ink border-gray-300 placeholder-gray-400'}`
-  const selectClass = `raw-select ${isDark ? 'text-white border-gray-600' : 'text-raw-ink border-gray-300'}`
+  const inputBase = `w-full mt-1 px-3 py-2 border text-sm bg-transparent outline-none transition-colors`
+  const inputClass = (field) =>
+    `${inputBase} ${fieldErrors[field]
+      ? 'border-red-500'
+      : isDark
+        ? 'text-white border-gray-600 placeholder-gray-500 focus:border-raw-accent'
+        : 'text-raw-ink border-gray-300 placeholder-gray-400 focus:border-raw-accent'
+    }`
+  const selectClass = `w-full mt-1 px-3 py-2 border text-sm bg-transparent outline-none transition-colors ${isDark ? 'text-white border-gray-600 focus:border-raw-accent' : 'text-raw-ink border-gray-300 focus:border-raw-accent'}`
   const labelClass = `font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'}`
   const bg = isDark ? 'bg-raw-darkgray text-white' : 'bg-white text-raw-ink'
+
+  const FieldError = ({ field }) =>
+    fieldErrors[field]
+      ? <p className="text-red-500 font-oswald text-[10px] tracking-wider uppercase mt-1">{fieldErrors[field]}</p>
+      : null
 
   return (
     <AnimatePresence>
@@ -87,23 +145,44 @@ export default function CoverageModal({ isOpen, onClose }) {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="sm:col-span-2">
                       <label className={labelClass}>Event Name *</label>
-                      <input name="event_name" value={form.event_name} onChange={handleChange} required placeholder="Name of your event" className={inputClass} />
+                      <input
+                        name="event_name" value={form.event_name} onChange={handleChange}
+                        required placeholder="Name of your event"
+                        className={inputClass('event_name')}
+                      />
                     </div>
                     <div>
                       <label className={labelClass}>Organizing Committee *</label>
-                      <input name="committee" value={form.committee} onChange={handleChange} required placeholder="Committee name" className={inputClass} />
+                      <input
+                        name="committee" value={form.committee} onChange={handleChange} onBlur={handleBlur}
+                        required placeholder="Committee name"
+                        className={inputClass('committee')}
+                      />
+                      <FieldError field="committee" />
                     </div>
                     <div>
                       <label className={labelClass}>Venue *</label>
-                      <input name="venue" value={form.venue} onChange={handleChange} required placeholder="Event venue" className={inputClass} />
+                      <input
+                        name="venue" value={form.venue} onChange={handleChange}
+                        required placeholder="Event venue"
+                        className={inputClass('venue')}
+                      />
                     </div>
                     <div>
                       <label className={labelClass}>Event Date *</label>
-                      <input name="date" type="date" value={form.date} onChange={handleChange} required className={inputClass} />
+                      <input
+                        name="date" type="date" value={form.date} onChange={handleChange}
+                        required
+                        className={inputClass('date')}
+                      />
                     </div>
                     <div>
                       <label className={labelClass}>Expected Crowd Size</label>
-                      <input name="expected_crowd" value={form.expected_crowd} onChange={handleChange} required placeholder="e.g. 200-500" className={inputClass} />
+                      <input
+                        name="expected_crowd" value={form.expected_crowd} onChange={handleChange}
+                        required placeholder="e.g. 200-500"
+                        className={inputClass('expected_crowd')}
+                      />
                     </div>
                   </div>
                 </div>
@@ -116,15 +195,30 @@ export default function CoverageModal({ isOpen, onClose }) {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
                       <label className={labelClass}>Contact Person *</label>
-                      <input name="contact_person" value={form.contact_person} onChange={handleChange} required placeholder="Full name" className={inputClass} />
+                      <input
+                        name="contact_person" value={form.contact_person} onChange={handleChange} onBlur={handleBlur}
+                        required placeholder="Full name"
+                        className={inputClass('contact_person')}
+                      />
+                      <FieldError field="contact_person" />
                     </div>
                     <div>
                       <label className={labelClass}>Contact Email *</label>
-                      <input name="email" type="email" value={form.email} onChange={handleChange} required placeholder="email@nmims.in" className={inputClass} />
+                      <input
+                        name="email" type="email" value={form.email} onChange={handleChange} onBlur={handleBlur}
+                        required placeholder="yourname@gmail.com"
+                        className={inputClass('email')}
+                      />
+                      <FieldError field="email" />
                     </div>
                     <div>
                       <label className={labelClass}>Contact Number *</label>
-                      <input name="phone" value={form.phone} onChange={handleChange} required placeholder="+91 XXXXX XXXXX" className={inputClass} />
+                      <input
+                        name="phone" value={form.phone} onChange={handleChange} onBlur={handleBlur}
+                        required placeholder="XXXXX XXXXX" maxLength={11}
+                        className={inputClass('phone')}
+                      />
+                      <FieldError field="phone" />
                     </div>
                     <div>
                       <label className={labelClass}>Coverage Type *</label>

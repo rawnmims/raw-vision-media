@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
-import { Instagram, Linkedin, Mail, Camera } from 'lucide-react'
+import { Instagram, Linkedin, Mail } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import Swal from 'sweetalert2'
 import { formService } from '../../services/formService'
 import JoinRawModal from '../forms/JoinRawModal'
 import CoverageModal from '../forms/CoverageModal'
@@ -31,11 +32,26 @@ export default function Footer() {
         setMapHeight(130)
       }
     }
-
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
+
+  const handleJoinClick = () => {
+    if (!settings?.join_raw_open) {
+      Swal.fire({ icon: 'info', title: 'Applications Closed', text: 'RAW Vision Media Club recruitment is currently closed.', confirmButtonText: 'OK' })
+      return
+    }
+    setJoinOpen(true)
+  }
+
+  const handleCoverageClick = () => {
+    if (!settings?.coverage_open) {
+      Swal.fire({ icon: 'info', title: 'Coverage Closed', text: 'Coverage requests are currently not being accepted.', confirmButtonText: 'OK' })
+      return
+    }
+    setCoverageOpen(true)
+  }
 
   const accent = '#c0392b'
   const rule   = 'rgba(255,255,255,0.08)'
@@ -52,6 +68,7 @@ export default function Footer() {
       },
     }),
   }
+
   const NAV_LINKS = [
     { label: 'Home',      to: '/home'      },
     { label: 'Events',    to: '/events'    },
@@ -62,10 +79,10 @@ export default function Footer() {
   ]
 
   const INVOLVE_LINKS = [
-    { label: 'Join RAW' , action: "join"         },
-    { label: 'Request Coverage' , action: "coverage"  },
-    { label: 'Sign In',   to: '/login'  },
-    { label: 'Create Account', to: '/signup' },
+    { label: 'Join RAW',          action: handleJoinClick     },
+    { label: 'Request Coverage',  action: handleCoverageClick },
+    { label: 'Sign In',           to: '/login'                },
+    { label: 'Create Account',    to: '/signup'               },
   ]
 
   return (
@@ -83,7 +100,6 @@ export default function Footer() {
         boxSizing: 'border-box',
       }}
     >
-
       {/* ── main grid ── */}
       <div
         style={{
@@ -95,10 +111,8 @@ export default function Footer() {
           gap: 'clamp(24px, 6vw, 48px)',
         }}
       >
-
         {/* ── COL 1: Brand ── */}
         <div style={{ paddingRight: 'clamp(12px, 3vw, 40px)' }}>
-          {/* RAW logotype — staggered per letter */}
           <div>
             <div className="flex items-end gap-0 md:gap-1 mb-3 overflow-hidden">
               {[rLogo, aLogo, wLogo].map((src, i) => (
@@ -146,7 +160,6 @@ export default function Footer() {
             </motion.p>
           </div>
 
-          {/* thin rule */}
           <div style={{ height: '1px', background: rule, marginBottom: '20px' }} />
 
           <p style={{ fontSize: 'clamp(8px, 2vw, 12px)', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', margin: '0 0 4px' }}>
@@ -164,7 +177,7 @@ export default function Footer() {
           </h4>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {NAV_LINKS.map(link => (
-              <li key={link.to} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <li key={link.to}>
                 <Link
                   to={link.to}
                   style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
@@ -185,7 +198,7 @@ export default function Footer() {
           </h4>
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {INVOLVE_LINKS.map((link, i) => (
-              <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <li key={i}>
                 {link.to ? (
                   <Link
                     to={link.to}
@@ -197,23 +210,8 @@ export default function Footer() {
                   </Link>
                 ) : (
                   <span
-                    onClick={() => {
-                      if (link.label === 'Join RAW') {
-                        setJoinOpen(true)
-                      }
-
-                      if (link.label === 'Request Coverage') {
-                        setCoverageOpen(true)
-                      }
-                    }}
-                    style={{
-                      fontSize: 'clamp(10px, 1.5vw, 12px)',
-                      letterSpacing: '0.2em',
-                      textTransform: 'uppercase',
-                      color: 'rgba(255,255,255,0.38)',
-                      cursor: 'pointer',
-                      transition: 'color 0.2s',
-                    }}
+                    onClick={link.action}
+                    style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', cursor: 'pointer', transition: 'color 0.2s' }}
                     onMouseEnter={e => e.currentTarget.style.color = '#fff'}
                     onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
                   >
@@ -231,7 +229,6 @@ export default function Footer() {
             Contact
           </h4>
 
-          {/* email */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
             <Mail size={13} color="rgba(255,255,255,0.25)" />
             <a
@@ -244,13 +241,11 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* follow us */}
           <h4 style={{ fontSize: '9px', letterSpacing: '0.34em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.2)', marginBottom: '14px' }}>
             Follow Us
           </h4>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
-            {/* RAW Instagram */}
             <a
               href={settings.instagram || 'https://instagram.com/rawvisionmedia'}
               target="_blank" rel="noreferrer"
@@ -262,7 +257,6 @@ export default function Footer() {
               <span style={{ fontSize: 'clamp(10px, 1.5vw, 11px)', letterSpacing: '0.16em', textTransform: 'uppercase' }}>RAW Vision Media</span>
             </a>
 
-            {/* NMIMS Shirpur Instagram */}
             <a
               href={settings.instagram_nmims || 'https://instagram.com/nmimshirpur'}
               target="_blank" rel="noreferrer"
@@ -274,7 +268,6 @@ export default function Footer() {
               <span style={{ fontSize: 'clamp(10px, 1.5vw, 11px)', letterSpacing: '0.16em', textTransform: 'uppercase' }}>NMIMS Shirpur</span>
             </a>
 
-            {/* LinkedIn */}
             {(settings.linkedin || true) && (
               <a
                 href={settings.linkedin || 'https://linkedin.com'}
@@ -289,7 +282,6 @@ export default function Footer() {
             )}
           </div>
 
-          {/* ── embedded map ── */}
           <div style={{ border: `1px solid ${rule}`, overflow: 'hidden', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '8px', left: '8px', zIndex: 2, background: '#0a0a0a', padding: '2px 8px' }}>
               <span style={{ fontSize: '8px', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>
@@ -323,29 +315,14 @@ export default function Footer() {
             textAlign: 'center',
           }}
         >
-          <p
-            style={{
-              fontSize: 'clamp(8px, 1.2vw, 10px)',
-              letterSpacing: '0.24em',
-              textTransform: 'uppercase',
-              color: '#f5f0e8',
-              opacity: 0.75,
-              margin: 0,
-            }}
-          >
+          <p style={{ fontSize: 'clamp(8px, 1.2vw, 10px)', letterSpacing: '0.24em', textTransform: 'uppercase', color: '#f5f0e8', opacity: 0.75, margin: 0 }}>
             © {new Date().getFullYear()} RAW Vision Media · NMIMS Shirpur
           </p>
         </div>
       </div>
-      <JoinRawModal
-        isOpen={joinOpen}
-        onClose={() => setJoinOpen(false)}
-      />
 
-      <CoverageModal
-        isOpen={coverageOpen}
-        onClose={() => setCoverageOpen(false)}
-      />
+      <JoinRawModal isOpen={joinOpen} onClose={() => setJoinOpen(false)} />
+      <CoverageModal isOpen={coverageOpen} onClose={() => setCoverageOpen(false)} />
     </footer>
   )
 }

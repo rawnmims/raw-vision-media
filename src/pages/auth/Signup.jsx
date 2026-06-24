@@ -68,7 +68,7 @@ export default function Signup() {
     <div className={`min-h-screen flex ${formBg}`}>
 
       {/* Left — Cinematic Video Panel (desktop only) */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-raw-black">
+      <div className="hidden lg:flex fixed left-0 top-0 w-1/2 h-screen overflow-hidden bg-raw-black">
         <video
           className="absolute inset-0 w-full h-full object-cover"
           autoPlay loop muted playsInline preload="auto"
@@ -108,7 +108,7 @@ export default function Signup() {
       </div>
 
       {/* Right — Signup Form */}
-      <div className={`flex-1 flex flex-col justify-center px-8 sm:px-16 lg:px-20 py-12 relative ${formBg}`}>
+      <div className={`ml-[50%] flex-1 flex flex-col justify-center px-8 sm:px-16 lg:px-20 py-12 relative ${formBg}`}>
         <div className="absolute top-6 right-6"><ThemeToggle /></div>
 
         {/* Mobile Brand */}

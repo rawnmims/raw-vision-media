@@ -1,10 +1,54 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Eye, X } from 'lucide-react'
+import { Eye, X, Download } from 'lucide-react'
+import * as XLSX from 'xlsx'
 import AdminLayout from '../../layouts/AdminLayout'
 import { useTheme } from '../../context/ThemeContext'
 import { formService } from '../../services/formService'
 import { formatDateShort } from '../../utils/helpers'
+
+function exportToExcel(apps) {
+  const rows = apps.map((app, i) => ({
+    '#': i + 1,
+    'Name': app.name || '',
+    'Email': app.email || '',
+    'Phone': app.phone || '',
+    'Year': app.year || '',
+    'Course': app.course || '',
+    'Preference 1': app.preference1 || '',
+    'Preference 2': app.preference2 || '',
+    'Preference 3': app.preference3 || '',
+    'Why Join RAW': app.why_join || '',
+    'Experience': app.experience || '',
+    'Creative Work Link': app.creative_drive_link || '',
+    'Submitted On': app.created_at ? new Date(app.created_at).toLocaleString() : '',
+  }))
+
+  const ws = XLSX.utils.json_to_sheet(rows)
+
+  // Column widths
+  ws['!cols'] = [
+    { wch: 4 },   // #
+    { wch: 22 },  // Name
+    { wch: 28 },  // Email
+    { wch: 16 },  // Phone
+    { wch: 10 },  // Year
+    { wch: 20 },  // Course
+    { wch: 18 },  // Pref 1
+    { wch: 18 },  // Pref 2
+    { wch: 18 },  // Pref 3
+    { wch: 50 },  // Why Join
+    { wch: 40 },  // Experience
+    { wch: 40 },  // Drive Link
+    { wch: 20 },  // Date
+  ]
+
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'Applications')
+
+  const date = new Date().toISOString().slice(0, 10)
+  XLSX.writeFile(wb, `RAW_Applications_${date}.xlsx`)
+}
 
 export default function ApplicationsAdmin() {
   const { isDark } = useTheme()
@@ -25,10 +69,26 @@ export default function ApplicationsAdmin() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div>
-          <p className="section-eyebrow mb-1">Recruitment</p>
-          <h1 className={`font-display text-3xl font-bold ${isDark ? 'text-white' : 'text-raw-ink'}`}>Applications</h1>
-          <p className={`font-serif text-sm italic mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{apps.length} total applications</p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="section-eyebrow mb-1">Recruitment</p>
+            <h1 className={`font-display text-3xl font-bold ${isDark ? 'text-white' : 'text-raw-ink'}`}>Applications</h1>
+            <p className={`font-serif text-sm italic mt-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>{apps.length} total applications</p>
+          </div>
+
+          {apps.length > 0 && (
+            <button
+              onClick={() => exportToExcel(apps)}
+              className={`flex items-center gap-2 px-4 py-2 border font-oswald text-xs tracking-widest uppercase transition-colors flex-shrink-0 mt-1
+                ${isDark
+                  ? 'border-gray-700 text-gray-400 hover:border-raw-accent hover:text-white'
+                  : 'border-gray-300 text-gray-500 hover:border-raw-accent hover:text-raw-ink'
+                }`}
+            >
+              <Download size={13} />
+              Export Excel
+            </button>
+          )}
         </div>
 
         <div className={`border ${cardBg}`}>

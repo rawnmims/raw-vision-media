@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ChevronDown, Camera, Video, ArrowRight } from 'lucide-react'
+import { Camera, Video, ArrowRight } from 'lucide-react'
+import Swal from 'sweetalert2'
 import JoinRawModal from '../forms/JoinRawModal'
 import CoverageModal from '../forms/CoverageModal'
+import { formService } from '../../services/formService'
 import heroVideo from '../../assets/hero-video.mp4'
 import rLogo from '../../assets/r.png'
 import aLogo from '../../assets/a.png'
@@ -13,8 +15,30 @@ export default function HeroSection() {
   const [coverageOpen, setCoverageOpen] = useState(false)
   const [joinHover, setJoinHover] = useState(false)
   const [coverageHover, setCoverageHover] = useState(false)
+  const [settings, setSettings] = useState({})
 
-  // Each letter animates in from below, staggered
+  useEffect(() => {
+    formService.getSettings()
+      .then(d => { if (d) setSettings(d) })
+      .catch(() => {})
+  }, [])
+
+  const handleJoinClick = () => {
+    if (!settings?.join_raw_open) {
+      Swal.fire({ icon: 'info', title: 'Applications Closed', text: 'RAW Vision Media Club recruitment is currently closed.', confirmButtonText: 'OK' })
+      return
+    }
+    setJoinOpen(true)
+  }
+
+  const handleCoverageClick = () => {
+    if (!settings?.coverage_open) {
+      Swal.fire({ icon: 'info', title: 'Coverage Closed', text: 'Coverage requests are currently not being accepted.', confirmButtonText: 'OK' })
+      return
+    }
+    setCoverageOpen(true)
+  }
+
   const letterVariants = {
     hidden: { opacity: 0, y: 80, skewY: 6 },
     visible: (i) => ({
@@ -39,7 +63,7 @@ export default function HeroSection() {
         min-h-[520px]
         md:min-h-[600px]
         overflow-hidden
-       bg-raw-black
+        bg-raw-black
       ">
 
         {/* ── Video ───────────────────────────────────────── */}
@@ -55,17 +79,13 @@ export default function HeroSection() {
         </video>
 
         {/* ── Overlays ────────────────────────────────────── */}
-        {/* Bottom fade for text legibility */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/88" />
-        {/* Strong left vignette — editorial depth */}
         <div className="absolute inset-0"
           style={{
             background: 'linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.65) 28%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0) 100%)'
           }}
         />
-        {/* Top fade */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent" style={{ height: '30%' }} />
-        {/* Film grain */}
         <div
           className="absolute inset-0 opacity-[0.035] pointer-events-none mix-blend-overlay"
           style={{
@@ -87,7 +107,7 @@ export default function HeroSection() {
             </span>
           </motion.div>
 
-          {/* RAW logotype — staggered per letter */}
+          {/* RAW logotype */}
           <div>
             <div className="flex items-end gap-0 md:gap-1 mb-3 overflow-hidden">
               {[rLogo, aLogo, wLogo].map((src, i) => (
@@ -142,15 +162,14 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.95 }}
           >
-            {/* Join RAW — solid fill with animated line sweep */}
+            {/* Join RAW */}
             <button
-              onClick={() => setJoinOpen(true)}
+              onClick={handleJoinClick}
               onMouseEnter={() => setJoinHover(true)}
               onMouseLeave={() => setJoinHover(false)}
               className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-lg tracking-widest uppercase w-[220px]"
               style={{ background: '#f5f0e8', color: '#0A0A0A' }}
             >
-              {/* Hover fill sweep */}
               <motion.span
                 className="absolute inset-0 bg-raw-accent"
                 initial={{ x: '-100%' }}
@@ -171,14 +190,13 @@ export default function HeroSection() {
               </motion.span>
             </button>
 
-            {/* Request Coverage — outline with inverse fill sweep */}
+            {/* Request Coverage */}
             <button
-              onClick={() => setCoverageOpen(true)}
+              onClick={handleCoverageClick}
               onMouseEnter={() => setCoverageHover(true)}
               onMouseLeave={() => setCoverageHover(false)}
               className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-lg tracking-widest uppercase border border-white text-white w-[270px]"
             >
-              {/* Hover fill sweep */}
               <motion.span
                 className="absolute inset-0 bg-[#f5f0e8]"
                 initial={{ x: '100%' }}
