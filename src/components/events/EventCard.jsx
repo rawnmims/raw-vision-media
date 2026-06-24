@@ -119,7 +119,7 @@ export function EventCard({ event, index = 0 }) {
               src={getImageUrl(event.cover_image) || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80'}
               alt={event.title}
               loading="lazy"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="absolute inset-0 w-full h-full object-cover object-centre transition-transform duration-700 group-hover:scale-105"
               style={{ filter: 'grayscale(30%) contrast(1.05) brightness(0.9)' }}
             />
             <div

@@ -3,6 +3,7 @@ import { useTheme } from '../../context/ThemeContext'
 
 export function TeamCard({ member, index = 0 }) {
   const { isDark } = useTheme()
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -13,17 +14,42 @@ export function TeamCard({ member, index = 0 }) {
     >
       <div className="relative w-24 h-24 mx-auto mb-4 overflow-hidden rounded-full border-2 border-transparent group-hover:border-raw-accent transition-colors">
         {member.photo ? (
-          <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
+          <img
+            src={member.photo}
+            alt={member.name}
+            className="w-full h-full object-cover"
+          />
         ) : (
-          <div className={`w-full h-full flex items-center justify-center ${isDark ? 'bg-gray-800' : 'bg-raw-cream'}`}>
-            <span className="font-condensed text-3xl text-raw-accent">{member.name?.[0]}</span>
+          <div
+            className={`w-full h-full flex items-center justify-center ${
+              isDark ? 'bg-gray-800' : 'bg-raw-cream'
+            }`}
+          >
+            <span className="font-condensed text-3xl text-raw-accent">
+              {member.name?.[0]}
+            </span>
           </div>
         )}
       </div>
-      <h4 className={`font-display text-base font-bold ${isDark ? 'text-white' : 'text-raw-ink'}`}>{member.name}</h4>
-      <p className="font-oswald text-xs tracking-widest text-raw-accent uppercase mt-0.5">{member.role}</p>
+
+      <h4
+        className={`font-display text-lg font-bold ${
+          isDark ? 'text-white' : 'text-raw-ink'
+        }`}
+      >
+        {member.name}
+      </h4>
+
+      <p className="font-oswald text-sm tracking-widest text-raw-accent uppercase mt-1">
+        {member.role}
+      </p>
+
       {member.department && (
-        <p className={`font-oswald text-[10px] tracking-wider uppercase mt-0.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+        <p
+          className={`font-oswald text-xs tracking-wider uppercase mt-1 ${
+            isDark ? 'text-gray-500' : 'text-gray-400'
+          }`}
+        >
           {member.department}
         </p>
       )}

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Instagram, Linkedin, Mail } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
 import { useEffect, useState } from 'react'
@@ -43,6 +43,13 @@ export default function Footer() {
       return
     }
     setJoinOpen(true)
+  }
+
+  const navigate = useNavigate()
+
+  const handleNavClick = (to) => {
+    navigate(to)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleCoverageClick = () => {
@@ -178,14 +185,14 @@ export default function Footer() {
           <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {NAV_LINKS.map(link => (
               <li key={link.to}>
-                <Link
-                  to={link.to}
-                  style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
+                <span
+                  onClick={() => handleNavClick(link.to)}
+                  style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' }}
                   onMouseEnter={e => e.currentTarget.style.color = '#fff'}
                   onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
                 >
                   {link.label}
-                </Link>
+                </span>
               </li>
             ))}
           </ul>
@@ -200,14 +207,14 @@ export default function Footer() {
             {INVOLVE_LINKS.map((link, i) => (
               <li key={i}>
                 {link.to ? (
-                  <Link
-                    to={link.to}
-                    style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s' }}
+                  <span
+                    onClick={() => handleNavClick(link.to)}
+                    style={{ fontSize: 'clamp(10px, 1.5vw, 12px)', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' }}
                     onMouseEnter={e => e.currentTarget.style.color = '#fff'}
                     onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.38)'}
                   >
                     {link.label}
-                  </Link>
+                  </span>
                 ) : (
                   <span
                     onClick={link.action}

@@ -20,6 +20,7 @@ const DEPARTMENTS_INFO = [
 function MemberCard({ member, dim = false }) {
   const { isDark } = useTheme()
   const photoUrl = getImageUrl(member.photo)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -27,16 +28,49 @@ function MemberCard({ member, dim = false }) {
       viewport={{ once: true }}
       className={`group text-center ${dim ? 'opacity-60' : ''}`}
     >
-      <div className={`relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mx-auto mb-3 sm:mb-4 overflow-hidden rounded-full border-2 border-transparent group-hover:border-raw-accent transition-colors ${isDark ? 'bg-gray-800' : 'bg-raw-cream'}`}>
-        {photoUrl
-          ? <img src={photoUrl} alt={member.name} className="w-full h-full object-cover" onError={e => { e.target.style.display = 'none' }} />
-          : <div className="w-full h-full flex items-center justify-center"><span className="font-condensed text-3xl sm:text-4xl text-raw-accent">{member.name?.[0]}</span></div>
-        }
+      <div
+        className={`relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mx-auto mb-3 sm:mb-4 overflow-hidden rounded-full border-2 border-transparent group-hover:border-raw-accent transition-colors ${
+          isDark ? 'bg-gray-800' : 'bg-raw-cream'
+        }`}
+      >
+        {photoUrl ? (
+          <img
+            src={photoUrl}
+            alt={member.name}
+            className="w-full h-full object-cover"
+            onError={e => {
+              e.target.style.display = 'none'
+            }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="font-condensed text-3xl sm:text-4xl text-raw-accent">
+              {member.name?.[0]}
+            </span>
+          </div>
+        )}
       </div>
-      <h4 className={`font-display text-sm sm:text-base font-bold leading-tight ${isDark ? 'text-white' : 'text-raw-ink'}`}>{member.name}</h4>
-      <p className="font-oswald text-[10px] sm:text-[11px] tracking-widest text-raw-accent uppercase mt-0.5">{member.role}</p>
+
+      <h4
+        className={`font-display text-base sm:text-lg font-bold leading-tight ${
+          isDark ? 'text-white' : 'text-raw-ink'
+        }`}
+      >
+        {member.name}
+      </h4>
+
+      <p className="font-oswald text-[11px] sm:text-xs tracking-widest text-raw-accent uppercase mt-1">
+        {member.role}
+      </p>
+
       {member.department && (
-        <p className={`font-oswald text-[10px] sm:text-[11px] tracking-wider uppercase mt-0.5 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{member.department}</p>
+        <p
+          className={`font-oswald text-[11px] sm:text-xs tracking-wider uppercase mt-1 ${
+            isDark ? 'text-gray-500' : 'text-gray-400'
+          }`}
+        >
+          {member.department}
+        </p>
       )}
     </motion.div>
   )
@@ -63,6 +97,7 @@ function SectionBlock({ eyebrow, title, members }) {
 // in a single flat grid, ordered by position — no split by role or department.
 function YearPanel({ year, isCurrent, members }) {
   const { isDark } = useTheme()
+
   if (!members.length) return null
 
   return (
@@ -74,16 +109,36 @@ function YearPanel({ year, isCurrent, members }) {
       style={{
         borderTopWidth: 4,
         borderTopStyle: 'solid',
-        borderTopColor: isCurrent ? '#C8A96E' : (isDark ? '#3a3a3a' : '#cfcfcf'),
+        borderTopColor: isCurrent
+          ? '#C8A96E'
+          : (isDark ? '#3a3a3a' : '#cfcfcf'),
       }}
     >
       {/* Panel header */}
-      <div className={`px-5 sm:px-8 md:px-10 py-6 sm:py-8 border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
-        <p className="section-eyebrow mb-1">{isCurrent ? 'Current Team' : 'Alumni'}</p>
-        <h2 className={`editorial-heading text-3xl sm:text-4xl ${isCurrent ? (isDark ? 'text-white' : 'text-raw-ink') : (isDark ? 'text-gray-300' : 'text-gray-600')}`}>
+      <div
+        className={`px-5 sm:px-8 md:px-10 py-6 sm:py-8 border-b ${
+          isDark ? 'border-gray-800' : 'border-gray-200'
+        }`}
+      >
+        <p className="section-eyebrow text-lg mb-2">
+          {isCurrent ? 'Current Team' : 'Alumni'}
+        </p>
+
+        <h2
+          className={`editorial-heading text-4xl sm:text-5xl ${
+            isCurrent
+              ? (isDark ? 'text-white' : 'text-raw-ink')
+              : (isDark ? 'text-gray-300' : 'text-gray-600')
+          }`}
+        >
           {year}
         </h2>
-        <p className={`font-oswald text-[10px] tracking-widest uppercase mt-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
+
+        <p
+          className={`font-oswald text-sm sm:text-base tracking-widest uppercase mt-3 ${
+            isDark ? 'text-gray-500' : 'text-gray-400'
+          }`}
+        >
           {members.length} member{members.length !== 1 ? 's' : ''}
         </p>
       </div>
@@ -91,7 +146,13 @@ function YearPanel({ year, isCurrent, members }) {
       {/* Everyone, together — role shows under each photo, no separate sections */}
       <div className="px-5 sm:px-8 md:px-10 py-8 sm:py-10">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-10 sm:gap-x-8 sm:gap-y-12">
-          {members.map(m => <MemberCard key={m.id} member={m} dim={!isCurrent} />)}
+          {members.map(m => (
+            <MemberCard
+              key={m.id}
+              member={m}
+              dim={!isCurrent}
+            />
+          ))}
         </div>
       </div>
     </motion.div>
@@ -107,7 +168,7 @@ export default function About() {
   useEffect(() => {
     Promise.all([userService.getTeamMembers(), userService.getTeamYears()])
       .then(([members, years]) => { setAllMembers(members); setTeamYears(years) })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false))
   }, [])
 
@@ -157,14 +218,44 @@ export default function About() {
         <div className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12">
             {[
-              { eyebrow: 'Our Story', title: 'History', body: 'RAW Vision Media was founded in 2016 with a simple belief — that every story deserves to be told well. From humble beginnings with a handful of cameras, we have grown into a full-spectrum media club covering photography, videography, design, and documentation for NMIMS Shirpur.' },
-              { eyebrow: 'What drives us', title: 'Mission', body: 'To document the vibrant life of NMIMS Shirpur through visual storytelling — capturing not just events, but the emotions, energy, and legacy of every moment that defines our campus community.' },
-              { eyebrow: 'Where we\'re going', title: 'Vision', body: 'To be the most impactful student media organization in western Maharashtra — producing work that competes with professional studios while building the next generation of creative talent.' },
+              {
+                eyebrow: 'Our Story',
+                title: 'History',
+                body: 'Founded in 2016 at Mukesh Patel Technology Park, NMIMS Shirpur, RAW Vision Media is the official media club and the creative soul of the campus. Under the guidance of Prof. Bhushan Inje and Dr. Piyush Ghode, the club has grown into much more; it is the storyteller of the institute, capturing the spirit of student life, every celebration, every achievement, and every unforgettable moment with artistry and vision.'
+              },
+              {
+                eyebrow: 'What drives us',
+                title: 'Mission',
+                body: 'To capture, preserve, and communicate the spirit of NMIMS Shirpur through impactful visual storytelling. RAW Vision Media is committed to creating high-quality photography, videography, design, and digital content that documents campus life, celebrates achievements, supports institutional events, and empowers students to develop their creative, technical, and professional skills.'
+              },
+              {
+                eyebrow: "Where we're going",
+                title: 'Vision',
+                body: 'To be the leading student-driven media organization in India, recognized for excellence in visual storytelling, innovation, and creative expression. RAW Vision Media aspires to build a legacy of authentic content, nurture future creative professionals, and become the visual voice that connects, inspires, and represents the NMIMS Shirpur community.'
+              },
             ].map(({ eyebrow, title, body }) => (
-              <div key={title} className={`border-t-4 pt-6 ${isDark ? 'border-raw-accent' : 'border-raw-ink'}`}>
-                <p className="section-eyebrow mb-2">{eyebrow}</p>
-                <h2 className={`font-display text-2xl font-bold mb-4 ${isDark ? 'text-white' : 'text-raw-ink'}`}>{title}</h2>
-                <p className={`font-serif text-sm leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{body}</p>
+              <div
+                key={title}
+                className={`border-t-4 pt-6 ${isDark ? 'border-raw-accent' : 'border-raw-ink'
+                  }`}
+              >
+                <p className="section-eyebrow text-xl mb-2">
+                  {eyebrow}
+                </p>
+
+                <h2
+                  className={`font-display text-2xl xl:text-5xl font-bold mb-4 ${isDark ? 'text-white' : 'text-raw-ink'
+                    }`}
+                >
+                  {title}
+                </h2>
+
+                <p
+                  className={`font-serif text-sm lg:text-lg leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                >
+                  {body}
+                </p>
               </div>
             ))}
           </div>
@@ -175,7 +266,7 @@ export default function About() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
             {[
               { num: '2016', label: 'Established' },
-              { num: '8+',   label: 'Departments' },
+              { num: '8+', label: 'Departments' },
               { num: '500+', label: 'Events Covered' },
               { num: '10K+', label: 'Photos Shot' },
             ].map((stat, i) => (
@@ -192,14 +283,41 @@ export default function About() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
             <div className="mb-8 sm:mb-10">
               <p className="section-eyebrow mb-2">What we do</p>
-              <h2 className={`editorial-heading text-3xl sm:text-4xl ${isDark ? 'text-white' : 'text-raw-ink'}`}>Our Departments</h2>
+
+              <h2
+                className={`editorial-heading text-3xl sm:text-4xl ${isDark ? 'text-white' : 'text-raw-ink'
+                  }`}
+              >
+                Our Departments
+              </h2>
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
               {DEPARTMENTS_INFO.map((dept, i) => (
-                <motion.div key={dept.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-                  className={`p-5 sm:p-6 border transition-colors ${isDark ? 'border-gray-800 hover:border-raw-accent' : 'border-gray-200 hover:border-raw-ink'}`}>
-                  <h3 className={`font-condensed text-lg sm:text-xl tracking-wide mb-2 ${isDark ? 'text-white' : 'text-raw-ink'}`}>{dept.name}</h3>
-                  <p className={`font-serif text-sm leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{dept.desc}</p>
+                <motion.div
+                  key={dept.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06 }}
+                  className={`p-5 sm:p-6 border transition-colors ${isDark
+                      ? 'border-gray-800 hover:border-raw-accent'
+                      : 'border-gray-200 hover:border-raw-ink'
+                    }`}
+                >
+                  <h3
+                    className={`font-condensed text-xl sm:text-2xl lg:text-3xl tracking-wide mb-3 ${isDark ? 'text-white' : 'text-raw-ink'
+                      }`}
+                  >
+                    {dept.name}
+                  </h3>
+
+                  <p
+                    className={`font-serif text-base lg:text-lg leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-600'
+                      }`}
+                  >
+                    {dept.desc}
+                  </p>
                 </motion.div>
               ))}
             </div>

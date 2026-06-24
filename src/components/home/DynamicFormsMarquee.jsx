@@ -14,8 +14,6 @@ export default function DynamicFormsMarquee() {
                     marqueeOnly: true
                 })
 
-                console.log('Homepage Forms:', data)
-
                 setForms(data || [])
             } catch (err) {
                 console.error(err)

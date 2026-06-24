@@ -14,25 +14,66 @@ import aBlackLogo from '../../assets/a-black.png'
 import wBlackLogo from '../../assets/w-black.png'
 
 const ROLES = [
-  { value: 'student',  label: 'Student',       domain: '@nmims.in', placeholder: 'yourname@nmims.in' },
-  { value: 'faculty',  label: 'Faculty',        domain: '@nmims.edu', placeholder: 'yourname@nmims.edu' },
-  { value: 'external', label: 'External User',  domain: '@gmail.com', placeholder: 'yourname@gmail.com' },
+  { value: 'student',  label: 'Student',      domain: '@nmims.in',  placeholder: 'yourname@nmims.in'  },
+  { value: 'faculty',  label: 'Faculty',       domain: '@nmims.edu', placeholder: 'yourname@nmims.edu' },
+  { value: 'external', label: 'External User', domain: '',           placeholder: 'yourname@gmail.com' },
 ]
 
 export default function Signup() {
-  const [form, setForm]       = useState({ name: '', email: '', phone: '', role: 'student', password: '' })
+  const [form, setForm] = useState({ name: '', email: '', phone: '', role: 'student', password: '' })
+  const [fieldErrors, setFieldErrors] = useState({})
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError]     = useState('')
+  const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  const { signUp }  = useAuth()
-  const { isDark }  = useTheme()
-  const navigate    = useNavigate()
+  const { signUp } = useAuth()
+  const { isDark } = useTheme()
+  const navigate = useNavigate()
 
-  const handleChange = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
+  const currentRole = ROLES.find(r => r.value === form.role)
+
+  const validators = {
+    name: v => /^[a-zA-Z\s]+$/.test(v) ? '' : 'Name can only contain letters and spaces.',
+    email: v => {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return 'Enter a valid email address.'
+      if (currentRole?.domain && !v.endsWith(currentRole.domain))
+        return `${currentRole.label} accounts require a ${currentRole.domain} address.`
+      return ''
+    },
+    phone: v => /^[\d\s]+$/.test(v) ? '' : 'Phone number can only contain digits.',
+    password: v => v.length >= 6 ? '' : 'Password must be at least 6 characters.',
+  }
+
+  const handleChange = e => {
+    const { name, value } = e.target
+    if (name === 'name' && value && !/^[a-zA-Z\s]*$/.test(value)) return
+    if (name === 'phone' && value && !/^[\d\s]*$/.test(value)) return
+    setForm(p => ({ ...p, [name]: value }))
+    if (fieldErrors[name]) setFieldErrors(p => ({ ...p, [name]: '' }))
+    // Re-validate email live if role changes
+    if (name === 'role' && form.email && fieldErrors.email) {
+      setFieldErrors(p => ({ ...p, email: '' }))
+    }
+  }
+
+  const handleBlur = e => {
+    const { name, value } = e.target
+    if (validators[name] && value) {
+      setFieldErrors(p => ({ ...p, [name]: validators[name](value) }))
+    }
+  }
 
   const handleSubmit = async e => {
     e.preventDefault()
+    const newErrors = {}
+    Object.entries(validators).forEach(([field, validate]) => {
+      if (form[field]) {
+        const msg = validate(form[field])
+        if (msg) newErrors[field] = msg
+      }
+    })
+    if (Object.keys(newErrors).length > 0) { setFieldErrors(newErrors); return }
+
     setLoading(true)
     setError('')
     try {
@@ -45,34 +86,31 @@ export default function Signup() {
     }
   }
 
-  const formBg     = isDark ? 'bg-raw-black text-white' : 'bg-raw-white text-raw-ink'
-  const inputBorder = isDark
-    ? 'border-gray-700 text-white placeholder-gray-600 focus:border-white'
-    : 'border-gray-300 text-raw-ink placeholder-gray-400 focus:border-raw-ink'
+  const formBg = isDark ? 'bg-raw-black text-white' : 'bg-raw-white text-raw-ink'
+  const inputBorder = (field) => fieldErrors[field]
+    ? 'border-red-500 text-current placeholder-gray-400'
+    : isDark
+      ? 'border-gray-700 text-white placeholder-gray-600 focus:border-white'
+      : 'border-gray-300 text-raw-ink placeholder-gray-400 focus:border-raw-ink'
 
-  // Current role info for dynamic hints
-  const currentRole    = ROLES.find(r => r.value === form.role)
-  const emailPlaceholder = currentRole?.placeholder || 'your@email.com'
-  const domainHint       = currentRole?.domain || ''
+  const FieldError = ({ field }) => fieldErrors[field]
+    ? <p className="font-oswald text-[10px] tracking-wider uppercase mt-1.5 text-red-500">{fieldErrors[field]}</p>
+    : null
 
   const letterVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: (i) => ({
-      opacity: 1,
-      y: 0,
+      opacity: 1, y: 0,
       transition: { duration: 0.8, delay: 0.1 + i * 0.08, ease: 'easeOut' },
     }),
   }
 
   return (
-    <div className={`min-h-screen flex ${formBg}`}>
+    <div className={`min-h-screen flex flex-col lg:flex-row ${formBg}`}>
 
       {/* Left — Cinematic Video Panel (desktop only) */}
-      <div className="hidden lg:flex fixed left-0 top-0 w-1/2 h-screen overflow-hidden bg-raw-black">
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          autoPlay loop muted playsInline preload="auto"
-        >
+      <div className="hidden lg:flex lg:w-1/2 lg:fixed lg:left-0 lg:top-0 lg:h-screen relative overflow-hidden bg-raw-black">
+        <video className="absolute inset-0 w-full h-full object-cover" autoPlay loop muted playsInline preload="auto">
           <source src={heroVideo} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/45 to-black/65" />
@@ -80,21 +118,17 @@ export default function Signup() {
         <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }}
         />
-
-        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
+        <div className="relative z-10 flex flex-col justify-between p-10 xl:p-14 w-full">
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
             <p className="font-oswald text-xs tracking-[0.3em] text-white/50 uppercase">NMIMS Shirpur · Est. 2016</p>
           </motion.div>
-
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }}>
             <div className="flex items-end gap-0 mb-4">
               {[rLogo, aLogo, wLogo].map((src, i) => (
-                <motion.div
-                  key={i} custom={i} variants={letterVariants} initial="hidden" animate="visible"
+                <motion.div key={i} custom={i} variants={letterVariants} initial="hidden" animate="visible"
                   whileHover={{ scale: 1.06, filter: 'brightness(1.15)', transition: { duration: 0.25, ease: 'easeOut' } }}
-                  style={{ display: 'inline-block', transformOrigin: 'bottom center' }}
-                >
-                  <img src={src} alt={['R', 'A', 'W'][i]} className="h-24 md:h-25 lg:h-34 w-auto object-contain" />
+                  style={{ display: 'inline-block', transformOrigin: 'bottom center' }}>
+                  <img src={src} alt={['R', 'A', 'W'][i]} className="h-20 xl:h-28 w-auto object-contain" />
                 </motion.div>
               ))}
             </div>
@@ -102,24 +136,20 @@ export default function Signup() {
             <div className="h-px w-16 bg-raw-accent mb-4" />
             <p className="font-serif text-2xl italic text-white/80">Frames Speak Louder.</p>
           </motion.div>
-
-    
         </div>
       </div>
 
       {/* Right — Signup Form */}
-      <div className={`ml-[50%] flex-1 flex flex-col justify-center px-8 sm:px-16 lg:px-20 py-12 relative ${formBg}`}>
-        <div className="absolute top-6 right-6"><ThemeToggle /></div>
+      <div className={`w-full lg:w-1/2 lg:ml-[50%] flex flex-col justify-center min-h-screen px-6 sm:px-12 lg:px-16 xl:px-20 py-10 relative ${formBg}`}>
+        <div className="absolute top-5 right-5 sm:top-6 sm:right-6">
+          <ThemeToggle />
+        </div>
 
         {/* Mobile Brand */}
-        <div className="lg:hidden mb-10 text-center">
+        <div className="lg:hidden mb-8 sm:mb-10 text-center">
           <div className="flex items-end gap-0 justify-center mb-2">
-            {[
-              isDark ? rLogo : rBlackLogo,
-              isDark ? aLogo : aBlackLogo,
-              isDark ? wLogo : wBlackLogo,
-            ].map((src, i) => (
-              <img key={i} src={src} alt={['R','A','W'][i]} className="h-12 w-auto object-contain" />
+            {[isDark ? rLogo : rBlackLogo, isDark ? aLogo : aBlackLogo, isDark ? wLogo : wBlackLogo].map((src, i) => (
+              <img key={i} src={src} alt={['R', 'A', 'W'][i]} className="h-10 sm:h-12 w-auto object-contain" />
             ))}
           </div>
           <p className={`font-oswald text-xs tracking-[0.25em] uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -138,70 +168,88 @@ export default function Signup() {
           </motion.div>
         ) : (
           <motion.div className="w-full max-w-sm mx-auto" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <div className="mb-8">
+            <div className="mb-6 sm:mb-8">
               <p className={`font-oswald text-xs tracking-[0.25em] uppercase mb-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>Join The Club</p>
-              <h1 className={`font-display text-4xl font-bold leading-tight ${isDark ? 'text-white' : 'text-raw-ink'}`}>Create Profile</h1>
+              <h1 className={`font-display text-3xl sm:text-4xl font-bold leading-tight ${isDark ? 'text-white' : 'text-raw-ink'}`}>Create Profile</h1>
               <p className={`font-serif text-base italic mt-2 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Join The Media Club</p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+
               {/* Name */}
               <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
                 <label className={`font-oswald text-xs tracking-widest uppercase block mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Full Name</label>
-                <input name="name" type="text" value={form.name} onChange={handleChange} required placeholder="Your full name"
-                  className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors ${inputBorder}`} />
+                <input
+                  name="name" type="text" value={form.name}
+                  onChange={handleChange} onBlur={handleBlur}
+                  required placeholder="Your full name"
+                  className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors ${inputBorder('name')}`}
+                />
+                <FieldError field="name" />
               </motion.div>
 
-              {/* Role — must come BEFORE email so placeholder updates */}
+              {/* Role */}
               <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
                 <label className={`font-oswald text-xs tracking-widest uppercase block mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Role</label>
                 <select name="role" value={form.role} onChange={handleChange}
-                  className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors appearance-none cursor-pointer ${inputBorder}`}>
+                  className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors appearance-none cursor-pointer ${inputBorder('role')}`}>
                   {ROLES.map(r => <option key={r.value} value={r.value} className="text-raw-ink">{r.label}</option>)}
                 </select>
               </motion.div>
 
-              {/* Email — placeholder and hint change with role */}
+              {/* Email */}
               <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
                 <label className={`font-oswald text-xs tracking-widest uppercase block mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Email</label>
-                <input name="email" type="email" value={form.email} onChange={handleChange} required
-                  placeholder={emailPlaceholder}
-                  className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors ${inputBorder}`}
+                <input
+                  name="email" type="email" value={form.email}
+                  onChange={handleChange} onBlur={handleBlur}
+                  required placeholder={currentRole?.placeholder || 'yourname@gmail.com'}
+                  className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors ${inputBorder('email')}`}
                 />
-                {/* Domain requirement hint — updates live when role changes */}
-                <motion.p
-                  key={domainHint}
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="font-oswald text-[10px] tracking-widest uppercase mt-1.5 text-raw-accent"
-                >
-                  Requires {domainHint} address
-                </motion.p>
+                {!fieldErrors.email && currentRole?.domain && (
+                  <motion.p
+                    key={currentRole.domain}
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="font-oswald text-[10px] tracking-widest uppercase mt-1.5 text-raw-accent"
+                  >
+                    Requires {currentRole.domain} address
+                  </motion.p>
+                )}
+                <FieldError field="email" />
               </motion.div>
 
               {/* Phone */}
               <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.35 }}>
                 <label className={`font-oswald text-xs tracking-widest uppercase block mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Phone Number</label>
-                <input name="phone" type="tel" value={form.phone} onChange={handleChange} required placeholder="+91 XXXXX XXXXX"
-                  className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors ${inputBorder}`} />
+                <input
+                  name="phone" type="tel" value={form.phone}
+                  onChange={handleChange} onBlur={handleBlur}
+                  required placeholder="XXXXX XXXXX" maxLength={11}
+                  className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors ${inputBorder('phone')}`}
+                />
+                <FieldError field="phone" />
               </motion.div>
 
               {/* Password */}
               <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}>
                 <label className={`font-oswald text-xs tracking-widest uppercase block mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Password</label>
                 <div className="relative">
-                  <input name="password" type={showPass ? 'text' : 'password'} value={form.password} onChange={handleChange}
+                  <input
+                    name="password" type={showPass ? 'text' : 'password'}
+                    value={form.password} onChange={handleChange} onBlur={handleBlur}
                     required minLength={6} placeholder="Min. 6 characters"
-                    className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors pr-10 ${inputBorder}`} />
+                    className={`w-full py-3 bg-transparent border-b outline-none font-sans text-sm transition-colors pr-10 ${inputBorder('password')}`}
+                  />
                   <button type="button" onClick={() => setShowPass(!showPass)}
                     className={`absolute right-0 top-3 ${isDark ? 'text-gray-500 hover:text-white' : 'text-gray-400 hover:text-raw-ink'}`}>
                     {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
+                <FieldError field="password" />
               </motion.div>
 
-              {/* Error */}
               {error && (
                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                   className="font-oswald text-xs tracking-wider text-red-500 uppercase">
@@ -209,10 +257,9 @@ export default function Signup() {
                 </motion.p>
               )}
 
-              {/* Submit */}
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
                 <button type="submit" disabled={loading}
-                  className="w-full flex items-center justify-between px-6 py-4 bg-raw-ink text-white font-oswald text-xs tracking-widest uppercase border border-raw-ink hover:bg-transparent hover:text-raw-ink dark:hover:text-white transition-all group disabled:opacity-60">
+                  className="w-full flex items-center justify-between px-5 sm:px-6 py-3 sm:py-4 bg-raw-ink text-white font-oswald text-xs tracking-widest uppercase border border-raw-ink hover:bg-transparent hover:text-raw-ink dark:hover:text-white transition-all group disabled:opacity-60">
                   <span>{loading ? 'Creating Account...' : 'Create Account'}</span>
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>

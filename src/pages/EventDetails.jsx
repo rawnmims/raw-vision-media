@@ -102,7 +102,7 @@ export default function EventDetails() {
       <MainLayout>
         <div className="min-h-screen flex flex-col items-center justify-center gap-4">
           <p className={`font-display text-2xl ${isDark ? 'text-white' : 'text-raw-ink'}`}>Event not found.</p>
-          <Link to="/events" className="btn-ghost">← Back to Events</Link>
+          <Link to="/events" className="btn-ghost text-lg">← Back to Events</Link>
         </div>
       </MainLayout>
     )
@@ -121,17 +121,17 @@ export default function EventDetails() {
           <img
             src={event.cover_image || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&q=80'}
             alt={event.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-centre"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 max-w-7xl mx-auto">
-            <Link to="/events" className="inline-flex items-center gap-2 font-oswald text-xs tracking-widest uppercase text-white/60 hover:text-white mb-4 transition-colors">
+            <Link to="/events" className="inline-flex items-center gap-2 font-oswald text-base tracking-widest uppercase text-white/60 hover:text-white mb-4 transition-colors">
               <ArrowLeft size={13} /> All Events
             </Link>
             <motion.p
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
-              className="font-oswald text-xs tracking-[0.25em] uppercase mb-2"
+              className="font-oswald text-base tracking-[0.25em] uppercase mb-2"
               style={{ color: accent }}
             >
               {event.category || 'Coverage'} — Archive
@@ -161,21 +161,21 @@ export default function EventDetails() {
                 className="w-9 h-11 rounded-[4px] flex items-center justify-center font-condensed text-lg text-white flex-shrink-0"
                 style={{ backgroundColor: accent, clipPath: 'polygon(0% 0%, 72% 0%, 100% 18%, 100% 100%, 0% 100%)' }}
               >
-                {eventDay ?? '—'}
+                {''}
               </div>
               <div className="flex items-center gap-1">
-                <Lock size={9} className={isDark ? 'text-gray-500' : 'text-gray-400'} />
-                <span className="font-oswald text-[9px] tracking-[0.2em] uppercase text-gray-400">Raw Vision</span>
+                <Lock size={12} className={isDark ? 'text-gray-500' : 'text-gray-400'} />
+                <span className="font-oswald text-[12px] tracking-[0.2em] uppercase text-gray-400">Raw Vision Media</span>
               </div>
             </div>
 
             <span className={`hidden sm:block w-px h-6 ${isDark ? 'bg-gray-700' : 'bg-gray-300'}`} />
 
-            <span className={`flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-              <Calendar size={12} /> {formatDate(event.event_date)}
+            <span className={`flex items-center gap-1.5 font-oswald text-base tracking-widest uppercase ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+              <Calendar size={15} /> {formatDate(event.event_date)}
             </span>
-            <span className="flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase" style={{ color: accent }}>
-              <Tag size={12} /> {event.category}
+            <span className="flex items-center gap-1.5 font-oswald text-base tracking-widest uppercase" style={{ color: accent }}>
+              <Tag size={15} /> {event.category}
             </span>
             <div className="flex items-center gap-5 ml-auto">
               <motion.button
@@ -201,9 +201,9 @@ export default function EventDetails() {
                       initial={{ opacity: 0, y: -4 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 4 }}
-                      className="flex items-center gap-1.5"
+                      className="flex items-center gap-1.5 text-sm"
                     >
-                      <Share2 size={12} /> Share
+                      <Share2 size={15} /> Share
                     </motion.span>
                   )}
                 </AnimatePresence>
@@ -214,9 +214,9 @@ export default function EventDetails() {
                   href={event.google_drive_folder}
                   target="_blank"
                   rel="noreferrer"
-                  className={`flex items-center gap-1.5 font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}
+                  className={`flex items-center gap-1.5 font-oswald text-sm tracking-widest uppercase ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}
                 >
-                  <ExternalLink size={12} /> Drive Folder
+                  <ExternalLink size={15} /> Drive Folder
                 </a>
               )}
             </div>
@@ -230,7 +230,7 @@ export default function EventDetails() {
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className={`font-serif text-lg leading-relaxed max-w-3xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
+              className={`font-serif text-3xl leading-relaxed max-w-3xl ${isDark ? 'text-gray-300' : 'text-gray-600'}`}
             >
               {event.description}
             </motion.p>
@@ -240,11 +240,7 @@ export default function EventDetails() {
         {/* Divider */}
         <div className="relative max-w-7xl mx-auto px-6 mb-8">
           <div className={`flex items-center gap-4 pb-4 border-b ${isDark ? 'border-gray-800' : 'border-gray-300'}`}>
-            <p className="section-eyebrow">Gallery</p>
-            <div className="flex-1 h-px bg-current opacity-10" />
-            <p className={`font-oswald text-xs tracking-widest uppercase ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-              Click to view · Download from Drive
-            </p>
+            <p className="section-eyebrow text-base">Gallery</p>
           </div>
         </div>
 
