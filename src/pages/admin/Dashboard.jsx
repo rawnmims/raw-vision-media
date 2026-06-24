@@ -109,24 +109,6 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-
-        {/* Info Box */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className={`p-6 border ${isDark ? 'border-gray-800 bg-[#111]' : 'border-gray-200 bg-white'}`}
-        >
-          <div className="flex items-start gap-3">
-            <TrendingUp size={16} className="text-raw-accent mt-0.5" />
-            <div>
-              <p className={`font-oswald text-xs tracking-widest uppercase mb-1 ${isDark ? 'text-white' : 'text-raw-ink'}`}>Supabase Connected</p>
-              <p className={`font-sans text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                All data is live from your Supabase project. Configure your <code className="text-raw-accent">VITE_SUPABASE_URL</code> and <code className="text-raw-accent">VITE_SUPABASE_ANON_KEY</code> environment variables for full functionality.
-              </p>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </AdminLayout>
   )

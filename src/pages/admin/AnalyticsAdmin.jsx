@@ -126,14 +126,6 @@ export default function AnalyticsAdmin() {
             </div>
           </div>
         </div>
-
-        {/* Info */}
-        <div className={`p-5 border ${cardBg} flex items-start gap-3`}>
-          <TrendingUp size={15} className="text-raw-accent mt-0.5 flex-shrink-0" />
-          <p className={`font-sans text-xs leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-            All analytics reflect live Supabase data. Gallery view tracking requires custom event instrumentation in Supabase Edge Functions or a third-party analytics provider such as PostHog or Plausible.
-          </p>
-        </div>
       </div>
     </AdminLayout>
   )
