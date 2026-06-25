@@ -70,7 +70,7 @@ export default function AdminLayout({ children }) {
             to={path}
             onClick={() => setSidebarOpen(false)}
             className={`admin-sidebar-link ${isActive(path) ? 'active' : ''}`}
-            style={isActive(path) ? { color: isDark ? '#fff' : '#1A1A1A', borderLeftColor: '#C8A96E', background: 'rgba(200,169,110,0.08)' } : {}}
+            style={isActive(path) ? { color: isDark ? '#fff' : '#000', borderLeftColor: '#C8A96E', background: 'rgba(200,169,110,0.08)' } : {}}
           >
             <Icon size={15} />
             {label}

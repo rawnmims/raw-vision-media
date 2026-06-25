@@ -167,9 +167,13 @@ body.dark {
 }
 .admin-sidebar-link:hover,
 .admin-sidebar-link.active {
-  color: var(--raw-paper);
+  color: var(--raw-black);
   border-left-color: var(--raw-accent);
   background: rgba(200, 169, 110, 0.08);
+}
+
+.dark .admin-sidebar-link:hover {
+  color: #ffffff; /* Dark mode */
 }
 
 /* Video background */
