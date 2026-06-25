@@ -167,7 +167,7 @@ export default function HeroSection() {
               onClick={handleJoinClick}
               onMouseEnter={() => setJoinHover(true)}
               onMouseLeave={() => setJoinHover(false)}
-              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-lg tracking-widest uppercase w-[220px]"
+              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-base sm:text-lg tracking-widest uppercase w-full sm:w-[220px]"
               style={{ background: '#f5f0e8', color: '#0A0A0A' }}
             >
               <motion.span
@@ -195,7 +195,7 @@ export default function HeroSection() {
               onClick={handleCoverageClick}
               onMouseEnter={() => setCoverageHover(true)}
               onMouseLeave={() => setCoverageHover(false)}
-              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-lg tracking-widest uppercase border border-white text-white w-[270px]"
+              className="relative overflow-hidden flex items-center justify-between gap-3 px-5 md:px-7 py-3 md:py-4 font-oswald text-base sm:text-lg tracking-widest uppercase border border-white text-white w-full sm:w-[270px]"
             >
               <motion.span
                 className="absolute inset-0 bg-[#f5f0e8]"

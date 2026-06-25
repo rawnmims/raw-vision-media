@@ -271,9 +271,9 @@ export default function AboutAdmin() {
                   )}
                 </div>
 
-                <div className={`border ${cardBg} overflow-x-auto`}>
+                <div className={`border ${cardBg} overflow-x-auto min-w-0`}>
                   {/* Column headers */}
-                  <div className={`grid grid-cols-12 gap-3 px-5 py-2 font-oswald text-[10px] tracking-widest uppercase min-w-[640px]
+                  <div className={`grid grid-cols-12 gap-3 px-5 py-2 font-oswald text-[10px] tracking-widest uppercase min-w-0
                     ${isDark ? 'text-gray-600 border-b border-gray-800' : 'text-gray-300 border-b border-gray-100'}`}>
                     <span className="col-span-4">Name</span>
                     <span className="col-span-3 hidden sm:block">Role / Title</span>
@@ -289,7 +289,7 @@ export default function AboutAdmin() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: i * 0.03 }}
-                      className={`grid grid-cols-12 gap-3 items-center px-5 py-3.5 border-b last:border-0 min-w-[640px]
+                      className={`grid grid-cols-12 gap-3 items-center px-5 py-3.5 border-b last:border-0 min-w-0
                         ${isDark ? 'border-gray-800/50 hover:bg-gray-900/40' : 'border-gray-50 hover:bg-gray-50'}`}
                     >
                       {/* Name + photo */}

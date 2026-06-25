@@ -25,6 +25,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -33,6 +34,16 @@ body {
   color: var(--raw-ink);
   transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
+}
+
+#root {
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+img, picture, video, iframe {
+  max-width: 100%;
+  height: auto;
 }
 
 body.dark {
@@ -45,6 +56,15 @@ body.dark {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--raw-silver); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--raw-gray); }
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
 
 /* Selection */
 ::selection {
@@ -256,7 +276,6 @@ body.dark {
 
 .film-track {
   display: flex;
-  width: max-content;
   animation: filmScroll 35s linear infinite;
 }
 
@@ -334,7 +353,6 @@ body.dark {
 
 .motto-scroll {
   display: inline-flex;
-  width: max-content;
   animation: editorial-marquee 60s linear infinite;
 }
 

@@ -254,13 +254,13 @@ export default function Navbar() {
         <div style={{ height: '2px', background: isDark ? 'linear-gradient(to right, #1a1a1a 0%, #3a3530 30%, #3a3530 70%, #1a1a1a 100%)' : 'linear-gradient(to right, #faf8f4 0%, #1a1a1a 30%, #1a1a1a 70%, #faf8f4 100%)' }} />
 
         {/* ── nav link strip ── */}
-        <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'center', background: isDark ? '#0d0d0d' : '#f5f0e8' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', justifyContent: 'center', background: isDark ? '#0d0d0d' : '#f5f0e8' }}>
           {NAV_LINKS.map((link, i) => (
             <Link
               key={link.path}
               to={link.path}
               style={{
-                position: 'relative', padding: '18px 30px', fontSize: '15px',
+                position: 'relative', padding: '14px 20px', fontSize: '15px',
                 fontFamily: "'Oswald', sans-serif", letterSpacing: '0.28em', textTransform: 'uppercase',
                 color: isActive(link.path) ? ink : isDark ? '#7a7068' : '#6b6058',
                 textDecoration: 'none',

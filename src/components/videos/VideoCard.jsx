@@ -35,8 +35,8 @@ export function VideoCard({ video, index = 0, onClick }) {
       viewport={{ once: true }}
       transition={{ delay: index * 0.06 }}
       onClick={onClick}
-      className="relative flex-none cursor-pointer group"
-      style={{ width: '240px', aspectRatio: '3/4' }}
+      className="relative flex-none cursor-pointer group min-w-[180px] max-w-[240px]"
+      style={{ aspectRatio: '3/4' }}
     >
       <div className="relative w-full h-full overflow-hidden rounded-xl">
         {/* Thumbnail */}
@@ -97,8 +97,8 @@ export function VideoGrid({ videos, loading }) {
         {[1, 2, 3, 4].map((i) => (
           <div
             key={i}
-            className={`flex-none rounded-xl animate-pulse ${isDark ? 'bg-gray-800' : 'bg-gray-200'}`}
-            style={{ width: '240px', aspectRatio: '3/4' }}
+            className={`flex-none rounded-xl animate-pulse ${isDark ? 'bg-gray-800' : 'bg-gray-200'} min-w-[180px] max-w-[240px]`}
+            style={{ aspectRatio: '3/4' }}
           />
         ))}
       </div>
@@ -123,8 +123,8 @@ export function VideoGrid({ videos, loading }) {
     <>
       {/* Horizontal scroll strip */}
       <div
-        className="flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 md:mx-0 md:px-0"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="no-scrollbar overflow-x-auto pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
       >
         <style>{`.no-scrollbar::-webkit-scrollbar { display: none; }`}</style>
         <div className="no-scrollbar flex gap-4">

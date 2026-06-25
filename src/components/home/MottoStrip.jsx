@@ -73,7 +73,7 @@ function FilmStrip({ items, speed = 45, theme = 'sepia' }) {
         <motion.div
           animate={{ x: ['0px', `-${frameWidth * BASE_LEN}px`] }}
           transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
-          style={{ display: 'flex', padding: '5px 0', width: 'max-content' }}
+          style={{ display: 'flex', padding: '5px 0' }}
         >
           <SprocketRow count={90} holeColor={holeColor} />
           <SprocketRow count={90} holeColor={holeColor} />
@@ -85,7 +85,7 @@ function FilmStrip({ items, speed = 45, theme = 'sepia' }) {
       <motion.div
         animate={{ x: ['0px', `-${frameWidth * BASE_LEN}px`] }}
         transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
-        style={{ display: 'flex', width: 'max-content', background: filmBg }}
+        style={{ display: 'flex', background: filmBg }}
       >
         {items.map((item, i) => (
           <div
@@ -114,7 +114,7 @@ function FilmStrip({ items, speed = 45, theme = 'sepia' }) {
         <motion.div
           animate={{ x: ['0px', `-${frameWidth * BASE_LEN}px`] }}
           transition={{ duration: speed, ease: 'linear', repeat: Infinity }}
-          style={{ display: 'flex', padding: '5px 0', width: 'max-content' }}
+          style={{ display: 'flex', padding: '5px 0' }}
         >
           <SprocketRow count={90} holeColor={holeColor} />
           <SprocketRow count={90} holeColor={holeColor} />
