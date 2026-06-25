@@ -167,7 +167,7 @@ body.dark {
 }
 .admin-sidebar-link:hover,
 .admin-sidebar-link.active {
-  color: var(--raw-ink);
+  color: var(--raw-paper);
   border-left-color: var(--raw-accent);
   background: rgba(200, 169, 110, 0.08);
 }
