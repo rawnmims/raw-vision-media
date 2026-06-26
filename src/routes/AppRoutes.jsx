@@ -15,6 +15,7 @@ import About from '../pages/About'
 import Login from '../pages/auth/Login'
 import Signup from '../pages/auth/Signup'
 
+
 // Admin pages
 import Dashboard from '../pages/admin/Dashboard'
 import EventsAdmin from '../pages/admin/EventsAdmin'
@@ -33,7 +34,7 @@ export default function AppRoutes() {
   return (
     <Routes>
       {/* Root → login */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Navigate to="/home" replace />} />
 
       {/* Public */}
       <Route path="/home" element={<Home />} />

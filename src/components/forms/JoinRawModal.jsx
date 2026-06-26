@@ -8,7 +8,7 @@ import { DEPARTMENTS } from '../../utils/constants'
 export default function JoinRawModal({ isOpen, onClose }) {
   const { isDark } = useTheme()
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', year: '', course: '',
+    name: '', email: '', college_email: '', phone: '', year: '', course: '',
     preference1: '', preference2: '', preference3: '',
     why_join: '', experience: '', creative_drive_link: ''
   })
@@ -21,6 +21,7 @@ export default function JoinRawModal({ isOpen, onClose }) {
   const validators = {
     name: v => /^[a-zA-Z\s]+$/.test(v) ? '' : 'Name can only contain letters and spaces.',
     email: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'Enter a valid email address.',
+    college_email: v => /^[a-zA-Z0-9._%+-]+@nmims\.in$/i.test(v) ? '' : 'Must be a valid @nmims.in email address.',
     phone: v => /^[\d\s]+$/.test(v) ? '' : 'Phone number can only contain digits.',
     course: v => /^[a-zA-Z0-9.\-\s]+$/.test(v) ? '' : 'Course can only contain letters, numbers, spaces, dots, or hyphens.',
   }
@@ -170,6 +171,15 @@ export default function JoinRawModal({ isOpen, onClose }) {
                       <FieldError field="email" />
                     </div>
                     <div>
+                      <label className={labelClass}>College Email *</label>
+                      <input
+                        name="college_email" type="email" value={form.college_email} onChange={handleChange} onBlur={handleBlur}
+                        required placeholder="yourname@nmims.in"
+                        className={inputClass('college_email')}
+                      />
+                      <FieldError field="college_email" />
+                    </div>
+                    <div>
                       <label className={labelClass}>Phone Number *</label>
                       <input
                         name="phone" value={form.phone} onChange={handleChange} onBlur={handleBlur}
@@ -187,7 +197,7 @@ export default function JoinRawModal({ isOpen, onClose }) {
                         ))}
                       </select>
                     </div>
-                    <div className="sm:col-span-2">
+                    <div>
                       <label className={labelClass}>Course *</label>
                       <input
                         name="course" value={form.course} onChange={handleChange} onBlur={handleBlur}

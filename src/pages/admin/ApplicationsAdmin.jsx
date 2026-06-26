@@ -12,6 +12,7 @@ function exportToExcel(apps) {
     '#': i + 1,
     'Name': app.name || '',
     'Email': app.email || '',
+    'College Email': app.college_email || '',
     'Phone': app.phone || '',
     'Year': app.year || '',
     'Course': app.course || '',
@@ -31,6 +32,7 @@ function exportToExcel(apps) {
     { wch: 4 },   // #
     { wch: 22 },  // Name
     { wch: 28 },  // Email
+    { wch: 28 },  // College Email
     { wch: 16 },  // Phone
     { wch: 10 },  // Year
     { wch: 20 },  // Course
@@ -137,6 +139,7 @@ export default function ApplicationsAdmin() {
             <div className="px-7 py-6 space-y-5">
               {[
                 { label: 'Email', value: selected.email },
+                { label: 'College Email', value: selected.college_email },
                 { label: 'Phone', value: selected.phone },
                 { label: 'Preference 1', value: selected.preference1 },
                 { label: 'Preference 2', value: selected.preference2 },

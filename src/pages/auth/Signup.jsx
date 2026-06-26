@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
+import { authService } from '../../services/authService'
 import { useTheme } from '../../context/ThemeContext'
 import ThemeToggle from '../../components/common/ThemeToggle'
 import heroVideo from '../../assets/hero-video.mp4'
@@ -14,9 +15,9 @@ import aBlackLogo from '../../assets/a-black.png'
 import wBlackLogo from '../../assets/w-black.png'
 
 const ROLES = [
-  { value: 'student',  label: 'Student',      domain: '@nmims.in',  placeholder: 'yourname@nmims.in'  },
-  { value: 'faculty',  label: 'Faculty',       domain: '@nmims.edu', placeholder: 'yourname@nmims.edu' },
-  { value: 'external', label: 'External User', domain: '',           placeholder: 'yourname@gmail.com' },
+  { value: 'student', label: 'Student', domain: '@nmims.in', placeholder: 'yourname@nmims.in' },
+  { value: 'faculty', label: 'Faculty', domain: '@nmims.edu', placeholder: 'yourname@nmims.edu' },
+  { value: 'external', label: 'External User', domain: '', placeholder: 'yourname@gmail.com' },
 ]
 
 export default function Signup() {
@@ -26,6 +27,7 @@ export default function Signup() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [emailExists, setEmailExists] = useState(false)
   const { signUp } = useAuth()
   const { isDark } = useTheme()
   const navigate = useNavigate()
@@ -76,7 +78,15 @@ export default function Signup() {
 
     setLoading(true)
     setError('')
+    setEmailExists(false)
     try {
+      // Check if email already exists BEFORE attempting signup
+      const exists = await authService.checkEmailExists(form.email)
+      if (exists) {
+        setEmailExists(true)
+        return // Stop here — do not continue with signup
+      }
+
       await signUp(form)
       setSuccess(true)
     } catch (err) {
@@ -249,6 +259,24 @@ export default function Signup() {
                 </div>
                 <FieldError field="password" />
               </motion.div>
+
+              {emailExists && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="border border-red-500/40 bg-red-500/10 px-4 py-3 rounded-sm space-y-2">
+                  <p className="font-oswald text-xs tracking-wider text-red-400 uppercase">
+                    This email already has an account.
+                  </p>
+                  <p className="font-oswald text-xs tracking-wider text-red-400 uppercase">
+                    Please log in instead.
+                  </p>
+                  <Link
+                    to="/login"
+                    className="inline-flex items-center gap-1 font-oswald text-xs tracking-widest uppercase text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 transition-colors"
+                  >
+                    Go to Login <ArrowRight size={12} />
+                  </Link>
+                </motion.div>
+              )}
 
               {error && (
                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}

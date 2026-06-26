@@ -180,6 +180,8 @@ export default function Login() {
                 </button>
               </div>
               <FieldError field="password" />
+              <div className="mt-2 text-right">
+              </div>
             </motion.div>
 
             {error && (
@@ -209,6 +211,7 @@ export default function Login() {
           </motion.div>
         </motion.div>
       </div>
+
     </div>
   )
 }
