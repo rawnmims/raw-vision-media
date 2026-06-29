@@ -196,7 +196,7 @@ export default function About() {
 
   return (
     <MainLayout>
-      <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-raw-white'}`}>
+      <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
 
         {/* Hero */}
         <div className="relative h-72 sm:h-80 md:h-96 overflow-hidden bg-raw-black">

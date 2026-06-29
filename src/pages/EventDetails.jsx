@@ -113,7 +113,7 @@ export default function EventDetails() {
 
   return (
     <MainLayout>
-      <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-raw-paper'}`}>
+      <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />
 
         {/* Hero */}

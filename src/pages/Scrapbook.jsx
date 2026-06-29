@@ -23,7 +23,7 @@ export default function Scrapbook() {
 
   return (
     <MainLayout>
-      <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-raw-white'}`}>
+      <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         {/* Header */}
         <div className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-200'} pt-12 pb-8 px-6`}>
           <div className="max-w-7xl mx-auto">

@@ -49,7 +49,7 @@ export default function Events() {
 
   return (
     <MainLayout>
-      <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-raw-paper'}`}>
+      <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />
 
         <div className={`relative border-b ${isDark ? 'border-gray-800' : 'border-gray-300'} pt-12 pb-8 px-6`}>

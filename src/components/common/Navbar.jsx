@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, LogOut, User, Settings, Instagram, Youtube, Linkedin } from 'lucide-react'
+import { Menu, X, LogOut, User, Settings } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import ThemeToggle from './ThemeToggle'
@@ -11,11 +11,57 @@ import rawLogoWhite from '../../assets/raw-white-transparent.png'
 import nmimsLogo from '../../assets/nmims-logo.png'
 import nmimsLogoWhite from '../../assets/nmims-white.png'
 
+/* ─── dark-circle social icon wrapper (matches the reference design) ─── */
+const SocialIcon = ({ label, href, children }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noreferrer"
+    aria-label={label}
+    style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      width: '36px', height: '36px', borderRadius: '50%',
+      background: '#2a2a2a',
+      color: '#c8c0b8',
+      flexShrink: 0,
+      transition: 'background 0.2s, color 0.2s, transform 0.2s',
+    }}
+    onMouseEnter={e => { e.currentTarget.style.background = '#c0392b'; e.currentTarget.style.color = '#fff'; e.currentTarget.style.transform = 'translateY(-2px)' }}
+    onMouseLeave={e => { e.currentTarget.style.background = '#2a2a2a'; e.currentTarget.style.color = '#c8c0b8'; e.currentTarget.style.transform = 'translateY(0)' }}
+  >
+    {children}
+  </a>
+)
+
+/* ─── inline SVG social icons ─── */
+const InstagramSVG = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <circle cx="12" cy="12" r="4"/>
+    <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/>
+  </svg>
+)
+
+const YoutubeSVG = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+    <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/>
+  </svg>
+)
+
+const LinkedinSVG = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+    <rect x="2" y="9" width="4" height="12"/>
+    <circle cx="4" cy="4" r="2"/>
+  </svg>
+)
+
 /* ─── social links — swap hrefs for the real club accounts ─── */
 const SOCIALS = [
-  { label: 'Instagram', href: 'https://instagram.com', Icon: Instagram },
-  { label: 'YouTube',   href: 'https://youtube.com',   Icon: Youtube   },
-  { label: 'LinkedIn',  href: 'https://linkedin.com',  Icon: Linkedin  },
+  { label: 'Instagram', href: 'https://instagram.com', Icon: InstagramSVG },
+  { label: 'YouTube',   href: 'https://youtube.com',   Icon: YoutubeSVG   },
+  { label: 'LinkedIn',  href: 'https://linkedin.com',  Icon: LinkedinSVG  },
 ]
 
 export default function Navbar() {
@@ -45,7 +91,8 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path
 
-  const cream  = isDark ? '#0d0d0d' : '#f5f0e8'
+  // Background is now pure white in light mode, near-black in dark mode
+  const cream  = isDark ? '#0d0d0d' : '#ffffff'
   const ink    = isDark ? '#f0ece4' : '#1a1a1a'
   const muted  = isDark ? '#8a8078' : '#7a7068'
   const rule   = isDark ? '#2e2b26' : '#d4cec6'
@@ -66,7 +113,7 @@ export default function Navbar() {
             : 'none',
         }}
       >
-        {/* ── masthead: logos + tagline (left) — socials + theme + user (right) ── */}
+        {/* ── masthead ── */}
         <div
           className="max-w-7xl mx-auto"
           style={{
@@ -109,10 +156,11 @@ export default function Navbar() {
                 paddingLeft: 'clamp(12px, 2vw, 18px)',
               }}
             >
-              <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: 'clamp(14px, 2vw, 16px)', letterSpacing: '0.16em', textTransform: 'uppercase', color: ink, whiteSpace: 'nowrap' }}>
+              {/* Playfair Display for the institutional identity text */}
+              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(13px, 1.8vw, 15px)', letterSpacing: '0.06em', color: ink, whiteSpace: 'nowrap', fontWeight: 600 }}>
                 SVKM&apos;s NMIMS Shirpur
               </span>
-              <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: 'clamp(11px, 1.7vw, 14px)', letterSpacing: '0.14em', textTransform: 'uppercase', color: muted, whiteSpace: 'nowrap' }}>
+              <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(11px, 1.5vw, 13px)', letterSpacing: '0.05em', color: muted, whiteSpace: 'nowrap', fontStyle: 'italic', fontWeight: 400 }}>
                 Est. 2016 · Official Media Club
               </span>
             </div>
@@ -123,21 +171,12 @@ export default function Navbar() {
 
             <div
               className="hidden lg:flex"
-              style={{ alignItems: 'center', gap: '14px', paddingRight: 'clamp(10px, 1.6vw, 16px)', borderRight: `1px solid ${rule}` }}
+              style={{ alignItems: 'center', gap: '10px', paddingRight: 'clamp(10px, 1.6vw, 16px)', borderRight: `1px solid ${rule}` }}
             >
               {SOCIALS.map(({ label, href, Icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
-                  style={{ display: 'flex', color: muted, transition: 'color 0.2s, transform 0.2s' }}
-                  onMouseEnter={e => { e.currentTarget.style.color = accent; e.currentTarget.style.transform = 'translateY(-2px)' }}
-                  onMouseLeave={e => { e.currentTarget.style.color = muted; e.currentTarget.style.transform = 'translateY(0)' }}
-                >
-                  <Icon size={28} strokeWidth={1.75} />
-                </a>
+                <SocialIcon key={label} label={label} href={href}>
+                  <Icon />
+                </SocialIcon>
               ))}
             </div>
 
@@ -171,7 +210,7 @@ export default function Navbar() {
                       style={{
                         position: 'absolute', right: 0, top: '100%', marginTop: '2px',
                         width: '168px',
-                        background: isDark ? '#111' : '#faf8f4',
+                        background: isDark ? '#111' : '#ffffff',
                         border: `1px solid ${isDark ? '#2e2b26' : '#d4cec6'}`,
                         zIndex: 50,
                         boxShadow: isDark ? '0 8px 24px rgba(0,0,0,0.5)' : '0 8px 24px rgba(0,0,0,0.1)',
@@ -226,10 +265,10 @@ export default function Navbar() {
         </div>
 
         {/* ── gradient rule ── */}
-        <div style={{ height: '2px', background: isDark ? 'linear-gradient(to right, #1a1a1a 0%, #3a3530 30%, #3a3530 70%, #1a1a1a 100%)' : 'linear-gradient(to right, #faf8f4 0%, #1a1a1a 30%, #1a1a1a 70%, #faf8f4 100%)' }} />
+        <div style={{ height: '2px', background: isDark ? 'linear-gradient(to right, #1a1a1a 0%, #3a3530 30%, #3a3530 70%, #1a1a1a 100%)' : 'linear-gradient(to right, #ffffff 0%, #1a1a1a 30%, #1a1a1a 70%, #ffffff 100%)' }} />
 
         {/* ── nav link strip ── */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', justifyContent: 'center', background: isDark ? '#0d0d0d' : '#f5f0e8' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'stretch', justifyContent: 'center', background: isDark ? '#0d0d0d' : '#ffffff' }}>
           {NAV_LINKS.map((link, i) => (
             <Link
               key={link.path}
@@ -248,7 +287,7 @@ export default function Navbar() {
                 transition: 'color 0.2s, background 0.2s',
                 display: 'flex', alignItems: 'center',
               }}
-              onMouseEnter={e => { if (!isActive(link.path)) { e.currentTarget.style.color = ink; e.currentTarget.style.background = isDark ? '#1a1714' : '#f0ece4' } }}
+              onMouseEnter={e => { if (!isActive(link.path)) { e.currentTarget.style.color = ink; e.currentTarget.style.background = isDark ? '#1a1714' : '#f5f5f5' } }}
               onMouseLeave={e => { if (!isActive(link.path)) { e.currentTarget.style.color = isDark ? '#7a7068' : '#6b6058'; e.currentTarget.style.background = 'transparent' } }}
             >
               {link.label}
@@ -276,7 +315,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ── MOBILE NAVBAR (wrapped in relative container so dropdown anchors to it) ── */}
+      {/* ── MOBILE NAVBAR ── */}
       <div style={{ position: 'relative' }}>
         <nav
           className="md:hidden"
@@ -289,11 +328,12 @@ export default function Navbar() {
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: 'clamp(10px, 4vw, 16px)', paddingRight: 'clamp(10px, 4vw, 16px)', height: '60px' }}>
 
-            {/* Mobile — RAW logo · NMIMS logo (tagline & socials live in the dropdown) */}
+            {/* Mobile — RAW logo · NMIMS logo */}
             <Link to="/home" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flexShrink: 0, minWidth: 0, overflow: 'hidden' }}>
+              {/* FIX: use isDark to switch logo on mobile too */}
               <img src={isDark ? rawLogoWhite : rawLogo} alt="RAW Vision Media" style={{ height: 'clamp(32px, 10vw, 40px)', width: 'auto', objectFit: 'contain', flexShrink: 0 }} />
               <div style={{ width: '1px', height: '22px', background: rule, flexShrink: 0 }} />
-              <img src={nmimsLogo} alt="SVKM's NMIMS Shirpur" style={{ height: 'clamp(24px, 7vw, 30px)', width: 'auto', objectFit: 'contain', flexShrink: 0 }} />
+              <img src={isDark ? nmimsLogoWhite : nmimsLogo} alt="SVKM's NMIMS Shirpur" style={{ height: 'clamp(36px, 11vw, 46px)', width: 'auto', objectFit: 'contain', flexShrink: 0 }} />
             </Link>
 
             {/* Mobile — Right actions */}
@@ -302,7 +342,7 @@ export default function Navbar() {
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
                 style={{ padding: '8px', border: `1px solid ${rule}`, background: 'transparent', cursor: 'pointer', color: ink, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s ease' }}
-                onMouseEnter={e => e.currentTarget.style.background = isDark ? '#1a1714' : '#f0ece4'}
+                onMouseEnter={e => e.currentTarget.style.background = isDark ? '#1a1714' : '#f5f5f5'}
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
               >
                 {mobileOpen ? <X size={13} /> : <Menu size={13} />}
@@ -311,7 +351,7 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* ── Mobile slide-down menu — anchored directly under mobile nav ── */}
+        {/* ── Mobile slide-down menu ── */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div
@@ -322,26 +362,27 @@ export default function Navbar() {
                 position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 40,
                 paddingTop: '24px', paddingBottom: '32px',
                 paddingLeft: 'clamp(16px, 5vw, 24px)', paddingRight: 'clamp(16px, 5vw, 24px)',
-                background: isDark ? '#0d0d0d' : '#faf8f4',
+                background: isDark ? '#0d0d0d' : '#ffffff',
                 borderBottom: `1px solid ${rule}`,
                 overflow: 'hidden',
               }}
             >
-              {/* Club identity — tagline + socials, relocated here from the masthead on mobile */}
+              {/* Club identity — tagline + socials */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', paddingBottom: '18px', marginBottom: '18px', borderBottom: `1px solid ${rule}` }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', minWidth: 0 }}>
-                  <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: '11px', letterSpacing: '0.14em', textTransform: 'uppercase', color: ink, whiteSpace: 'nowrap' }}>
+                  {/* Playfair Display for the mobile tagline too */}
+                  <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '11px', letterSpacing: '0.04em', color: ink, whiteSpace: 'nowrap', fontWeight: 600 }}>
                     SVKM&apos;s NMIMS Shirpur
                   </span>
-                  <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: '9.5px', letterSpacing: '0.12em', textTransform: 'uppercase', color: muted, whiteSpace: 'nowrap' }}>
+                  <span style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '10px', letterSpacing: '0.03em', color: muted, whiteSpace: 'nowrap', fontStyle: 'italic', fontWeight: 400 }}>
                     Est. 2016 · Official Media Club
                   </span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
                   {SOCIALS.map(({ label, href, Icon }) => (
-                    <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} style={{ display: 'flex', color: muted }}>
-                      <Icon size={19} strokeWidth={1.75} />
-                    </a>
+                    <SocialIcon key={label} label={label} href={href}>
+                      <Icon />
+                    </SocialIcon>
                   ))}
                 </div>
               </div>

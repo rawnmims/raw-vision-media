@@ -47,7 +47,7 @@ export function FeaturedWorks() {
 
   const ink  = isDark ? '#f0ece4' : '#1a1a1a'
   const rule = isDark ? '#2a2520' : '#d4cec6'
-  const bg   = isDark ? '#0d0d0d' : '#F5F0E8'
+  const bg   = isDark ? '#0d0d0d' : '#FAFAFA'
 
   return (
     <section style={{ padding: '80px 24px', background: bg }}>

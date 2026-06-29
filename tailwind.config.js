@@ -14,7 +14,7 @@ export default {
       colors: {
         raw: {
           black: '#0A0A0A',
-          white: '#F8F6F1',
+          white: '#FAFAFA',
           cream: '#EDE8DF',
           ink: '#1A1A1A',
           gray: '#6B6B6B',
@@ -22,7 +22,7 @@ export default {
           accent: '#C8A96E',
           red: '#C0392B',
           darkgray: '#2A2A2A',
-          paper: '#F5F0E8',
+          paper: '#FAFAFA',
         }
       },
       animation: {

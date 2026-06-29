@@ -19,7 +19,7 @@ export function FeaturedEvents() {
   }, [])
 
   return (
-    <section className={`relative py-20 px-6 overflow-hidden grain-overlay ${isDark ? 'bg-raw-black' : 'bg-raw-paper'}`}>
+    <section className={`relative py-20 px-6 overflow-hidden grain-overlay ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
       {/* newsprint column rules */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.06]"

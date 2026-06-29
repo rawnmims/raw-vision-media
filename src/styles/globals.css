@@ -6,7 +6,7 @@
 
 :root {
   --raw-black: #0A0A0A;
-  --raw-white: #F8F6F1;
+  --raw-white: #FAFAFA;
   --raw-cream: #EDE8DF;
   --raw-ink: #1A1A1A;
   --raw-gray: #6B6B6B;
@@ -14,7 +14,7 @@
   --raw-accent: #C8A96E;
   --raw-red: #C0392B;
   --raw-darkgray: #2A2A2A;
-  --raw-paper: #F5F0E8;
+  --raw-paper: #FAFAFA;
 }
 
 * {
