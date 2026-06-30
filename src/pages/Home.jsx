@@ -7,6 +7,7 @@ import { FeaturedEvents } from '../components/home/FeaturedEvents'
 import { MainLayout } from '../layouts/MainLayout'
 import { FeaturedWorks } from '../components/home/FeaturedWorks'
 import { supabase } from '../services/supabase'
+import StudioSection from '../components/home/StudioSection'
 
 export default function Home() {
   const [settings, setSettings] = useState(null)
@@ -36,8 +37,8 @@ export default function Home() {
         <DynamicFormsMarquee />
         <HeroSection settings={settings} />
         <MottoStrip />
+        <StudioSection />
         <FeaturedEvents />
-        <DynamicFormsBanner settings={settings} />
         <FeaturedWorks />
         <QuoteSection />
       </motion.div>

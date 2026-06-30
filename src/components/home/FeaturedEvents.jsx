@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
-import { SAMPLE_EVENTS, SAMPLE_SCRAPBOOK} from '../../utils/constants'
+import { SAMPLE_EVENTS, SAMPLE_SCRAPBOOK } from '../../utils/constants'
 import { eventService } from '../../services/eventService'
 import { scrapbookService } from '../../services/formService'
 import { EventCard } from '../events/EventCard'
@@ -19,33 +19,31 @@ export function FeaturedEvents() {
   }, [])
 
   return (
-    <section className={`relative py-20 px-6 overflow-hidden grain-overlay ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
-      {/* newsprint column rules */}
+    <section className={`relative py-20 px-6 overflow-hidden grain-overlay ${isDark ? 'bg-raw-black' : 'bg-zinc-950'}`}>
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.06]"
         style={{
-          backgroundImage: isDark
-            ? 'repeating-linear-gradient(90deg, rgba(255,255,255,0.6) 0px, rgba(255,255,255,0.6) 1px, transparent 1px, transparent 140px)'
-            : 'repeating-linear-gradient(90deg, rgba(0,0,0,0.6) 0px, rgba(0,0,0,0.6) 1px, transparent 1px, transparent 140px)',
+          backgroundImage:
+            'repeating-linear-gradient(90deg, rgba(255,255,255,0.6) 0px, rgba(255,255,255,0.6) 1px, transparent 1px, transparent 140px)',
         }}
       />
 
       <div className="relative max-w-7xl mx-auto">
-        {/* Header */}
-        <div className={`flex items-end justify-between mb-10 pb-4 border-b ${isDark ? 'border-gray-800' : 'border-gray-300'}`}>
+        <div className={`flex items-end justify-between mb-10 pb-4 border-b ${isDark ? 'border-gray-800' : 'border-gray-700'}`}>
           <div>
-            <p className="section-eyebrow mb-1">Latest Coverage</p>
-            <h2 className={`editorial-heading text-4xl md:text-5xl ${isDark ? 'text-white' : 'text-raw-ink'}`}>
+            <p className="section-eyebrow mb-1 text-gray-400">Latest Coverage</p>
+            <h2 className="editorial-heading text-4xl md:text-5xl text-white">
               Recent Events
             </h2>
           </div>
-          <Link to="/events" className={`font-oswald text-xs tracking-widest uppercase flex items-center gap-2 transition-colors
-            ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}>
+          <Link
+            to="/events"
+            className="font-oswald text-xs tracking-widest uppercase flex items-center gap-2 transition-colors text-gray-400 hover:text-white"
+          >
             All Events <ArrowRight size={14} />
           </Link>
         </div>
 
-        {/* Memory-card grid — same EventCard used on the Events page */}
         {events.length === 0 ? (
           <p className="text-gray-400 font-oswald tracking-wider">No events yet.</p>
         ) : (
@@ -71,19 +69,18 @@ export function FeaturedWorks() {
   }, [])
 
   return (
-    <section className={`py-20 px-6 ${isDark ? 'bg-raw-darkgray' : 'bg-raw-cream'}`}>
+    <section className={`py-20 px-6 ${isDark ? 'bg-raw-black' : 'bg-zinc-950'}`}>
       <div className="max-w-7xl mx-auto">
-        <div className={`flex items-end justify-between mb-10 pb-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-300'}`}>
+        <div className={`flex items-end justify-between mb-10 pb-4 border-b ${isDark ? 'border-gray-700' : 'border-gray-800'}`}>
           <div>
-            <p className="section-eyebrow mb-1">Featured</p>
-            <h2 className={`editorial-heading text-4xl md:text-5xl ${isDark ? 'text-white' : 'text-raw-ink'}`}>
+            <p className="section-eyebrow mb-1 text-gray-400">Featured</p>
+            <h2 className="editorial-heading text-4xl md:text-5xl text-white">
               Selected Works
             </h2>
           </div>
           <Link
             to="/scrapbook"
-            className={`font-oswald text-[10px] sm:text-xs tracking-[0.15em] sm:tracking-widest uppercase flex items-center gap-1 sm:gap-2
-  ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-raw-ink'}`}
+            className="font-oswald text-[10px] sm:text-xs tracking-[0.15em] sm:tracking-widest uppercase flex items-center gap-1 sm:gap-2 text-gray-400 hover:text-white"
           >
             View All <ArrowRight size={12} className="sm:w-[14px] sm:h-[14px]" />
           </Link>

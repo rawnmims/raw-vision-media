@@ -12,12 +12,6 @@ import { Lock, Star, Camera, Video, Images } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
 import { getImageUrl, formatDateShort } from '../../utils/helpers'
 
-// ─────────────────────────────────────────────
-// CARD "EDITION" SYSTEM
-// Gold is reserved for featured events (the PRO tier).
-// Every other event is deterministically assigned red or silver
-// based on its category, so the color is information, not decoration.
-// ─────────────────────────────────────────────
 const EDITION_GOLD = { hex: '#C8A96E', ring: 'ring-[#C8A96E]/50' }
 const EDITION_VARIANTS = [
   { hex: '#C0392B', ring: 'ring-[#C0392B]/40' },
@@ -56,7 +50,6 @@ export function EventCard({ event, index = 0 }) {
   const { day, month, yearShort } = getDateParts(event.event_date)
   const yearBadge = event.year ? String(event.year).slice(-2) : yearShort
 
-  // ── 3D tilt + glare, driven by cursor position ──
   const mouseX = useMotionValue(0.5)
   const mouseY = useMotionValue(0.5)
   const rotateX = useSpring(
@@ -81,6 +74,8 @@ export function EventCard({ event, index = 0 }) {
     mouseX.set(0.5)
     mouseY.set(0.5)
   }
+
+  // Label zone is always dark/black regardless of theme
 
   return (
     <motion.div
@@ -157,8 +152,6 @@ export function EventCard({ event, index = 0 }) {
                   {event.category || 'Coverage'}
                 </p>
 
-                {/* Year badge + camera icon — tablets and up only.
-                    Hidden on phones (small + large) to keep the card uncluttered. */}
                 <div className="hidden sm:flex items-center gap-2 mb-3">
                   <div
                     className="w-9 h-9 rounded-full border flex items-center justify-center font-oswald text-[13px] font-semibold flex-shrink-0"
@@ -187,47 +180,54 @@ export function EventCard({ event, index = 0 }) {
             </div>
           </div>
 
-          {/* ── LABEL ZONE (printed headline) ── */}
+          {/* ── LABEL ZONE ── */}
           <div
-            className={`flex-1 px-2.5 py-2.5 sm:px-4 sm:py-4 md:px-5 md:py-5 flex flex-col justify-center
-  ${isDark ? 'bg-raw-darkgray' : 'bg-raw-paper'}`}
+            className="flex-1 px-2.5 py-2.5 sm:px-4 sm:py-4 md:px-5 md:py-5 flex flex-col justify-center relative overflow-hidden"
+            style={{
+              backgroundColor: '#0e0e0e',
+              // Subtle square grid — like graph paper / film contact sheet
+              backgroundImage: `
+                linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)
+              `,
+              backgroundSize: '18px 18px',
+            }}
           >
+            {/* Edition-colour rule at top */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0, left: 0, right: 0,
+                height: '2px',
+                background: `linear-gradient(to right, ${edition.hex}, transparent 80%)`,
+                pointerEvents: 'none',
+              }}
+            />
+
+            {/* Faint edition-colour glow — bottom-right */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0, right: 0,
+                width: '70%', height: '70%',
+                background: `radial-gradient(ellipse at bottom right, ${edition.hex}20, transparent 65%)`,
+                pointerEvents: 'none',
+              }}
+            />
+
             <h3
-              className={`
-      font-display
-      font-bold
-      tracking-[-0.02em]
-      text-sm
-      sm:text-base
-      md:text-xl
-      lg:text-2xl
-      xl:text-3xl
-      leading-tight
-      line-clamp-2
-      mb-1
-      sm:mb-1.5
-      group-hover:opacity-80
-      transition-opacity
-      ${isDark ? 'text-white' : 'text-raw-ink'}
-    `}
+              className="font-display font-bold tracking-[-0.02em]
+                text-sm sm:text-base md:text-xl lg:text-2xl xl:text-3xl
+                leading-tight line-clamp-2 mb-1 sm:mb-1.5
+                group-hover:opacity-80 transition-opacity relative z-10 text-white"
             >
               {event.title}
             </h3>
 
             {event.description && (
-              <p
-                className={`
-        font-serif
-        italic
-        text-[11px]
-        sm:text-xs
-        md:text-sm
-        lg:text-base
-        xl:text-lg
-        leading-relaxed
-        line-clamp-2
-        ${isDark ? 'text-gray-400' : 'text-gray-500'}
-      `}
+              <p className="font-serif italic
+                text-[11px] sm:text-xs md:text-sm lg:text-base xl:text-lg
+                leading-relaxed line-clamp-2 relative z-10 text-gray-400"
               >
                 {event.description}
               </p>

@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext'
 import { userService } from '../services/formService'
 import { getImageUrl } from '../utils/helpers'
 import aboutImg from '../assets/about-img.jpeg'
+import MemberPopup from '../components/about/MemberPopup'
 
 const DEPARTMENTS_INFO = [
   { name: 'Photography',      desc: 'Capturing every decisive moment with precision and artistry.' },
@@ -17,77 +18,77 @@ const DEPARTMENTS_INFO = [
   { name: 'Data Handling',    desc: 'Managing archives, analytics, and media databases.' },
 ]
 
-function MemberCard({ member, dim = false }) {
+// Square card, image fills the whole card, details sit on a bottom vignette.
+function MemberCard({ member, dim = false, onClick }) {
   const { isDark } = useTheme()
   const photoUrl = getImageUrl(member.photo)
 
   return (
-    <motion.div
+    <motion.button
+      type="button"
+      onClick={() => onClick?.(member)}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`group text-center ${dim ? 'opacity-60' : ''}`}
+      className={`group relative block w-full aspect-square overflow-hidden text-left ${
+        dim ? 'opacity-60' : ''
+      } ${isDark ? 'bg-gray-800' : 'bg-raw-cream'}`}
     >
-      <div
-        className={`relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 mx-auto mb-3 sm:mb-4 overflow-hidden rounded-full border-2 border-transparent group-hover:border-raw-accent transition-colors ${
-          isDark ? 'bg-gray-800' : 'bg-raw-cream'
-        }`}
-      >
-        {photoUrl ? (
-          <img
-            src={photoUrl}
-            alt={member.name}
-            className="w-full h-full object-cover"
-            onError={e => {
-              e.target.style.display = 'none'
-            }}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="font-condensed text-3xl sm:text-4xl text-raw-accent">
-              {member.name?.[0]}
-            </span>
-          </div>
+      {photoUrl ? (
+        <img
+          src={photoUrl}
+          alt={member.name}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          onError={e => { e.target.style.display = 'none' }}
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="font-condensed text-5xl sm:text-6xl text-raw-accent">
+            {member.name?.[0]}
+          </span>
+        </div>
+      )}
+
+      {/* Bottom vignette so text stays legible over any photo */}
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 via-black/45 to-transparent pointer-events-none" />
+
+      {/* Border on hover */}
+      <div className="absolute inset-0 border-2 border-transparent group-hover:border-raw-accent transition-colors pointer-events-none" />
+
+      <div className="absolute inset-x-0 bottom-0 p-2.5 sm:p-4 md:p-5">
+        <h4 className="font-display text-sm sm:text-lg md:text-xl font-bold leading-tight text-white">
+          {member.name}
+        </h4>
+        <p className="font-oswald text-[9px] sm:text-xs tracking-widest text-raw-accent uppercase mt-0.5 sm:mt-1">
+          {member.role}
+        </p>
+        {member.department && (
+          <p className="font-oswald text-[8px] sm:text-xs tracking-wider uppercase mt-0.5 text-gray-300 hidden sm:block">
+            {member.department}
+          </p>
         )}
       </div>
-
-      <h4
-        className={`font-display text-base sm:text-lg font-bold leading-tight ${
-          isDark ? 'text-white' : 'text-raw-ink'
-        }`}
-      >
-        {member.name}
-      </h4>
-
-      <p className="font-oswald text-[11px] sm:text-xs tracking-widest text-raw-accent uppercase mt-1">
-        {member.role}
-      </p>
-
-      {member.department && (
-        <p
-          className={`font-oswald text-[11px] sm:text-xs tracking-wider uppercase mt-1 ${
-            isDark ? 'text-gray-500' : 'text-gray-400'
-          }`}
-        >
-          {member.department}
-        </p>
-      )}
-    </motion.div>
+    </motion.button>
   )
 }
 
 // Faculty has no academic_year — kept as its own standalone, permanent block.
-function SectionBlock({ eyebrow, title, members }) {
+function SectionBlock({ eyebrow, title, members, onMemberClick }) {
   const { isDark } = useTheme()
   if (!members?.length) return null
   return (
     <div>
-      <div className={`mb-8 pb-4 border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`} style={{ borderTopWidth: 3, borderTopColor: isDark ? '#C8A96E' : '#1A1A1A', borderTopStyle: 'solid', paddingTop: '16px' }}>
+      <div
+        className={`mb-8 pb-4 border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}
+        style={{ borderTopWidth: 3, borderTopColor: isDark ? '#C8A96E' : '#1A1A1A', borderTopStyle: 'solid', paddingTop: '16px' }}
+      >
         {eyebrow && <p className="section-eyebrow mb-1">{eyebrow}</p>}
         <h3 className={`font-display text-2xl font-bold ${isDark ? 'text-white' : 'text-raw-ink'}`}>{title}</h3>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-10 sm:gap-x-8 sm:gap-y-12">
-        {members.map(m => <MemberCard key={m.id} member={m} />)}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
+        {members.map(m => (
+          <MemberCard key={m.id} member={m} onClick={onMemberClick} />
+        ))}
       </div>
     </div>
   )
@@ -95,7 +96,7 @@ function SectionBlock({ eyebrow, title, members }) {
 
 // One combined panel per academic year. Everyone for that year sits together
 // in a single flat grid, ordered by position — no split by role or department.
-function YearPanel({ year, isCurrent, members }) {
+function YearPanel({ year, isCurrent, members, onMemberClick }) {
   const { isDark } = useTheme()
 
   if (!members.length) return null
@@ -143,14 +144,15 @@ function YearPanel({ year, isCurrent, members }) {
         </p>
       </div>
 
-      {/* Everyone, together — role shows under each photo, no separate sections */}
+      {/* Everyone, together — role shows on the card, no separate sections */}
       <div className="px-5 sm:px-8 md:px-10 py-8 sm:py-10">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-10 sm:gap-x-8 sm:gap-y-12">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8">
           {members.map(m => (
             <MemberCard
               key={m.id}
               member={m}
               dim={!isCurrent}
+              onClick={onMemberClick}
             />
           ))}
         </div>
@@ -164,6 +166,7 @@ export default function About() {
   const [allMembers, setAllMembers] = useState([])
   const [teamYears, setTeamYears] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedMember, setSelectedMember] = useState(null)
 
   useEffect(() => {
     Promise.all([userService.getTeamMembers(), userService.getTeamYears()])
@@ -334,15 +337,31 @@ export default function About() {
           ) : (
             <>
               {/* Faculty — permanent, no year, stays as its own block */}
-              <SectionBlock eyebrow="Faculty" title="Faculty In-Charge" members={faculty} />
+              <SectionBlock
+                eyebrow="Faculty"
+                title="Faculty In-Charge"
+                members={faculty}
+                onMemberClick={setSelectedMember}
+              />
 
               {/* Each academic year is ONE panel — everyone together, no role split */}
               {currentYear && (
-                <YearPanel year={currentYear} isCurrent members={membersForYear(currentYear)} />
+                <YearPanel
+                  year={currentYear}
+                  isCurrent
+                  members={membersForYear(currentYear)}
+                  onMemberClick={setSelectedMember}
+                />
               )}
 
               {pastYears.map(year => (
-                <YearPanel key={year} year={year} isCurrent={false} members={membersForYear(year)} />
+                <YearPanel
+                  key={year}
+                  year={year}
+                  isCurrent={false}
+                  members={membersForYear(year)}
+                  onMemberClick={setSelectedMember}
+                />
               ))}
             </>
           )}
@@ -361,6 +380,8 @@ export default function About() {
         </div>
 
       </div>
+
+      <MemberPopup member={selectedMember} onClose={() => setSelectedMember(null)} />
     </MainLayout>
   )
 }

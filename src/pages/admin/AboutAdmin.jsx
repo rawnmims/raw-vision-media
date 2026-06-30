@@ -18,6 +18,7 @@ const DEPARTMENTS = [
 const EMPTY = {
   name: '', role: '', department: '', photo: '',
   academic_year: '', type: 'member', order_index: 0,
+  bio: '', instagram_url: '', branch: '', degree_year: '', mem_of_raw_since: '',
 }
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024 // 5MB
@@ -85,7 +86,7 @@ export default function AboutAdmin() {
   }
 
   const openAdd  = () => { setForm(EMPTY); resetPhotoState(); setModal('add') }
-  const openEdit = (m) => { setForm(m); resetPhotoState(); setPhotoPreview(m.photo || ''); setModal('edit') }
+  const openEdit = (m) => { setForm({ ...EMPTY, ...m }); resetPhotoState(); setPhotoPreview(m.photo || ''); setModal('edit') }
   const close    = () => { setModal(null); setForm(EMPTY); resetPhotoState() }
 
   const handleChange = e => {
@@ -436,7 +437,7 @@ export default function AboutAdmin() {
                 </div>
 
                 <div>
-                  <label className={labelCls}>Academic Year {form.type !== 'faculty' && '*'}</label>
+                  <label className={labelCls}>Club Year {form.type !== 'faculty' && '*'}</label>
                   {form.type === 'faculty' ? (
                     <p className={`py-2.5 px-3 border text-sm ${isDark ? 'border-gray-800 text-gray-500' : 'border-gray-200 text-gray-400'}`}>
                       Faculty aren't tied to a specific year
@@ -469,6 +470,46 @@ export default function AboutAdmin() {
                   <p className={`font-sans text-[10px] mt-1 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
                     Lower number = appears first within their year (faculty use their own ordering). You can also reorder from the table below.
                   </p>
+                </div>
+
+                {/* ── Profile popup fields ── */}
+                <div className="sm:col-span-2">
+                  <div className={`mt-1 mb-1 pt-4 border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
+                    <p className="section-eyebrow text-sm">Profile Popup Details</p>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelCls}>Bio</label>
+                  <textarea
+                    name="bio" value={form.bio} onChange={handleChange}
+                    placeholder="Short professional bio (2-4 lines)"
+                    rows={3}
+                    className={inputCls}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelCls}>Branch</label>
+                  <input name="branch" value={form.branch} onChange={handleChange} placeholder="e.g. B.Tech Computer Science" className={inputCls} />
+                </div>
+
+                <div>
+                  <label className={labelCls}>Degree Year</label>
+                  <input name="degree_year" value={form.degree_year} onChange={handleChange} placeholder="e.g. Third Year" className={inputCls} />
+                  <p className={`font-sans text-[10px] mt-1 ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>
+                    Shown in the popup only. Not related to the Club Year field above.
+                  </p>
+                </div>
+
+                <div>
+                  <label className={labelCls}>Member of RAW Since</label>
+                  <input name="mem_of_raw_since" value={form.mem_of_raw_since} onChange={handleChange} placeholder="e.g. 2024" className={inputCls} />
+                </div>
+
+                <div>
+                  <label className={labelCls}>Instagram URL</label>
+                  <input name="instagram_url" value={form.instagram_url} onChange={handleChange} placeholder="https://instagram.com/..." className={inputCls} />
                 </div>
 
               </div>
