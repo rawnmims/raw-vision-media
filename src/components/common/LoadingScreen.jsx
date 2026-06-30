@@ -124,7 +124,7 @@ export default function LoadingScreen({ onDone }) {
           ctx.fillStyle = `rgba(255,255,255,${subAlpha})`
           ctx.font = `300 ${Math.min(w*0.04, 18)}px Arial, sans-serif`
           ctx.letterSpacing = '7px'
-          ctx.fillText('VISION MEDIA CLUB', cx, cy + fontSize * 0.56 + 26)
+          ctx.fillText('VISION MEDIA CLUB · MPTP SHIRPUR', cx, cy + fontSize * 0.56 + 26)
           ctx.letterSpacing = '0px'
         }
 
