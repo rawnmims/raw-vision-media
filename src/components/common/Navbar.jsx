@@ -59,7 +59,7 @@ const LinkedinSVG = () => (
 
 /* ─── social links — swap hrefs for the real club accounts ─── */
 const SOCIALS = [
-  { label: 'Instagram', href: 'https://instagram.com', Icon: InstagramSVG },
+  { label: 'Instagram', href: 'https://www.instagram.com/rawvisionmedia?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', Icon: InstagramSVG },
   { label: 'YouTube',   href: 'https://youtube.com',   Icon: YoutubeSVG   },
   { label: 'LinkedIn',  href: 'https://linkedin.com',  Icon: LinkedinSVG  },
 ]
