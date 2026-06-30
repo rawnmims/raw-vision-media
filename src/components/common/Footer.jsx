@@ -323,7 +323,7 @@ export default function Footer() {
           }}
         >
           <p style={{ fontSize: 'clamp(8px, 1.2vw, 10px)', letterSpacing: '0.24em', textTransform: 'uppercase', color: '#f5f0e8', opacity: 0.75, margin: 0 }}>
-            © {new Date().getFullYear()} RAW Vision Media · NMIMS Shirpur
+            © {new Date().getFullYear()} RAW Vision Media · NMIMS Shirpur · ♥ & Developed by Shreya Desai
           </p>
         </div>
       </div>
