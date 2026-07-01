@@ -8,14 +8,14 @@ import aboutImg from '../assets/about-img.jpeg'
 import MemberPopup from '../components/about/MemberPopup'
 
 const DEPARTMENTS_INFO = [
-  { name: 'Photography',      desc: 'Capturing every decisive moment with precision and artistry.' },
-  { name: 'Cinematography',   desc: 'Crafting cinematic stories through motion and light.' },
-  { name: 'Editing',          desc: 'Transforming raw footage into polished visual narratives.' },
-  { name: 'Graphic Designing',desc: 'Designing visual identities and creative communication.' },
-  { name: 'Documentation',    desc: 'Recording the legacy of every event in written and visual form.' },
-  { name: 'Marketing',        desc: 'Amplifying RAWs presence across platforms and audiences.' },
-  { name: 'Logistics',        desc: 'Ensuring every shoot runs seamlessly behind the scenes.' },
-  { name: 'Data Handling',    desc: 'Managing archives, analytics, and media databases.' },
+  { name: 'Photography', desc: 'Capturing every decisive moment with precision and artistry.' },
+  { name: 'Cinematography', desc: 'Crafting cinematic stories through motion and light.' },
+  { name: 'Editing', desc: 'Transforming raw footage into polished visual narratives.' },
+  { name: 'Graphic Designing', desc: 'Designing visual identities and creative communication.' },
+  { name: 'Documentation', desc: 'Recording the legacy of every event in written and visual form.' },
+  { name: 'Marketing', desc: 'Amplifying RAWs presence across platforms and audiences.' },
+  { name: 'Logistics', desc: 'Ensuring every shoot runs seamlessly behind the scenes.' },
+  { name: 'Data Handling', desc: 'Managing archives, analytics, and media databases.' },
 ]
 
 // Square card, image fills the whole card, details sit on a bottom vignette.
@@ -30,9 +30,8 @@ function MemberCard({ member, dim = false, onClick }) {
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`group relative block w-full aspect-square overflow-hidden text-left ${
-        dim ? 'opacity-60' : ''
-      } ${isDark ? 'bg-gray-800' : 'bg-raw-cream'}`}
+      className={`group relative block w-full aspect-square overflow-hidden text-left ${dim ? 'opacity-60' : ''
+        } ${isDark ? 'bg-gray-800' : 'bg-raw-cream'}`}
     >
       {photoUrl ? (
         <img
@@ -117,28 +116,25 @@ function YearPanel({ year, isCurrent, members, onMemberClick }) {
     >
       {/* Panel header */}
       <div
-        className={`px-5 sm:px-8 md:px-10 py-6 sm:py-8 border-b ${
-          isDark ? 'border-gray-800' : 'border-gray-200'
-        }`}
+        className={`px-5 sm:px-8 md:px-10 py-6 sm:py-8 border-b ${isDark ? 'border-gray-800' : 'border-gray-200'
+          }`}
       >
         <p className="section-eyebrow text-lg mb-2">
           {isCurrent ? 'Current Team' : 'Alumni'}
         </p>
 
         <h2
-          className={`editorial-heading text-4xl sm:text-5xl ${
-            isCurrent
+          className={`editorial-heading text-4xl sm:text-5xl ${isCurrent
               ? (isDark ? 'text-white' : 'text-raw-ink')
               : (isDark ? 'text-gray-300' : 'text-gray-600')
-          }`}
+            }`}
         >
           {year}
         </h2>
 
         <p
-          className={`font-oswald text-sm sm:text-base tracking-widest uppercase mt-3 ${
-            isDark ? 'text-gray-500' : 'text-gray-400'
-          }`}
+          className={`font-oswald text-sm sm:text-base tracking-widest uppercase mt-3 ${isDark ? 'text-gray-500' : 'text-gray-400'
+            }`}
         >
           {members.length} member{members.length !== 1 ? 's' : ''}
         </p>
@@ -304,8 +300,8 @@ export default function About() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.06 }}
                   className={`p-5 sm:p-6 border transition-colors ${isDark
-                      ? 'border-gray-800 hover:border-raw-accent'
-                      : 'border-gray-200 hover:border-raw-ink'
+                    ? 'border-gray-800 hover:border-raw-accent'
+                    : 'border-gray-200 hover:border-raw-ink'
                     }`}
                 >
                   <h3
@@ -329,7 +325,12 @@ export default function About() {
 
         {/* ── TEAM ── */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 space-y-12 sm:space-y-16">
-
+          <h2
+                className={`editorial-heading text-3xl sm:text-4xl ${isDark ? 'text-white' : 'text-raw-ink'
+                  }`}
+              >
+                Connect with the Team
+              </h2>
           {loading ? (
             <div className="py-16 text-center">
               <div className={`font-condensed text-2xl tracking-widest animate-pulse ${isDark ? 'text-gray-600' : 'text-gray-300'}`}>Loading team...</div>

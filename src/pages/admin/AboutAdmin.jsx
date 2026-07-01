@@ -18,7 +18,7 @@ const DEPARTMENTS = [
 const EMPTY = {
   name: '', role: '', department: '', photo: '',
   academic_year: '', type: 'member', order_index: 0,
-  bio: '', instagram_url: '', branch: '', degree_year: '', mem_of_raw_since: '',
+  bio: '', instagram_url: '', linkedin: '', branch: '', degree_year: '', mem_of_raw_since: '',
 }
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024 // 5MB
@@ -510,6 +510,11 @@ export default function AboutAdmin() {
                 <div>
                   <label className={labelCls}>Instagram URL</label>
                   <input name="instagram_url" value={form.instagram_url} onChange={handleChange} placeholder="https://instagram.com/..." className={inputCls} />
+                </div>
+
+                <div>
+                  <label className={labelCls}>LinkedIn URL</label>
+                  <input name="linkedin" value={form.linkedin} onChange={handleChange} placeholder="https://linkedin.com/..." className={inputCls} />
                 </div>
 
               </div>
