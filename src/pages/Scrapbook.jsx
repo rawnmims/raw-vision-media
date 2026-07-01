@@ -5,6 +5,7 @@ import { ScrapbookGrid } from '../components/scrapbook/ScrapbookGrid'
 import { useTheme } from '../context/ThemeContext'
 import { scrapbookService } from '../services/formService'
 import { SAMPLE_SCRAPBOOK } from '../utils/constants'
+import { Helmet } from 'react-helmet-async'
 
 export default function Scrapbook() {
   const { isDark } = useTheme()
@@ -23,6 +24,14 @@ export default function Scrapbook() {
 
   return (
     <MainLayout>
+      <Helmet>
+        <title>Scrapbook | RAW Vision Media</title>
+
+        <meta
+          name="description"
+          content="A collection of candid memories, behind-the-scenes moments and unforgettable experiences captured by RAW Vision Media."
+        />
+      </Helmet>
       <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         {/* Header */}
         <div className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-200'} pt-12 pb-8 px-6`}>

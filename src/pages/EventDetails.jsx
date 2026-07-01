@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext'
 import { eventService } from '../services/eventService'
 import { SAMPLE_EVENTS } from '../utils/constants'
 import { formatDate } from '../utils/helpers'
+import { Helmet } from 'react-helmet-async'
 
 const EDITION_GOLD = '#C8A96E'
 const EDITION_VARIANTS = ['#C0392B', '#C8C4BC']
@@ -113,6 +114,14 @@ export default function EventDetails() {
 
   return (
     <MainLayout>
+      <Helmet>
+        <title>{event.title} | RAW Vision Media</title>
+
+        <meta
+          name="description"
+          content={event.description || `Photography coverage of ${event.title} by RAW Vision Media.`}
+        />
+      </Helmet>
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />
 

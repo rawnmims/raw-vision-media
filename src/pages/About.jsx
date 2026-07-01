@@ -6,6 +6,7 @@ import { userService } from '../services/formService'
 import { getImageUrl } from '../utils/helpers'
 import aboutImg from '../assets/about-img.jpeg'
 import MemberPopup from '../components/about/MemberPopup'
+import { Helmet } from 'react-helmet-async'
 
 const DEPARTMENTS_INFO = [
   { name: 'Photography', desc: 'Capturing every decisive moment with precision and artistry.' },
@@ -195,6 +196,14 @@ export default function About() {
 
   return (
     <MainLayout>
+      <Helmet>
+        <title>About | RAW Vision Media</title>
+
+        <meta
+          name="description"
+          content="Learn about RAW Vision Media, the official media club of NMIMS Shirpur. Meet our team, discover our mission, vision, departments, and journey."
+        />
+      </Helmet>
       <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
 
         {/* Hero */}

@@ -12,6 +12,7 @@ import wLogo from '../../assets/w.png'
 import rBlackLogo from '../../assets/r-black.png'
 import aBlackLogo from '../../assets/a-black.png'
 import wBlackLogo from '../../assets/w-black.png'
+import { Helmet } from 'react-helmet-async'
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
@@ -85,6 +86,14 @@ export default function Login() {
 
   return (
     <div className={`min-h-screen flex flex-col lg:flex-row ${formBg}`}>
+      <Helmet>
+        <title>Login | RAW Vision Media</title>
+
+        <meta
+          name="description"
+          content="Login to your RAW Vision Media account to access event galleries, applications and member services."
+        />
+      </Helmet>
 
       {/* Left — Cinematic Video Panel (desktop only) */}
       <div className="hidden lg:flex lg:w-1/2 lg:fixed lg:left-0 lg:top-0 lg:h-screen relative overflow-hidden bg-raw-black">

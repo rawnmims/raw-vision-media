@@ -13,6 +13,7 @@ import wLogo from '../../assets/w.png'
 import rBlackLogo from '../../assets/r-black.png'
 import aBlackLogo from '../../assets/a-black.png'
 import wBlackLogo from '../../assets/w-black.png'
+import { Helmet } from 'react-helmet-async'
 
 const ROLES = [
   { value: 'student', label: 'Student', domain: '@nmims.in', placeholder: 'yourname@nmims.in' },
@@ -117,6 +118,14 @@ export default function Signup() {
 
   return (
     <div className={`min-h-screen flex flex-col lg:flex-row ${formBg}`}>
+      <Helmet>
+        <title>Create Account | RAW Vision Media</title>
+
+        <meta
+          name="description"
+          content="Create your RAW Vision Media account to access exclusive event galleries and club features."
+        />
+      </Helmet>
 
       {/* Left — Cinematic Video Panel (desktop only) */}
       <div className="hidden lg:flex lg:w-1/2 lg:fixed lg:left-0 lg:top-0 lg:h-screen relative overflow-hidden bg-raw-black">

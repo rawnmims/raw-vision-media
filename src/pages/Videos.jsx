@@ -4,6 +4,7 @@ import { MainLayout } from '../layouts/MainLayout'
 import { VideoGrid } from '../components/videos/VideoCard'
 import { useTheme } from '../context/ThemeContext'
 import { videoService } from '../services/formService'
+import { Helmet } from 'react-helmet-async'
 
 export default function Videos() {
   const { isDark } = useTheme()
@@ -22,6 +23,14 @@ export default function Videos() {
 
   return (
     <MainLayout>
+      <Helmet>
+        <title>Videos | RAW Vision Media</title>
+
+        <meta
+          name="description"
+          content="Watch official event films, promotional videos and creative productions by RAW Vision Media."
+        />
+      </Helmet>
       <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <div className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-200'} pt-12 pb-8 px-6`}>
           <div className="max-w-7xl mx-auto">

@@ -6,6 +6,7 @@ import EventFilters from '../components/events/EventFilters'
 import { useTheme } from '../context/ThemeContext'
 import { eventService } from '../services/eventService'
 import { CURRENT_YEAR } from '../utils/constants'
+import { Helmet } from 'react-helmet-async'
 
 function NewsprintBackdrop({ isDark }) {
   return (
@@ -49,6 +50,14 @@ export default function Events() {
 
   return (
     <MainLayout>
+      <Helmet>
+        <title>Campus Events | RAW Vision Media</title>
+
+        <meta
+          name="description"
+          content="Explore photography and videography coverage of campus events by RAW Vision Media at NMIMS Shirpur."
+        />
+      </Helmet>
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />
 

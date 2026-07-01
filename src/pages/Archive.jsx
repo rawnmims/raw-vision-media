@@ -5,6 +5,7 @@ import { YearSection } from '../components/archive/YearSection'
 import { useTheme } from '../context/ThemeContext'
 import { eventService } from '../services/eventService'
 import { CURRENT_YEAR } from '../utils/constants'
+import { Helmet } from 'react-helmet-async'
 
 // Only show these 3 years in archive
 const ARCHIVE_YEARS = [CURRENT_YEAR, CURRENT_YEAR - 1, CURRENT_YEAR - 2]
@@ -55,6 +56,14 @@ export default function Archive() {
 
   return (
     <MainLayout>
+      <Helmet>
+        <title>Archive | RAW Vision Media</title>
+
+        <meta
+          name="description"
+          content="Browse the archive of RAW Vision Media and revisit memorable campus events and stories from previous years."
+        />
+      </Helmet>
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />
 
