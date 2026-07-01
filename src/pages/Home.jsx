@@ -31,16 +31,41 @@ export default function Home() {
   return (
     <MainLayout>
       <Helmet>
-        <title>RAW Vision Media | Official Media & Photography Club of NMIMS Shirpur</title>
+        <title>
+          RAW Vision Media | Official Media & Photography Club of NMIMS Shirpur
+        </title>
 
         <meta
           name="description"
           content="Official website of RAW Vision Media, the media and photography club of NMIMS Shirpur. Explore campus events, galleries, videos, scrapbook, team, and creative student work."
         />
 
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="RAW Vision Media" />
         <meta
-          name="keywords"
-          content="RAW Vision Media, NMIMS Shirpur, Media Club, Photography Club, Videography, Student Club, Campus Events"
+          property="og:description"
+          content="Official Media & Photography Club of NMIMS Shirpur."
+        />
+        <meta property="og:url" content="https://rawvisionmedia.in/" />
+        <meta
+          property="og:image"
+          content="https://rawvisionmedia.in/og-image.jpg"
+        />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="RAW Vision Media"
+        />
+        <meta
+          name="twitter:description"
+          content="Official Media & Photography Club of NMIMS Shirpur."
+        />
+        <meta
+          name="twitter:image"
+          content="https://rawvisionmedia.in/og-image.jpg"
         />
       </Helmet>
       <motion.div
