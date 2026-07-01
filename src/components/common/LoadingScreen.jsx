@@ -97,10 +97,11 @@ export default function LoadingScreen({ onDone }) {
 
         if (phase === 'expand') {
           const ft = (p - 0.67) / 0.13
+          const isMobile = w < 640
           ctx.fillStyle = `rgba(255,255,255,${ft * 0.22})`
           ctx.font = `300 ${Math.min(w*0.04, 18)}px Arial, sans-serif`
-          ctx.letterSpacing = '7px'
-          ctx.fillText('VISION MEDIA CLUB · MPTP SHIRPUR', cx, cy + fontSize * 0.56 + 26)
+          ctx.letterSpacing = isMobile ? '2px' : '7px'
+          ctx.fillText('MEDIA CLUB · MPTP SHIRPUR', cx, cy + fontSize * 0.56 + (isMobile ? 18 : 26))
           ctx.letterSpacing = '0px'
         }
 
@@ -121,10 +122,11 @@ export default function LoadingScreen({ onDone }) {
 
         const subAlpha = Math.max(0, 0.22 - t * 0.5)
         if (subAlpha > 0) {
+          const isMobile = w < 640
           ctx.fillStyle = `rgba(255,255,255,${subAlpha})`
           ctx.font = `300 ${Math.min(w*0.04, 18)}px Arial, sans-serif`
-          ctx.letterSpacing = '7px'
-          ctx.fillText('VISION MEDIA CLUB · MPTP SHIRPUR', cx, cy + fontSize * 0.56 + 26)
+          ctx.letterSpacing = isMobile ? '2px' : '7px'
+          ctx.fillText('MEDIA CLUB · MPTP SHIRPUR', cx, cy + fontSize * 0.56 + (isMobile ? 18 : 26))
           ctx.letterSpacing = '0px'
         }
 
