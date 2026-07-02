@@ -40,6 +40,7 @@ export default function MemberPopup({ member, onClose }) {
               {member && getImageUrl(member.photo) ? (
                 <img
                   src={getImageUrl(member.photo)}
+                  loading="lazy"
                   alt={member.name}
                   className="w-full h-full object-cover"
                   onError={e => { e.target.style.display = 'none' }}

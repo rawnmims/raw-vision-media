@@ -104,6 +104,7 @@ export function FeaturedWorks() {
             >
               <img
                 src={photo.image_url}
+                loading="lazy"
                 alt={photo.caption}
                 style={{ width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center', display: 'block', transition: 'transform 0.7s ease' }}
                 onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}

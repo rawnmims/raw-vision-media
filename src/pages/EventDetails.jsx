@@ -39,7 +39,7 @@ function NewsprintBackdrop({ isDark }) {
 }
 
 export default function EventDetails() {
-  const { id } = useParams()
+  const { slug } = useParams()
   const { isDark } = useTheme()
   const { user } = useAuth()
   const isExternal = user?.role === 'external' || !user
@@ -48,14 +48,15 @@ export default function EventDetails() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    eventService.getEventById(id)
+    eventService.getEventBySlug(slug)
       .then(data => setEvent(data))
       .catch(() => {
-        const fallback = SAMPLE_EVENTS.find(e => e.id === id) || SAMPLE_EVENTS[0]
+        const fallback =
+          SAMPLE_EVENTS.find(e => e.slug === slug) || SAMPLE_EVENTS[0]
         setEvent(fallback)
       })
       .finally(() => setLoading(false))
-  }, [id])
+  }, [slug])
 
   async function handleShare() {
     if (!event) return
@@ -115,11 +116,52 @@ export default function EventDetails() {
   return (
     <MainLayout>
       <Helmet>
-        <title>{event.title} | RAW Vision Media</title>
+        <title>{event?.title} | RAW Vision Media</title>
 
         <meta
           name="description"
-          content={event.description || `Photography coverage of ${event.title} by RAW Vision Media.`}
+          content={
+            event?.description ||
+            `Explore ${event?.title} by RAW Vision Media, the official media club of NMIMS Shirpur.`
+          }
+        />
+
+        <link
+          rel="canonical"
+          href={`https://rawvisionmedia.in/events/${event?.slug}`}
+        />
+
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={event?.title} />
+        <meta
+          property="og:description"
+          content={
+            event?.description ||
+            `Explore ${event?.title} by RAW Vision Media.`
+          }
+        />
+        <meta
+          property="og:url"
+          content={`https://rawvisionmedia.in/events/${event?.slug}`}
+        />
+
+        <meta
+          property="og:image"
+          content={event?.cover_image || event?.cover}
+        />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={event?.title} />
+        <meta
+          name="twitter:description"
+          content={
+            event?.description ||
+            `Explore ${event?.title} by RAW Vision Media.`
+          }
+        />
+        <meta
+          name="twitter:image"
+          content={event?.cover_image || event?.cover}
         />
       </Helmet>
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
@@ -129,6 +171,7 @@ export default function EventDetails() {
         <div className="relative h-72 md:h-96 overflow-hidden">
           <img
             src={event.cover_image || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&q=80'}
+            loading="lazy"
             alt={event.title}
             className="w-full h-full object-cover object-centre"
           />

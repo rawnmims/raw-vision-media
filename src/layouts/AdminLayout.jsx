@@ -52,6 +52,7 @@ export default function AdminLayout({ children }) {
           <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <img
               src={isDark ? rawLogoWhite : rawLogo}
+              loading="lazy"
               alt="RAW Vision Media"
               style={{ height: '65px', width: 'auto', objectFit: 'contain', position: 'relative', zIndex: 1, right: 10 }}
             />

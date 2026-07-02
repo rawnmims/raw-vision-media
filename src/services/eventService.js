@@ -19,6 +19,18 @@ export const eventService = {
     return data
   },
 
+  async getEventBySlug(slug) {
+    const { data, error } = await supabase
+      .from('events')
+      .select('*')
+      .eq('slug', slug)
+      .single()
+
+    if (error) throw error
+
+    return data
+  },
+
   async createEvent(event) {
     const { data, error } = await supabase.from('events').insert(event).select().single()
     if (error) throw error

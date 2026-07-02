@@ -31,6 +31,11 @@ export default function Scrapbook() {
           name="description"
           content="A collection of candid memories, behind-the-scenes moments and unforgettable experiences captured by RAW Vision Media."
         />
+        <link
+          rel="canonical"
+          href="https://rawvisionmedia.in/scrapbook"
+        />
+
       </Helmet>
       <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         {/* Header */}

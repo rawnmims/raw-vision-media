@@ -42,6 +42,7 @@ export function VideoCard({ video, index = 0, onClick }) {
         {/* Thumbnail */}
         <img
           src={thumbSrc}
+          loading="lazy"
           alt={video.title}
           onError={handleImgError}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

@@ -91,7 +91,7 @@ export function EventCard({ event, index = 0 }) {
       className="group"
     >
       <Link
-        to={`/events/${event.id}`}
+        to={`/events/${event.slug}`}
         className="block"
         aria-label={`${event.title} — ${event.category || 'event'} coverage, ${formatDateShort(event.event_date)}`}
       >

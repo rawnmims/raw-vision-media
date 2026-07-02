@@ -178,6 +178,7 @@ export function ScrapbookGrid({ photos }) {
 
               <img
                 src={photos[lightboxIndex]?.image_url}
+                loading="lazy"
                 alt={photos[lightboxIndex]?.caption}
                 style={{ maxWidth: '100%', maxHeight: '75vh', objectFit: 'contain', margin: '0 auto', display: 'block' }}
               />

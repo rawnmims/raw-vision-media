@@ -7,6 +7,8 @@ import { eventService } from '../../services/eventService'
 import { EVENT_CATEGORIES, CURRENT_YEAR } from '../../utils/constants'
 import { formatDateShort } from '../../utils/helpers'
 import CoverImageUploader from '../../pages/admin/CoverImageUploader'
+import { slugify } from '../../utils/slugify'
+import { generateUniqueSlug } from '../../utils/slugService'
 
 const EMPTY = {
   title: '',
@@ -53,11 +55,16 @@ export default function EventsAdmin() {
 
   const handleSave = async () => {
     setSaving(true)
+    const slug = await generateUniqueSlug(
+      form.title,
+      form.event_date,
+      modal === "edit" ? form.id : null
+    );
     try {
       if (modal === 'add') {
-        await eventService.createEvent({ ...form, year: Number(form.year) })
+        await eventService.createEvent({ ...form, slug, year: Number(form.year) })
       } else {
-        await eventService.updateEvent(form.id, { ...form, year: Number(form.year) })
+        await eventService.updateEvent(form.id, { ...form, slug, year: Number(form.year) })
       }
       load()
       closeModal()
@@ -79,14 +86,12 @@ export default function EventsAdmin() {
   }
 
   const cardBg = isDark ? 'bg-[#111] border-gray-800' : 'bg-white border-gray-200'
-  const inputCls = `w-full py-2.5 px-3 border text-sm bg-transparent outline-none transition-colors ${
-    isDark
+  const inputCls = `w-full py-2.5 px-3 border text-sm bg-transparent outline-none transition-colors ${isDark
       ? 'border-gray-700 text-white placeholder-gray-600 focus:border-raw-accent'
       : 'border-gray-300 text-raw-ink placeholder-gray-400 focus:border-raw-ink'
-  }`
-  const labelCls = `font-oswald text-xs tracking-widest uppercase block mb-1 ${
-    isDark ? 'text-gray-400' : 'text-gray-500'
-  }`
+    }`
+  const labelCls = `font-oswald text-xs tracking-widest uppercase block mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'
+    }`
   const modalBg = isDark ? 'bg-[#111] text-white' : 'bg-white text-raw-ink'
 
   return (
@@ -103,9 +108,8 @@ export default function EventsAdmin() {
         </div>
 
         <div className={`border ${cardBg}`}>
-          <div className={`flex items-center gap-4 px-5 py-3 border-b font-oswald text-xs tracking-widest uppercase ${
-            isDark ? 'border-gray-800 text-gray-500' : 'border-gray-200 text-gray-400'
-          }`}>
+          <div className={`flex items-center gap-4 px-5 py-3 border-b font-oswald text-xs tracking-widest uppercase ${isDark ? 'border-gray-800 text-gray-500' : 'border-gray-200 text-gray-400'
+            }`}>
             <span className="flex-1">Event</span>
             <span className="hidden md:block w-24">Category</span>
             <span className="hidden md:block w-24">Date</span>
@@ -132,9 +136,8 @@ export default function EventsAdmin() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: i * 0.03 }}
-                className={`flex items-center gap-4 px-5 py-4 border-b last:border-0 transition-colors ${
-                  isDark ? 'border-gray-800 hover:bg-gray-900/50' : 'border-gray-100 hover:bg-gray-50'
-                }`}
+                className={`flex items-center gap-4 px-5 py-4 border-b last:border-0 transition-colors ${isDark ? 'border-gray-800 hover:bg-gray-900/50' : 'border-gray-100 hover:bg-gray-50'
+                  }`}
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {event.cover_image && (
@@ -157,9 +160,8 @@ export default function EventsAdmin() {
                   {formatDateShort(event.event_date)}
                 </span>
                 <span className="hidden sm:block w-20">
-                  <span className={`font-oswald text-[10px] tracking-widest uppercase px-2 py-0.5 ${
-                    event.visibility === 'public' ? 'bg-green-900/30 text-green-400' : 'bg-gray-800 text-gray-400'
-                  }`}>
+                  <span className={`font-oswald text-[10px] tracking-widest uppercase px-2 py-0.5 ${event.visibility === 'public' ? 'bg-green-900/30 text-green-400' : 'bg-gray-800 text-gray-400'
+                    }`}>
                     {event.visibility}
                   </span>
                 </span>
@@ -199,9 +201,8 @@ export default function EventsAdmin() {
               exit={{ opacity: 0, y: 30 }}
               className={`${modalBg} w-full max-w-2xl max-h-[90vh] overflow-y-auto`}
             >
-              <div className={`sticky top-0 px-7 pt-7 pb-4 border-b flex justify-between items-center ${
-                isDark ? 'bg-[#111] border-gray-800' : 'bg-white border-gray-200'
-              }`}>
+              <div className={`sticky top-0 px-7 pt-7 pb-4 border-b flex justify-between items-center ${isDark ? 'bg-[#111] border-gray-800' : 'bg-white border-gray-200'
+                }`}>
                 <h2 className={`font-display text-2xl font-bold ${isDark ? 'text-white' : 'text-raw-ink'}`}>
                   {modal === 'add' ? 'Add New Event' : 'Edit Event'}
                 </h2>

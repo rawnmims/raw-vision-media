@@ -57,6 +57,10 @@ export default function Events() {
           name="description"
           content="Explore photography and videography coverage of campus events by RAW Vision Media at NMIMS Shirpur."
         />
+        <link
+          rel="canonical"
+          href="https://rawvisionmedia.in/events"
+        />
       </Helmet>
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />

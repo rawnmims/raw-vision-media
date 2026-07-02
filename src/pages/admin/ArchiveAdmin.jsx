@@ -80,7 +80,7 @@ export default function ArchiveAdmin() {
                   {byYear[year].slice(0, 5).map(event => (
                     <div key={event.id} className={`flex items-center gap-4 px-5 py-3 ${isDark ? 'hover:bg-gray-900/40' : 'hover:bg-gray-50'}`}>
                       {event.cover_image && (
-                        <img src={event.cover_image} alt="" className="w-10 h-8 object-cover hidden sm:block flex-shrink-0" />
+                        <img src={event.cover_image} loading="lazy" alt="" className="w-10 h-8 object-cover hidden sm:block flex-shrink-0" />
                       )}
                       <div className="flex-1 min-w-0">
                         <p className={`font-display text-sm font-bold truncate ${isDark ? 'text-gray-200' : 'text-raw-ink'}`}>{event.title}</p>

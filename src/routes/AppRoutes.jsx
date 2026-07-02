@@ -39,7 +39,7 @@ export default function AppRoutes() {
       {/* Public */}
       <Route path="/home" element={<Home />} />
       <Route path="/events" element={<Events />} />
-      <Route path="/events/:id" element={<EventDetails />} />
+      <Route path="/events/:slug" element={<EventDetails />} />
       <Route path="/archive" element={<Archive />} />
       <Route path="/scrapbook" element={<Scrapbook />} />
       <Route path="/videos" element={<Videos />} />

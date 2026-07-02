@@ -99,6 +99,7 @@ export function FeaturedWorks() {
             >
               <img
                 src={photo.image_url}
+                loading="lazy"
                 alt={photo.caption}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
               />

@@ -16,6 +16,7 @@ export function TeamCard({ member, index = 0 }) {
         {member.photo ? (
           <img
             src={member.photo}
+            loading="lazy"
             alt={member.name}
             className="w-full h-full object-cover"
           />

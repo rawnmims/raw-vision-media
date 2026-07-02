@@ -298,7 +298,7 @@ export default function AboutAdmin() {
                         <div className={`w-9 h-9 rounded-full flex-shrink-0 overflow-hidden
                           ${isDark ? 'bg-gray-800' : 'bg-raw-cream'}`}>
                           {member.photo ? (
-                            <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
+                            <img src={member.photo} loading="lazy" alt={member.name} className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               <span className="font-condensed text-sm text-raw-accent">{member.name?.[0]}</span>
@@ -390,7 +390,7 @@ export default function AboutAdmin() {
                   <div className="flex items-center gap-4">
                     <div className={`w-20 h-20 rounded-full overflow-hidden border-2 flex-shrink-0 ${isDark ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-raw-cream'}`}>
                       {photoPreview ? (
-                        <img src={photoPreview} alt="preview" className="w-full h-full object-cover" onError={e => { e.target.style.display = 'none' }} />
+                        <img src={photoPreview} loading="lazy" alt="preview" className="w-full h-full object-cover" onError={e => { e.target.style.display = 'none' }} />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <span className="font-condensed text-2xl text-raw-accent">{form.name?.[0] || '?'}</span>

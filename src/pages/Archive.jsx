@@ -63,6 +63,10 @@ export default function Archive() {
           name="description"
           content="Browse the archive of RAW Vision Media and revisit memorable campus events and stories from previous years."
         />
+        <link
+          rel="canonical"
+          href="https://rawvisionmedia.in/archive"
+        />
       </Helmet>
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />
@@ -103,11 +107,10 @@ export default function Archive() {
                   key={year}
                   onClick={() => scrollToYear(year)}
                   whileTap={{ scale: 0.93 }}
-                  className={`font-oswald text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors duration-200 ${
-                    isDark
+                  className={`font-oswald text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors duration-200 ${isDark
                       ? 'border-gray-700 text-gray-400 hover:border-raw-accent hover:text-raw-accent'
                       : 'border-gray-300 text-gray-500 hover:border-raw-accent hover:text-raw-accent'
-                  }`}
+                    }`}
                 >
                   {year}
                 </motion.button>

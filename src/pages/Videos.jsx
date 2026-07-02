@@ -30,6 +30,10 @@ export default function Videos() {
           name="description"
           content="Watch official event films, promotional videos and creative productions by RAW Vision Media."
         />
+        <link
+          rel="canonical"
+          href="https://rawvisionmedia.in/videos"
+        />
       </Helmet>
       <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <div className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-200'} pt-12 pb-8 px-6`}>
