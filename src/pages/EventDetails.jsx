@@ -149,11 +149,17 @@ export default function EventDetails() {
             name: event.title,
             description: event.description,
             startDate: event.event_date,
+            eventStatus: "https://schema.org/EventCompleted",
+            eventAttendanceMode:"https://schema.org/OfflineEventAttendanceMode",
             image: [event.cover_image],
             organizer: {
               "@type": "Organization",
               name: "RAW Vision Media",
               url: "https://rawvisionmedia.in"
+            },
+            performer: {
+              "@type": "Organization",
+              name: "RAW Vision Media"
             },
             location: {
               "@type": "Place",
