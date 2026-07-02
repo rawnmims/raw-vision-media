@@ -8,7 +8,7 @@ export default function LoadingScreen({ onDone }) {
     const ctx = canvas.getContext('2d')
     let raf = null
     let t0 = null
-    const TOTAL = 10000
+    const TOTAL = 8000
 
     function resize() {
       canvas.width = canvas.offsetWidth

@@ -1,37 +1,44 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { ProtectedRoute } from '../components/common/ThemeToggle'
 
 // Public pages
-import Home from '../pages/Home'
-import Events from '../pages/Events'
-import EventDetails from '../pages/EventDetails'
-import Archive from '../pages/Archive'
-import Scrapbook from '../pages/Scrapbook'
-import Videos from '../pages/Videos'
-import About from '../pages/About'
+const Home = lazy(() => import('../pages/Home'))
+const Events = lazy(() => import('../pages/Events'))
+const EventDetails = lazy(() => import('../pages/EventDetails'))
+const Archive = lazy(() => import('../pages/Archive'))
+const Scrapbook = lazy(() => import('../pages/Scrapbook'))
+const Videos = lazy(() => import('../pages/Videos'))
+const About = lazy(() => import('../pages/About'))
 
 // Auth pages
-import Login from '../pages/auth/Login'
-import Signup from '../pages/auth/Signup'
-
+const Login = lazy(() => import('../pages/auth/Login'))
+const Signup = lazy(() => import('../pages/auth/Signup'))
 
 // Admin pages
-import Dashboard from '../pages/admin/Dashboard'
-import EventsAdmin from '../pages/admin/EventsAdmin'
-import ArchiveAdmin from '../pages/admin/ArchiveAdmin'
-import ScrapbookAdmin from '../pages/admin/ScrapbookAdmin'
-import VideosAdmin from '../pages/admin/VideosAdmin'
-import ApplicationsAdmin from '../pages/admin/ApplicationsAdmin'
-import CoverageAdmin from '../pages/admin/CoverageAdmin'
-import UsersAdmin from '../pages/admin/UsersAdmin'
-import AnalyticsAdmin from '../pages/admin/AnalyticsAdmin'
-import SettingsAdmin from '../pages/admin/SettingsAdmin'
-import AboutAdmin from '../pages/admin/AboutAdmin'
-import FormsAdmin from '../pages/admin/FormsAdmin'
+const Dashboard = lazy(() => import('../pages/admin/Dashboard'))
+const EventsAdmin = lazy(() => import('../pages/admin/EventsAdmin'))
+const ArchiveAdmin = lazy(() => import('../pages/admin/ArchiveAdmin'))
+const ScrapbookAdmin = lazy(() => import('../pages/admin/ScrapbookAdmin'))
+const VideosAdmin = lazy(() => import('../pages/admin/VideosAdmin'))
+const ApplicationsAdmin = lazy(() => import('../pages/admin/ApplicationsAdmin'))
+const CoverageAdmin = lazy(() => import('../pages/admin/CoverageAdmin'))
+const UsersAdmin = lazy(() => import('../pages/admin/UsersAdmin'))
+const AnalyticsAdmin = lazy(() => import('../pages/admin/AnalyticsAdmin'))
+const SettingsAdmin = lazy(() => import('../pages/admin/SettingsAdmin'))
+const AboutAdmin = lazy(() => import('../pages/admin/AboutAdmin'))
+const FormsAdmin = lazy(() => import('../pages/admin/FormsAdmin'))
 
 export default function AppRoutes() {
   return (
+    <Suspense
+    fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    }
+  >
     <Routes>
       {/* Root → login */}
       <Route path="/" element={<Navigate to="/home" replace />} />
@@ -65,6 +72,8 @@ export default function AppRoutes() {
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/login" replace />} />
+      
     </Routes>
+    </Suspense>
   )
 }
