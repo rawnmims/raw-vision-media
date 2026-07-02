@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
 import {
@@ -8,6 +8,7 @@ import {
 import Swal from 'sweetalert2'
 import { useTheme } from '../../context/ThemeContext'
 import JoinRawModal from '../forms/JoinRawModal'
+import { formService } from '../../services/formService'
 
 /* ── social media achievements — update values to real numbers ── */
 const STATS = [
@@ -25,11 +26,26 @@ const JOIN_POINTS = [
   { n: '05', text: 'Your work gets published, shared, and seen by the whole campus.' },
 ]
 
-export default function StudioSection({ settings }) {
+export default function StudioSection({ settings: settingsProp }) {
   const { isDark } = useTheme()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
   const [joinOpen, setJoinOpen] = useState(false)
+
+  // Fall back to fetching our own settings if none were passed in,
+  // same pattern as HeroSection — this is what was missing before.
+  const [settings, setSettings] = useState(settingsProp || {})
+
+  useEffect(() => {
+    if (settingsProp) {
+      // parent is already providing live settings — just sync to them
+      setSettings(settingsProp)
+      return
+    }
+    formService.getSettings()
+      .then(d => { if (d) setSettings(d) })
+      .catch(() => {})
+  }, [settingsProp])
 
   const ink    = isDark ? '#f0ece4' : '#0e0e0e'
   const muted  = isDark ? '#6a6460' : '#8a8480'
@@ -37,7 +53,7 @@ export default function StudioSection({ settings }) {
   const rule   = isDark ? '#1e1c18' : '#e4e0da'
   const accent = '#c0392b'
 
-  /* ── same open-check pattern as DynamicFormsBanner ── */
+  /* ── same open-check pattern as DynamicFormsBanner / HeroSection ── */
   const handleJoinClick = () => {
     if (!settings?.join_raw_open) {
       Swal.fire({
@@ -62,12 +78,10 @@ export default function StudioSection({ settings }) {
         position: 'relative',
       }}
     >
-
       <div
         className="max-w-7xl mx-auto"
         style={{ padding: 'clamp(56px, 8vw, 96px) clamp(20px, 5vw, 48px)' }}
       >
-
         {/* ── TOP ROW: eyebrow + headline + Meet Team CTA ── */}
         <div
           style={{
@@ -224,10 +238,8 @@ export default function StudioSection({ settings }) {
             gap: '0',
           }}
         >
-          {/* left: content */}
           <div style={{ padding: 'clamp(28px, 4vw, 48px) clamp(24px, 3.5vw, 44px)', borderRight: `1px solid ${rule}` }}>
 
-            {/* eyebrow */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
               <div style={{ width: '20px', height: '2px', background: accent }} />
               <span style={{ fontFamily: "'Oswald', sans-serif", fontSize: '10px', letterSpacing: '0.3em', textTransform: 'uppercase', color: accent }}>
@@ -235,7 +247,6 @@ export default function StudioSection({ settings }) {
               </span>
             </div>
 
-            {/* heading */}
             <h3
               style={{
                 fontFamily: "'Playfair Display', Georgia, serif",
@@ -250,7 +261,6 @@ export default function StudioSection({ settings }) {
               <em style={{ fontStyle: 'italic', color: muted }}>a family you'll carry for life.</em>
             </h3>
 
-            {/* points */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
               {JOIN_POINTS.map(({ n, text }) => (
                 <div key={n} style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
@@ -262,7 +272,6 @@ export default function StudioSection({ settings }) {
               ))}
             </div>
 
-            {/* CTA — uses same open-check pattern as DynamicFormsBanner */}
             <button
               onClick={handleJoinClick}
               style={{
@@ -286,9 +295,7 @@ export default function StudioSection({ settings }) {
 
       </div>
 
-      {/* Join RAW modal */}
       <JoinRawModal isOpen={joinOpen} onClose={() => setJoinOpen(false)} />
-
     </section>
   )
 }
