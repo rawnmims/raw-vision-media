@@ -91,8 +91,10 @@ export default function Login() {
 
         <meta
           name="description"
-          content="Login to your RAW Vision Media account to access event galleries, applications and member services."
+          content="Login to your RAW Vision Media account."
         />
+
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       {/* Left — Cinematic Video Panel (desktop only) */}

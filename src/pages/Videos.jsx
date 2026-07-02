@@ -28,12 +28,18 @@ export default function Videos() {
 
         <meta
           name="description"
-          content="Watch official event films, promotional videos and creative productions by RAW Vision Media."
+          content="Watch official productions, promotional videos and event films created by RAW Vision Media."
         />
+
+        <meta name="robots" content="index, follow" />
+
         <link
           rel="canonical"
           href="https://rawvisionmedia.in/videos"
         />
+
+        <meta property="og:title" content="Videos | RAW Vision Media" />
+        <meta property="og:image" content="https://rawvisionmedia.in/og-image.jpg" />
       </Helmet>
       <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <div className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-200'} pt-12 pb-8 px-6`}>

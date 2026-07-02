@@ -61,12 +61,18 @@ export default function Archive() {
 
         <meta
           name="description"
-          content="Browse the archive of RAW Vision Media and revisit memorable campus events and stories from previous years."
+          content="Explore the archive of RAW Vision Media and revisit memorable campus events throughout the years."
         />
+
+        <meta name="robots" content="index, follow" />
+
         <link
           rel="canonical"
           href="https://rawvisionmedia.in/archive"
         />
+
+        <meta property="og:title" content="Archive | RAW Vision Media" />
+        <meta property="og:image" content="https://rawvisionmedia.in/og-image.jpg" />
       </Helmet>
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />
@@ -108,8 +114,8 @@ export default function Archive() {
                   onClick={() => scrollToYear(year)}
                   whileTap={{ scale: 0.93 }}
                   className={`font-oswald text-xs tracking-widest uppercase px-3 py-1.5 border transition-colors duration-200 ${isDark
-                      ? 'border-gray-700 text-gray-400 hover:border-raw-accent hover:text-raw-accent'
-                      : 'border-gray-300 text-gray-500 hover:border-raw-accent hover:text-raw-accent'
+                    ? 'border-gray-700 text-gray-400 hover:border-raw-accent hover:text-raw-accent'
+                    : 'border-gray-300 text-gray-500 hover:border-raw-accent hover:text-raw-accent'
                     }`}
                 >
                   {year}

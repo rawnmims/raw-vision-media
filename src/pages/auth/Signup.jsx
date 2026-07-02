@@ -123,8 +123,10 @@ export default function Signup() {
 
         <meta
           name="description"
-          content="Create your RAW Vision Media account to access exclusive event galleries and club features."
+          content="Create your RAW Vision Media account."
         />
+
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
       {/* Left — Cinematic Video Panel (desktop only) */}

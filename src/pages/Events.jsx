@@ -51,16 +51,23 @@ export default function Events() {
   return (
     <MainLayout>
       <Helmet>
-        <title>Campus Events | RAW Vision Media</title>
+        <title>Events | RAW Vision Media</title>
 
         <meta
           name="description"
-          content="Explore photography and videography coverage of campus events by RAW Vision Media at NMIMS Shirpur."
+          content="Browse photography and videography coverage of campus events by RAW Vision Media at NMIMS Shirpur."
         />
+
+        <meta name="robots" content="index, follow" />
+
         <link
           rel="canonical"
           href="https://rawvisionmedia.in/events"
         />
+
+        <meta property="og:title" content="Events | RAW Vision Media" />
+        <meta property="og:description" content="Campus events covered by RAW Vision Media." />
+        <meta property="og:image" content="https://rawvisionmedia.in/og-image.jpg" />
       </Helmet>
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />

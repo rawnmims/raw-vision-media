@@ -116,53 +116,57 @@ export default function EventDetails() {
   return (
     <MainLayout>
       <Helmet>
-        <title>{event?.title} | RAW Vision Media</title>
+        <title>{event.title} | RAW Vision Media</title>
 
         <meta
           name="description"
           content={
-            event?.description ||
-            `Explore ${event?.title} by RAW Vision Media, the official media club of NMIMS Shirpur.`
+            event.description ||
+            `Explore ${event.title} covered by RAW Vision Media.`
           }
         />
+
+        <meta name="robots" content="index, follow" />
 
         <link
           rel="canonical"
-          href={`https://rawvisionmedia.in/events/${event?.slug}`}
+          href={`https://rawvisionmedia.in/events/${event.slug}`}
         />
 
         <meta property="og:type" content="article" />
-        <meta property="og:title" content={event?.title} />
-        <meta
-          property="og:description"
-          content={
-            event?.description ||
-            `Explore ${event?.title} by RAW Vision Media.`
-          }
-        />
+        <meta property="og:title" content={event.title} />
+        <meta property="og:description" content={event.description} />
+        <meta property="og:image" content={event.cover_image} />
         <meta
           property="og:url"
-          content={`https://rawvisionmedia.in/events/${event?.slug}`}
+          content={`https://rawvisionmedia.in/events/${event.slug}`}
         />
 
-        <meta
-          property="og:image"
-          content={event?.cover_image || event?.cover}
-        />
-
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={event?.title} />
-        <meta
-          name="twitter:description"
-          content={
-            event?.description ||
-            `Explore ${event?.title} by RAW Vision Media.`
-          }
-        />
-        <meta
-          name="twitter:image"
-          content={event?.cover_image || event?.cover}
-        />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Event",
+            name: event.title,
+            description: event.description,
+            startDate: event.event_date,
+            image: [event.cover_image],
+            organizer: {
+              "@type": "Organization",
+              name: "RAW Vision Media",
+              url: "https://rawvisionmedia.in"
+            },
+            location: {
+              "@type": "Place",
+              name: "NMIMS Shirpur",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Shirpur",
+                addressRegion: "Maharashtra",
+                addressCountry: "IN"
+              }
+            }
+          })}
+        </script>
       </Helmet>
       <div className={`relative min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         <NewsprintBackdrop isDark={isDark} />

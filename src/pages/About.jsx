@@ -127,8 +127,8 @@ function YearPanel({ year, isCurrent, members, onMemberClick }) {
 
         <h2
           className={`editorial-heading text-4xl sm:text-5xl ${isCurrent
-              ? (isDark ? 'text-white' : 'text-raw-ink')
-              : (isDark ? 'text-gray-300' : 'text-gray-600')
+            ? (isDark ? 'text-white' : 'text-raw-ink')
+            : (isDark ? 'text-gray-300' : 'text-gray-600')
             }`}
         >
           {year}
@@ -198,16 +198,23 @@ export default function About() {
   return (
     <MainLayout>
       <Helmet>
-        <title>About | RAW Vision Media</title>
+        <title>About RAW Vision Media | NMIMS Shirpur</title>
 
         <meta
           name="description"
-          content="Learn about RAW Vision Media, the official media club of NMIMS Shirpur. Meet our team, discover our mission, vision, departments, and journey."
+          content="Meet the team behind RAW Vision Media, the official media club of NMIMS Shirpur. Learn about our mission, vision, departments and creative journey."
         />
+
+        <meta name="robots" content="index, follow" />
+
         <link
-        rel="canonical"
-        href="https://rawvisionmedia.in/about"
-      />
+          rel="canonical"
+          href="https://rawvisionmedia.in/about"
+        />
+
+        <meta property="og:title" content="About RAW Vision Media" />
+        <meta property="og:description" content="Meet the creative team of RAW Vision Media." />
+        <meta property="og:image" content="https://rawvisionmedia.in/og-image.jpg" />
       </Helmet>
       <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
 
@@ -340,11 +347,11 @@ export default function About() {
         {/* ── TEAM ── */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 space-y-12 sm:space-y-16">
           <h2
-                className={`editorial-heading text-3xl sm:text-4xl ${isDark ? 'text-white' : 'text-raw-ink'
-                  }`}
-              >
-                Connect with the Team
-              </h2>
+            className={`editorial-heading text-3xl sm:text-4xl ${isDark ? 'text-white' : 'text-raw-ink'
+              }`}
+          >
+            Connect with the Team
+          </h2>
           {loading ? (
             <div className="py-16 text-center">
               <div className={`font-condensed text-2xl tracking-widest animate-pulse ${isDark ? 'text-gray-600' : 'text-gray-300'}`}>Loading team...</div>

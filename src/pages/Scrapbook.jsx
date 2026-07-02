@@ -29,13 +29,18 @@ export default function Scrapbook() {
 
         <meta
           name="description"
-          content="A collection of candid memories, behind-the-scenes moments and unforgettable experiences captured by RAW Vision Media."
+          content="Behind-the-scenes memories, candid moments and creative stories captured by RAW Vision Media."
         />
+
+        <meta name="robots" content="index, follow" />
+
         <link
           rel="canonical"
           href="https://rawvisionmedia.in/scrapbook"
         />
 
+        <meta property="og:title" content="Scrapbook | RAW Vision Media" />
+        <meta property="og:image" content="https://rawvisionmedia.in/og-image.jpg" />
       </Helmet>
       <div className={`min-h-screen ${isDark ? 'bg-raw-black' : 'bg-[#FAFAFA]'}`}>
         {/* Header */}
